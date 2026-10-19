@@ -1,0 +1,286 @@
+[
+ {
+  "code": "dosage(c(\"CC\", \"CT\", \"CC\", NA, \"TT\", \"CC\"))",
+  "output": "[1]  0  1  0 NA  2  0"
+ },
+ {
+  "code": "set.seed(1)",
+  "output": ""
+ },
+ {
+  "code": "null_p <- replicate(1000, t.test(rnorm(10), rnorm(10))$p.value)",
+  "output": ""
+ },
+ {
+  "code": "sum(null_p < 0.05)",
+  "output": "[1] 50"
+ },
+ {
+  "code": "trait <- virco$IDV.Fold - virco$NFV.Fold",
+  "output": ""
+ },
+ {
+  "code": "summary(trait)",
+  "output": "     Min.   1st Qu.    Median      Mean   3rd Qu.      Max.       NAs\n-1620.800    -9.000    -0.400    -4.288     6.600   129.300        90"
+ },
+ {
+  "code": "positions <- select(virco, P1:P99)",
+  "output": ""
+ },
+ {
+  "code": "mut <- positions != \"-\" & positions != \".\"",
+  "output": ""
+ },
+ {
+  "code": "mut <- mut[, colMeans(mut) > 0.05]",
+  "output": ""
+ },
+ {
+  "code": "dim(mut)",
+  "output": "[1] 1066   47"
+ },
+ {
+  "code": "p_virco <- apply(mut, 2, function(m) t.test(trait[m], trait[!m])$p.value)",
+  "output": ""
+ },
+ {
+  "code": "length(p_virco)",
+  "output": "[1] 47"
+ },
+ {
+  "code": "sum(p_virco < 0.05)",
+  "output": "[1] 22"
+ },
+ {
+  "code": "head(sort(p_virco))",
+  "output": "         P30          P76          P88          P55          P48          P89\n3.732500e-12 9.782323e-10 1.432468e-06 2.286695e-06 5.749467e-06 8.924013e-05"
+ },
+ {
+  "code": "0.05 / length(p_virco)",
+  "output": "[1] 0.00106383"
+ },
+ {
+  "code": "p_bonf <- p.adjust(p_virco, method = \"bonferroni\")",
+  "output": ""
+ },
+ {
+  "code": "sum(p_bonf < 0.05)",
+  "output": "[1] 8"
+ },
+ {
+  "code": "names(p_virco)[p_bonf < 0.05]",
+  "output": "[1] \"P11\" \"P30\" \"P48\" \"P55\" \"P76\" \"P82\" \"P88\" \"P89\""
+ },
+ {
+  "code": "p_bh <- p.adjust(p_virco, method = \"BH\")",
+  "output": ""
+ },
+ {
+  "code": "sum(p_bh < 0.05)",
+  "output": "[1] 18"
+ },
+ {
+  "code": "virco_results <- tibble(position = names(p_virco), p = p_virco,\n                        bonferroni = p_bonf, bh = p_bh) %>%\n  arrange(p)",
+  "output": ""
+ },
+ {
+  "code": "print(virco_results, n = 20)",
+  "output": "# A tibble: 47 × 4\n   position        p bonferroni       bh\n   <chr>       <dbl>      <dbl>    <dbl>\n 1 P30      3.73e-12   1.75e-10 1.75e-10\n 2 P76      9.78e-10   4.60e- 8 2.30e- 8\n 3 P88      1.43e- 6   6.73e- 5 2.24e- 5\n 4 P55      2.29e- 6   1.07e- 4 2.69e- 5\n 5 P48      5.75e- 6   2.70e- 4 5.40e- 5\n 6 P89      8.92e- 5   4.19e- 3 6.99e- 4\n 7 P11      4.17e- 4   1.96e- 2 2.80e- 3\n 8 P82      9.50e- 4   4.47e- 2 5.58e- 3\n 9 P60      1.12e- 3   5.24e- 2 5.73e- 3\n10 P85      1.22e- 3   5.73e- 2 5.73e- 3\n11 P54      1.49e- 3   7.00e- 2 6.36e- 3\n12 P43      2.03e- 3   9.52e- 2 7.93e- 3\n13 P61      2.56e- 3   1.20e- 1 9.24e- 3\n14 P46      4.20e- 3   1.97e- 1 1.41e- 2\n15 P67      7.77e- 3   3.65e- 1 2.43e- 2\n16 P69      1.11e- 2   5.23e- 1 3.27e- 2\n17 P84      1.56e- 2   7.32e- 1 4.11e- 2\n18 P47      1.57e- 2   7.40e- 1 4.11e- 2\n19 P35      2.39e- 2   1   e+ 0 5.89e- 2\n20 P32      2.51e- 2   1   e+ 0 5.89e- 2\n# ℹ 27 more rows\n# ℹ Use `print(n = ...)` to see more rows"
+ },
+ {
+  "code": "dim(expr)",
+  "output": "[1] 12625    81"
+ },
+ {
+  "code": "mat <- as.matrix(expr[, -(1:2)])",
+  "output": ""
+ },
+ {
+  "code": "rownames(mat) <- expr$probe",
+  "output": ""
+ },
+ {
+  "code": "mat[1:3, 1:4]",
+  "output": "          P01005 P01010 P03002 P04007\n1000_at     7.60   7.48   7.57   7.91\n1001_at     5.05   4.93   4.80   4.84\n1002_f_at   3.90   4.21   3.89   3.42"
+ },
+ {
+  "code": "two <- leuk %>% filter(mol.biol %in% c(\"BCR/ABL\", \"NEG\"))",
+  "output": ""
+ },
+ {
+  "code": "identical(colnames(mat), two$sample)",
+  "output": "[1] TRUE"
+ },
+ {
+  "code": "groups <- two$mol.biol",
+  "output": ""
+ },
+ {
+  "code": "table(groups)",
+  "output": "groups\nBCR/ABL     NEG\n     37      42"
+ },
+ {
+  "code": "p_expr <- apply(mat, 1, function(x)\n  t.test(x[groups == \"BCR/ABL\"], x[groups == \"NEG\"])$p.value)",
+  "output": ""
+ },
+ {
+  "code": "log_fc <- rowMeans(mat[, groups == \"BCR/ABL\"]) -\n  rowMeans(mat[, groups == \"NEG\"])",
+  "output": ""
+ },
+ {
+  "code": "expr_results <- tibble(probe = expr$probe, symbol = expr$symbol,\n                       log_fc = log_fc, p = p_expr) %>%\n  mutate(bonferroni = p.adjust(p, method = \"bonferroni\"),\n         bh = p.adjust(p, method = \"BH\")) %>%\n  arrange(p)",
+  "output": ""
+ },
+ {
+  "code": "expr_results",
+  "output": "# A tibble: 12,625 × 6\n   probe      symbol  log_fc        p    bonferroni            bh\n   <chr>      <chr>    <dbl>    <dbl>         <dbl>         <dbl>\n 1 1636_g_at  ABL1     1.10  1.76e-13 0.00000000222 0.00000000222\n 2 39730_at   ABL1     1.15  1.28e-12 0.0000000161  0.00000000807\n 3 1635_at    ABL1     1.20  7.29e-10 0.00000920    0.00000307\n 4 1674_at    YES1     1.43  6.26e- 9 0.0000790     0.0000198\n 5 40202_at   KLF9     1.78  1.77e- 8 0.000224      0.0000448\n 6 40504_at   PON2     1.18  2.28e- 8 0.000288      0.0000481\n 7 37027_at   AHNAK    1.35  2.03e- 7 0.00256       0.000366\n 8 37015_at   ALDH1A1  1.03  3.45e- 7 0.00435       0.000544\n 9 32434_at   MARCKS   1.68  4.21e- 7 0.00531       0.000590\n10 40167_s_at WSB2     0.745 4.89e- 7 0.00618       0.000618\n# ℹ 12,615 more rows\n# ℹ Use `print(n = ...)` to see more rows"
+ },
+ {
+  "code": "sum(expr_results$p < 0.05)",
+  "output": "[1] 1236"
+ },
+ {
+  "code": "sum(expr_results$bonferroni < 0.05)",
+  "output": "[1] 20"
+ },
+ {
+  "code": "sum(expr_results$bh < 0.05)",
+  "output": "[1] 162"
+ },
+ {
+  "code": "freqs <- hgdp %>%\n  drop_na(AKT1.C0756A) %>%\n  group_by(Geographic.area) %>%\n  summarise(n = n(), freq_A = mean(str_count(AKT1.C0756A, \"A\")) / 2) %>%\n  arrange(desc(freq_A))",
+  "output": ""
+ },
+ {
+  "code": "freqs",
+  "output": "# A tibble: 14 × 3\n   Geographic.area     n freq_A\n   <chr>           <int>  <dbl>\n 1 Central Africa    119 0.303\n 2 Northern Africa    30 0.25\n 3 Southern Europe   125 0.24\n 4 Northern Europe    16 0.219\n 5 Japan              31 0.194\n 6 South Africa        8 0.188\n 7 Russia             67 0.179\n 8 Pakistan          200 0.17\n 9 South America      58 0.164\n10 Israel            148 0.162\n11 China             184 0.122\n12 Central America    50 0.12\n13 Southeast Asia     10 0.05\n14 New Guinea         17 0.0294"
+ },
+ {
+  "code": "pca <- prcomp(sim_geno, scale. = TRUE)",
+  "output": ""
+ },
+ {
+  "code": "summary(pca)$importance[, 1:4]",
+  "output": "                            PC1      PC2      PC3      PC4\nStandard deviation     3.814792 2.126851 2.085455 2.053172\nProportion of Variance 0.029110 0.009050 0.008700 0.008430\nCumulative Proportion  0.029110 0.038150 0.046850 0.055280"
+ },
+ {
+  "code": "p_naive <- apply(sim_geno, 2, function(g)\n  summary(lm(sim_trait ~ g))$coefficients[2, 4])",
+  "output": ""
+ },
+ {
+  "code": "p_pc1 <- apply(sim_geno, 2, function(g)\n  summary(lm(sim_trait ~ g + pcs$PC1))$coefficients[2, 4])",
+  "output": ""
+ },
+ {
+  "code": "sum(p_naive < 0.05)",
+  "output": "[1] 148"
+ },
+ {
+  "code": "sum(p_pc1 < 0.05)",
+  "output": "[1] 25"
+ },
+ {
+  "code": "sum(p.adjust(p_naive, method = \"bonferroni\") < 0.05)",
+  "output": "[1] 10"
+ },
+ {
+  "code": "median(qchisq(p_naive, df = 1, lower.tail = FALSE)) / qchisq(0.5, df = 1)",
+  "output": "[1] 3.429401"
+ },
+ {
+  "code": "median(qchisq(p_pc1, df = 1, lower.tail = FALSE)) / qchisq(0.5, df = 1)",
+  "output": "[1] 0.8743502"
+ },
+ {
+  "code": "hwe_p(hgdp$AKT1.C0756A)",
+  "output": "[1] 0.008490518"
+ },
+ {
+  "code": "hgdp %>%\n  group_by(Geographic.area) %>%\n  summarise(n = n(), hwe = hwe_p(AKT1.C0756A)) %>%\n  arrange(hwe)",
+  "output": "# A tibble: 14 × 3\n   Geographic.area     n         hwe\n   <chr>           <int>       <dbl>\n 1 South America      58 0.000000180\n 2 Russia             67 0.0178\n 3 Southern Europe   125 0.117\n 4 Japan              31 0.181\n 5 Israel            148 0.202\n 6 Northern Europe    16 0.263\n 7 Pakistan          200 0.266\n 8 South Africa        8 0.514\n 9 Central Africa    119 0.630\n10 Central America    50 0.708\n11 China             184 0.864\n12 Southeast Asia     11 0.868\n13 New Guinea         17 0.901\n14 Northern Africa    30 0.903"
+ },
+ {
+  "code": "hgdp_d <- hgdp %>%\n  select(starts_with(\"AKT1\")) %>%\n  mutate(across(everything(), dosage))",
+  "output": ""
+ },
+ {
+  "code": "cor(hgdp_d, use = \"pairwise.complete.obs\")^2",
+  "output": "            AKT1.C0756A AKT1.C6024T AKT1.G2347T AKT1.G2375A\nAKT1.C0756A   1.0000000   0.9685746   0.8522474   0.5753520\nAKT1.C6024T   0.9685746   1.0000000   0.8654903   0.5623879\nAKT1.G2347T   0.8522474   0.8654903   1.0000000   0.5668742\nAKT1.G2375A   0.5753520   0.5623879   0.5668742   1.0000000"
+ },
+ {
+  "code": "table(fms$akt1_g15129a, fms$akt1_g14803t)",
+  "output": "\n      GG  GT  TT\n  AA   3   7 245\n  AG   3 343  13\n  GG 121   1   1"
+ },
+ {
+  "code": "cauc <- filter(fms, Race == \"Caucasian\")",
+  "output": ""
+ },
+ {
+  "code": "snps <- names(fms)[-(1:13)]",
+  "output": ""
+ },
+ {
+  "code": "length(snps)",
+  "output": "[1] 222"
+ },
+ {
+  "code": "qc <- tibble(snp = snps,\n             call_rate = sapply(snps, function(s) mean(!is.na(fms[[s]]))),\n             maf = sapply(snps, function(s) mean(dosage(fms[[s]]), na.rm = TRUE) / 2),\n             hwe = sapply(snps, function(s) hwe_p(cauc[[s]])))",
+  "output": ""
+ },
+ {
+  "code": "qc",
+  "output": "# A tibble: 222 × 4\n   snp             call_rate   maf    hwe\n   <chr>               <dbl> <dbl>  <dbl>\n 1 acdc_rs1501299      0.865 0.275 0.0175\n 2 ace_id              0.596 0.459 0.232\n 3 actn3_r577x         0.526 0.490 0.0760\n 4 actn3_rs540874      0.870 0.431 0.409\n 5 actn3_rs1815739     0.871 0.429 0.434\n 6 actn3_1671064       0.874 0.434 0.590\n 7 ardb1_1801253       0.369 0.275 0.488\n 8 adrb2_1042713       0.432 0.383 0.698\n 9 adrb2_1042714       0.398 0.396 0.244\n10 adrb2_rs1042718     0.870 0.190 0.0270\n# ℹ 212 more rows\n# ℹ Use `print(n = ...)` to see more rows"
+ },
+ {
+  "code": "sum(qc$call_rate < 0.3)",
+  "output": "[1] 31"
+ },
+ {
+  "code": "sum(qc$maf < 0.05)",
+  "output": "[1] 40"
+ },
+ {
+  "code": "sum(qc$hwe < 1e-6, na.rm = TRUE)",
+  "output": "[1] 5"
+ },
+ {
+  "code": "passed <- qc %>% filter(call_rate >= 0.3, maf >= 0.05, hwe >= 1e-6)",
+  "output": ""
+ },
+ {
+  "code": "nrow(passed)",
+  "output": "[1] 163"
+ },
+ {
+  "code": "assoc <- function(snp, data = fms) {\n  fit <- lm(NDRM.CH ~ dosage(data[[snp]]) + Gender + Age, data = data)\n  coefs <- summary(fit)$coefficients\n  tibble(snp = snp, beta = coefs[2, 1], se = coefs[2, 2], p = coefs[2, 4])\n}",
+  "output": ""
+ },
+ {
+  "code": "assoc(\"actn3_r577x\")",
+  "output": "# A tibble: 1 × 4\n  snp          beta    se      p\n  <chr>       <dbl> <dbl>  <dbl>\n1 actn3_r577x  4.10  1.65 0.0131"
+ },
+ {
+  "code": "gwas <- bind_rows(lapply(passed$snp, assoc))",
+  "output": ""
+ },
+ {
+  "code": "gwas <- gwas %>%\n  mutate(bonferroni = p.adjust(p, method = \"bonferroni\"),\n         bh = p.adjust(p, method = \"BH\")) %>%\n  arrange(p)",
+  "output": ""
+ },
+ {
+  "code": "gwas",
+  "output": "# A tibble: 163 × 6\n   snp              beta    se       p bonferroni    bh\n   <chr>           <dbl> <dbl>   <dbl>      <dbl> <dbl>\n 1 acdc_rs1501299  -4.27  1.59 0.00733          1 0.575\n 2 actn3_r577x      4.10  1.65 0.0131           1 0.575\n 3 vdr_taq1         4.02  1.66 0.0155           1 0.575\n 4 gnb3_rs5443     -3.18  1.40 0.0234           1 0.575\n 5 akt2_rs892118    3.97  1.78 0.0259           1 0.575\n 6 mgst3_4147542   -3.63  1.65 0.0285           1 0.575\n 7 myod1_rs2249104  4.83  2.25 0.0318           1 0.575\n 8 vdr_rs731236     2.99  1.41 0.0346           1 0.575\n 9 akt2_7254617     4.82  2.28 0.0348           1 0.575\n10 resistin_c980g   3.66  1.74 0.0353           1 0.575\n# ℹ 153 more rows\n# ℹ Use `print(n = ...)` to see more rows"
+ },
+ {
+  "code": "sum(gwas$p < 0.05)",
+  "output": "[1] 12"
+ },
+ {
+  "code": "gwas_cauc <- bind_rows(lapply(passed$snp, assoc, data = cauc)) %>%\n  mutate(bh = p.adjust(p, method = \"BH\")) %>%\n  arrange(p)",
+  "output": ""
+ },
+ {
+  "code": "head(gwas_cauc)",
+  "output": "# A tibble: 6 × 5\n  snp              beta    se       p    bh\n  <chr>           <dbl> <dbl>   <dbl> <dbl>\n1 actn3_r577x      5.51  1.95 0.00484 0.788\n2 fstl1_rs9631455  4.41  1.89 0.0199  0.928\n3 acdc_rs1501299  -4.30  1.88 0.0222  0.928\n4 mgst3_4147542   -4.40  1.96 0.0250  0.928\n5 akt2_rs892118    4.60  2.14 0.0319  0.928\n6 kchj11_rs5219    3.26  1.71 0.0572  0.928"
+ }
+]

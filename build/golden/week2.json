@@ -1,0 +1,166 @@
+[
+ {
+  "code": "fms <- read_csv(\"famuss.csv\")",
+  "output": "Rows: 1397 Columns: 235\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (225): id, Gender, Race, acdc_rs1501299, ace_id, actn3_r577x, actn3_rs54...\ndbl  (10): Age, Pre.height, Pre.weight, pre.BMI, Pre_NDRM_Max, Post_NDRM_Max...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+ },
+ {
+  "code": "summary(fms$NDRM.CH)",
+  "output": "   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.     NAs\n   0.00   29.40   45.50   52.57   66.70  250.00     386"
+ },
+ {
+  "code": "mean(fms$NDRM.CH)",
+  "output": "[1] NA"
+ },
+ {
+  "code": "mean(fms$NDRM.CH, na.rm = TRUE)",
+  "output": "[1] 52.57082"
+ },
+ {
+  "code": "median(fms$NDRM.CH, na.rm = TRUE)",
+  "output": "[1] 45.5"
+ },
+ {
+  "code": "sd(fms$NDRM.CH, na.rm = TRUE)",
+  "output": "[1] 32.5831"
+ },
+ {
+  "code": "quantile(fms$NDRM.CH, na.rm = TRUE)",
+  "output": "   0%   25%   50%   75%  100%\n  0.0  29.4  45.5  66.7 250.0"
+ },
+ {
+  "code": "IQR(fms$NDRM.CH, na.rm = TRUE)",
+  "output": "[1] 37.3"
+ },
+ {
+  "code": "sum(is.na(fms$NDRM.CH))",
+  "output": "[1] 386"
+ },
+ {
+  "code": "fms %>%\n  drop_na(Gender, NDRM.CH) %>%\n  group_by(Gender) %>%\n  summarise(n = n(), mean = mean(NDRM.CH),\n            median = median(NDRM.CH), sd = sd(NDRM.CH))",
+  "output": "# A tibble: 2 × 5\n  Gender     n  mean median    sd\n  <chr>  <int> <dbl>  <dbl> <dbl>\n1 Female   593  61.5   57.1  35.6\n2 Male     417  39.8   35.7  22.3"
+ },
+ {
+  "code": "count(fms, Gender)",
+  "output": "# A tibble: 3 × 2\n  Gender     n\n  <chr>  <int>\n1 Female   607\n2 Male     426\n3 <NA>     364"
+ },
+ {
+  "code": "fms %>%\n  drop_na(actn3_r577x) %>%\n  count(actn3_r577x) %>%\n  mutate(proportion = n / sum(n))",
+  "output": "# A tibble: 3 × 3\n  actn3_r577x     n proportion\n  <chr>       <int>      <dbl>\n1 CC            216      0.294\n2 CT            318      0.433\n3 TT            201      0.273"
+ },
+ {
+  "code": "fms %>%\n  drop_na(Gender) %>%\n  group_by(Gender) %>%\n  summarise(across(c(Age, pre.BMI, NDRM.CH), ~ median(.x, na.rm = TRUE)))",
+  "output": "# A tibble: 2 × 4\n  Gender   Age pre.BMI NDRM.CH\n  <chr>  <dbl>   <dbl>   <dbl>\n1 Female    21    22.9    57.1\n2 Male      23    24.1    35.7"
+ },
+ {
+  "code": "pnorm(1.96)",
+  "output": "[1] 0.9750021"
+ },
+ {
+  "code": "qnorm(0.975)",
+  "output": "[1] 1.959964"
+ },
+ {
+  "code": "2 * pnorm(-1.96)",
+  "output": "[1] 0.04999579"
+ },
+ {
+  "code": "dbinom(0:2, size = 2, prob = 0.3)",
+  "output": "[1] 0.49 0.42 0.09"
+ },
+ {
+  "code": "dbinom(0, size = 100, prob = 0.01)",
+  "output": "[1] 0.3660323"
+ },
+ {
+  "code": "ppois(9, lambda = 30)",
+  "output": "[1] 7.121751e-06"
+ },
+ {
+  "code": "set.seed(42)",
+  "output": ""
+ },
+ {
+  "code": "rbinom(10, size = 2, prob = 0.3)",
+  "output": " [1] 2 2 0 1 1 1 1 0 1 1"
+ },
+ {
+  "code": "bmi <- fms %>% drop_na(pre.BMI) %>% pull(pre.BMI)",
+  "output": ""
+ },
+ {
+  "code": "length(bmi)",
+  "output": "[1] 1032"
+ },
+ {
+  "code": "set.seed(1)",
+  "output": ""
+ },
+ {
+  "code": "mean(sample(bmi, 30))",
+  "output": "[1] 23.14553"
+ },
+ {
+  "code": "mean(sample(bmi, 30))",
+  "output": "[1] 24.53907"
+ },
+ {
+  "code": "means <- replicate(2000, mean(sample(bmi, 30)))",
+  "output": ""
+ },
+ {
+  "code": "sd(means)",
+  "output": "[1] 0.7934721"
+ },
+ {
+  "code": "sd(bmi) / sqrt(30)",
+  "output": "[1] 0.8358536"
+ },
+ {
+  "code": "se <- sd(bmi) / sqrt(length(bmi))",
+  "output": ""
+ },
+ {
+  "code": "se",
+  "output": "[1] 0.1425119"
+ },
+ {
+  "code": "mean(bmi) + c(-1, 1) * qt(0.975, df = length(bmi) - 1) * se",
+  "output": "[1] 24.08302 24.64232"
+ },
+ {
+  "code": "t.test(bmi)$conf.int",
+  "output": "[1] 24.08302 24.64232\nattr(,\"conf.level\")\n[1] 0.95"
+ },
+ {
+  "code": "g <- fms %>% drop_na(actn3_r577x) %>% pull(actn3_r577x)",
+  "output": ""
+ },
+ {
+  "code": "p_T <- (2 * sum(g == \"TT\") + sum(g == \"CT\")) / (2 * length(g))",
+  "output": ""
+ },
+ {
+  "code": "p_T",
+  "output": "[1] 0.4897959"
+ },
+ {
+  "code": "p_T + c(-1, 1) * 1.96 * sqrt(p_T * (1 - p_T) / (2 * length(g)))",
+  "output": "[1] 0.4642409 0.5153510"
+ },
+ {
+  "code": "ndrm <- fms %>% drop_na(NDRM.CH) %>% pull(NDRM.CH)",
+  "output": ""
+ },
+ {
+  "code": "set.seed(2)",
+  "output": ""
+ },
+ {
+  "code": "boot_medians <- replicate(2000, median(sample(ndrm, replace = TRUE)))",
+  "output": ""
+ },
+ {
+  "code": "quantile(boot_medians, c(0.025, 0.975))",
+  "output": " 2.5% 97.5%\n 42.9  50.0"
+ }
+]

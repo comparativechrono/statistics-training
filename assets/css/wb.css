@@ -1,0 +1,143 @@
+/* =====================================================================
+   The R workbench's frame: the top bar, the instructions pane that can be
+   hidden, the tabs of the workbench, the menus and the small parts that
+   the tabs share. Builds on app.css (colours, type, the instructions).
+   ===================================================================== */
+:root {
+  --top-bg: #1b2340;
+  --top-line: #10162b;
+  --top-ink: #e8ecf8;
+  --top-mute: #a9b4d6;
+  --top-btn: #26304f;
+  --top-btn-line: #36426c;
+  --top-btn-hover: #2f3b62;
+  --tut-w: 38%;
+}
+body { overflow: hidden; }
+body.dragging { user-select: none; cursor: col-resize; }
+.grow { flex: 1; }
+
+/* ---------------- top bar ---------------- */
+.topbar { background: var(--top-bg); color: var(--top-ink); border-bottom-color: var(--top-line); gap: 12px; }
+a.brand { color: inherit; text-decoration: none; }
+a.brand:hover { color: inherit; }
+.brand-mark { width: 30px; height: 30px; }
+.brand-sub { color: var(--top-mute); }
+/* (the title gives way first when the bar is crowded: its second line is cut short, not the buttons) */
+.brand > div { min-width: 0; overflow: hidden; }
+.progress-wrap, .store-status, .topbar .btn { flex: none; white-space: nowrap; }
+.topbar .btn { background: var(--top-btn); border-color: var(--top-btn-line); color: var(--top-ink); }
+.topbar .btn:hover { background: var(--top-btn-hover); }
+.topbar .top-toggle { width: 34px; height: 32px; padding: 0; justify-content: center; border-radius: 8px; }
+.topbar .top-toggle .ic { width: 18px; height: 18px; }
+.progress-wrap { color: var(--top-mute); }
+.progress { background: #2b3660; }
+.progress > i { background: linear-gradient(90deg, #5aa7ff, #7fd6c2); }
+.store-status { display: inline-flex; align-items: center; gap: 7px; font-size: 0.78rem; color: var(--top-mute); white-space: nowrap; }
+.store-status i { width: 8px; height: 8px; border-radius: 50%; background: #3fb7a0; box-shadow: 0 0 0 3px rgba(63, 183, 160, 0.18); }
+.store-status[data-state='busy'] i { background: #e0b341; box-shadow: 0 0 0 3px rgba(224, 179, 65, 0.2); }
+.store-status[data-state='off'] i { background: #e5675e; box-shadow: 0 0 0 3px rgba(229, 103, 94, 0.2); }
+.store-status[data-state='off'] { color: #f3c2bd; }
+#userBtn .user-name { max-width: 16ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-form > p:first-child { margin-top: 0; color: var(--ink-2); line-height: 1.5; }
+.user-label { display: block; font-weight: 650; margin: 14px 0 5px; }
+.user-form .prompt-input { box-sizing: border-box; font-family: var(--mono); font-size: 0.95rem; }
+.user-prev { margin: 12px 0 0; }
+.user-prompt { font-family: var(--mono); font-size: 0.88rem; background: var(--top-bg); color: #cfe0ff; padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+.user-note { min-height: 1.4em; margin: 8px 0 0; font-size: 0.84rem; color: var(--muted); }
+.user-note.bad { color: var(--bad); }
+
+/* ---------------- the instructions, hidden: the workbench fills the window ---------------- */
+body.tut-off .tut, body.tut-off .splitter { display: none; }
+.wb-tab.rail-btn { color: var(--accent-2); border: 1px dashed #b9d4df; border-bottom: 0; margin-right: 4px; }
+.wb-tab.rail-btn:hover { background: var(--accent-soft); }
+.splitter:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.tut { min-width: 300px; }
+
+/* ---------------- the tabs of the workbench ---------------- */
+.bench { container-type: inline-size; container-name: bench; }
+.wb-tabs { overflow-x: auto; scrollbar-width: thin; }
+.wb-tab { white-space: nowrap; flex: none; padding: 7px 12px 8px; gap: 6px; }
+@container bench (max-width: 760px) {
+  .wb-tab:not(.on) .lbl { display: none; }
+  .wb-tab { padding: 7px 10px 8px; }
+}
+.wb-loading, .wb-failed { padding: 30px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+.wb-failed { flex-direction: column; align-items: flex-start; color: var(--ink-2); }
+.spinner.small { width: 12px; height: 12px; border-width: 2px; display: inline-block; vertical-align: -2px; }
+.kdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #9aa6b5; flex: none; }
+.kdot.ok { background: #1baf7a; }
+.kdot.busy { background: #e0a526; animation: pulse 1.2s ease-in-out infinite; }
+.kdot.bad { background: var(--bad); }
+.kdot.off { background: #c3cad4; }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+/* light tool buttons (the notebook, Files, AI); the terminal has dark ones (term.css) */
+.tbtn { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line-2); background: #fff; color: var(--ink-2); border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
+.tbtn:hover { border-color: var(--accent); color: var(--accent-2); }
+.tbtn .ic { width: 14px; height: 14px; }
+.tbtn:disabled { opacity: 0.45; cursor: default; }
+
+/* ---------------- dialogs and menus ---------------- */
+.btn.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn.danger:hover { background: #962019; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+label.check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.prompt-actions { align-items: center; flex-wrap: wrap; }
+.prompt-actions .grow { flex: 1; }
+.table-scroll { max-height: 60vh; overflow: auto; }
+.modal { width: min(680px, 94vw); }
+.modal.wide { width: min(940px, 96vw); }
+.popmenu .sep { height: 1px; background: var(--line); margin: 4px 6px; }
+.popmenu button:disabled { opacity: 0.45; cursor: default; }
+.popmenu button kbd { margin-left: auto; font-size: 0.72rem; color: var(--muted); border: 0; background: none; padding: 0 0 0 16px; }
+.tabs-warning { position: fixed; left: 14px; bottom: 14px; z-index: 190; max-width: 430px; background: #7a5200; color: #fff; padding: 10px 14px; border-radius: 9px; box-shadow: var(--shadow-l); font-size: 0.86rem; line-height: 1.45; }
+.tabs-warning b { color: #fff; }
+.tabs-warning .btn { display: block; margin-top: 8px; }
+
+/* ---------------- the instructions: code, files and prompts in the text ---------------- */
+.codefile { border: 1px solid var(--line); border-radius: 8px; margin: 0.8em 0; background: #fff; overflow: hidden; }
+.cf-head { display: flex; align-items: center; gap: 6px; padding: 5px 8px 5px 10px; background: var(--panel-2); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.cf-head .grow { flex: 1; }
+.cf-name { font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.codeblock { background: #f6f8fa; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-family: var(--mono); font-size: 12.8px; white-space: pre-wrap; margin: 0.5em 0; }
+.codefile .codeblock { margin: 0; border: 0; border-radius: 0; background: #fbfcfd; max-height: 420px; overflow: auto; white-space: pre; font-size: 12.3px; line-height: 1.5; }
+.cf-note { font-size: 0.8rem; color: var(--muted); padding: 5px 10px; border-top: 1px solid var(--line); background: var(--panel-2); }
+.steps .prompt-card, .steps .codefile { clear: both; }
+.prompt-card { border: 1px solid #d9c9f2; background: #faf6ff; border-radius: 10px; margin: 0.8em 0; overflow: hidden; }
+.prompt-card .pc-head { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; flex-wrap: wrap; border-bottom: 1px dashed #d9c9f2; }
+.prompt-card .pc-t { font-size: 0.76rem; font-weight: 700; color: #6b3fa0; }
+.prompt-card .pc-text { padding: 8px 12px; font-size: 0.92rem; white-space: pre-wrap; color: var(--ink); }
+.do.ask { border-color: #cdb8ee; color: #5b2f94; }
+.do.ask:hover { background: #f3ebfd; border-color: #8c5fd0; }
+.tut .do { white-space: normal; max-width: 100%; text-align: left; }
+.tut blockquote.quote { margin: 0.2em 0 0.5em; font-size: 1.02rem; font-style: italic; line-height: 1.5; }
+.tut .table { margin: 0.6em 0; }
+.tut .steps code, .tut p code { overflow-wrap: anywhere; }
+.tut table.compare th { text-align: left; vertical-align: top; }
+.tut table.compare td { vertical-align: top; }
+@media (min-width: 1001px) { .tut { overflow-x: hidden; } }
+.next-row { flex-wrap: wrap; gap: 8px; }
+/* the four ways, as a figure */
+.ways { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; margin: 1em 0; }
+.way { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: var(--panel-2); }
+.way b { display: block; font-size: 0.92rem; }
+.way span { font-size: 0.8rem; color: var(--ink-2); line-height: 1.35; display: block; margin-top: 3px; }
+.way code { font-size: 0.78rem; }
+
+/* ---------------- narrow windows ---------------- */
+@media (max-width: 1000px) {
+  body { overflow: auto; }
+  .topbar .top-toggle { display: none; }
+}
+@media (max-width: 900px) {
+  .brand-sub, .store-status span { display: none; }
+  #fullBtn span, #projectBtn span, #userBtn span { display: none; }
+}
+@media (max-width: 560px) {
+  .brand-title { font-size: 0.92rem; }
+  .wb-tab .ic { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation-duration: 0.01ms !important; }
+}

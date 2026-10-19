@@ -1,0 +1,7 @@
+# test screenshots and Python's caches
+test/out/
+__pycache__/
+*.pyc
+
+# the raw files that build/data-prep/make_data.R downloads
+build/data-prep/raw/

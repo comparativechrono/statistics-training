@@ -1,0 +1,73 @@
+/* =====================================================================
+   The landing page (index.html): the practicals, the student's name and
+   their progress. (Some class names, cert-…, come from the week 1 site,
+   whose courses ended with certificates.)
+   ===================================================================== */
+html, body.landing { height: auto; }
+body.landing { overflow: auto; background: var(--bg); }
+
+/* ---------------- the header ---------------- */
+.hero { background: #1b2340; color: #e8ecf8; padding: 44px 0 64px; }
+.hero-in { max-width: 1060px; margin: 0 auto; padding: 0 20px; }
+.hero-dept { margin: 0 0 8px; color: #a9b4d6; font-size: 0.95rem; font-weight: 550; }
+.hero h1 { margin: 0 0 14px; font-size: clamp(2.1rem, 4.4vw, 3rem); line-height: 1.1; letter-spacing: -0.01em; }
+.hero-lede { max-width: 70ch; margin: 0; color: #cfd6ec; font-size: 1.06rem; line-height: 1.6; }
+
+/* the route through the two courses: the topics in the order they come */
+.route { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0; padding: 0; margin: 22px 0 24px; }
+.route li { display: inline-flex; align-items: center; font-size: 0.86rem; font-weight: 600; color: #e8ecf8; }
+.route li:not(.route-part) { position: relative; background: #26304f; border: 1px solid #3a4775; border-radius: 99px; padding: 3px 11px; }
+/* (an arrow between one topic and the next: they come in this order) */
+.route li:not(.route-part) + li:not(.route-part) { margin-left: 24px; }
+.route li:not(.route-part) + li:not(.route-part)::before { content: '→'; position: absolute; left: -19px; color: #7f8bb3; font-weight: 500; }
+.route .route-part { color: #8ec5ff; font-weight: 750; margin: 0 10px 0 0; }
+.route .route-part:not(:first-child) { margin-left: 26px; }
+
+.hero-name { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; background: #26304f; border: 1px solid #3a4775; border-radius: 12px; padding: 10px 14px; }
+.hn-label { color: #a9b4d6; font-size: 0.9rem; }
+.hn-name { font-family: Georgia, 'Times New Roman', serif; font-size: 1.18rem; color: #fff; font-weight: 600; }
+.hn-name.none { font-family: var(--font); font-size: 0.95rem; font-style: italic; font-weight: 500; color: #a9b4d6; }
+.hero .btn { background: #34406a; color: #e8ecf8; border-color: #4a5786; }
+.hero .btn:hover { background: #3d4a7a; }
+
+/* ---------------- the courses ---------------- */
+.land { max-width: 1060px; margin: -36px auto 0; padding: 0 20px 48px; }
+.courses { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; }
+.course { background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 20px 22px 18px; display: flex; flex-direction: column; }
+.course-part { font-size: 0.82rem; font-weight: 700; color: var(--act); }
+.course h2 { margin: 2px 0 8px; font-size: 1.55rem; }
+.course h2 a { color: var(--ink); text-decoration: none; }
+.course h2 a:hover { color: var(--accent-2); }
+.course-lede { margin: 0 0 8px; color: var(--ink-2); line-height: 1.55; }
+.course-topics { margin: 4px 0 10px; padding-left: 1.15em; color: var(--ink-2); font-size: 0.93rem; line-height: 1.6; }
+.course-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 12px; color: var(--muted); font-size: 0.86rem; }
+.course-progress { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; }
+.cp-bar { flex: 1; height: 8px; border-radius: 99px; background: var(--panel-3); overflow: hidden; }
+.cp-bar > i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+.cp-text { font-size: 0.86rem; color: var(--muted); white-space: nowrap; }
+.course.done { border-color: #b9dfca; }
+.course.done .cp-bar > i { background: var(--good); }
+.course.done .cp-text { color: var(--good); font-weight: 650; }
+.course-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: auto; padding-top: 12px; }
+.course-actions .btn { text-decoration: none; }
+.course-cert { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cert-lockline { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.86rem; }
+.cert-lockline .ic { width: 15px; height: 15px; }
+.course.done .course-cert .btn:first-child { border-color: #e0a526; background: #fff8e8; }
+.btn.linkish { border-color: transparent; background: none; color: var(--accent); }
+
+/* ---------------- before you start ---------------- */
+.land-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 20px; margin-top: 20px; }
+.info-box { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px 22px; }
+.info-box h2 { font-size: 1.1rem; margin: 0 0 6px; }
+.info-box ul { margin: 0; padding-left: 1.15em; color: var(--ink-2); line-height: 1.6; font-size: 0.94rem; }
+.info-box li { margin: 4px 0; }
+.land-foot { margin-top: 24px; color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
+.land-foot p { margin: 0; max-width: 100ch; }
+
+@media (max-width: 620px) {
+  .hero { padding: 30px 0 56px; }
+  .hero-in { padding: 0 16px; }
+  .land { padding: 0 16px 36px; }
+  .course { padding: 16px; }
+}

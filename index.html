@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biostatistics for Genomic Medicine: statistics practicals, weeks 2 to 5</title>
+<meta name="description" content="The statistics practicals of Biostatistics for Genomic Medicine, weeks 2 to 5: describing data, hypothesis tests, regression and genome-scale inference. R runs in your web browser, in an RStudio-style workbench, so there is nothing to install.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2340'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%238ec5ff'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='17' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/course.css">
+<link rel="stylesheet" href="assets/css/landing.css">
+<link rel="stylesheet" href="assets/css/stats.css">
+</head>
+<body class="landing" data-page="home" data-title="Biostatistics for Genomic Medicine">
+<header class="hero">
+  <div class="hero-in">
+    <p class="hero-dept" data-awarded-by></p>
+    <h1>Biostatistics for Genomic Medicine</h1>
+    <p class="hero-sub">Statistics practicals, weeks 2 to 5</p>
+    <p class="hero-lede">Four practicals that take you from describing a data set to a small genome-wide association study. Each one explains the statistics, shows you how to do it in R, and then asks you to do it yourself, on real data: a study of how people’s genes affect the gains they make from strength training, a study of gene expression in leukaemia, the drug resistance of HIV, and human genetic diversity around the world. Everything runs in your web browser, in a workbench modelled on RStudio, so there is nothing to install.</p>
+    <ol class="route route-weeks" aria-label="What the four weeks cover, in order">
+      <li class="route-week"><span class="route-part">Week 2</span><span class="route-step">describe</span><span class="route-step">distributions</span><span class="route-step">uncertainty</span></li>
+      <li class="route-week"><span class="route-part">Week 3</span><span class="route-step">test</span><span class="route-step">compare groups</span></li>
+      <li class="route-week"><span class="route-part">Week 4</span><span class="route-step">model</span><span class="route-step">adjust</span></li>
+      <li class="route-week"><span class="route-part">Week 5</span><span class="route-step">scale up</span><span class="route-step">mini-GWAS</span></li>
+    </ol>
+    <div class="hero-name" aria-live="polite">
+      <span class="hn-label">The answers you download will show the name</span>
+      <b class="hn-name" data-student-name-text></b>
+      <button class="btn small hn-btn" type="button" data-name-btn>Add your name</button>
+    </div>
+  </div>
+</header>
+
+<main class="land">
+  <section class="courses" aria-label="The practicals">
+<article class="course" data-course="week2">
+  <div class="course-part">Week 2</div>
+  <h2><a href="week2.html">Describing data</a></h2>
+  <p class="course-lede">Describe a real genetic study before you test anything: centre, spread and missing values, the shapes of distributions, the normal, binomial and Poisson distributions behind genomic data, and how much an estimate could vary by chance.</p>
+  <ul class="course-topics"><li>Types of data, centre and spread</li><li>Missing values and summaries by group</li><li>Seeing distributions with ggplot2</li><li>The normal, binomial and Poisson distributions</li><li>Sampling variation and the standard error</li><li>Confidence intervals, and a first Quarto report</li></ul>
+  <p class="course-meta"><span>About 4 hours</span><span>34 steps and 24 questions</span></p>
+  <div class="course-progress" aria-live="polite"><div class="cp-bar"><i></i></div><span class="cp-text">Not started yet</span></div>
+  <div class="course-actions">
+    <a class="btn primary course-go" href="week2.html">Start the practical</a>
+  </div>
+</article>
+<article class="course" data-course="week3">
+  <div class="course-part">Week 3</div>
+  <h2><a href="week3.html">Testing hypotheses</a></h2>
+  <p class="course-lede">Build a p-value yourself by shuffling labels, then use t-tests, Wilcoxon tests, ANOVA, chi-square and Fisher’s exact tests on leukaemia subtypes and genotypes, test Hardy–Weinberg equilibrium, and learn to choose the right test.</p>
+  <ul class="course-topics"><li>Null hypotheses, test statistics and p-values</li><li>A permutation test, by hand</li><li>t-tests, Wilcoxon tests and paired data</li><li>ANOVA, Kruskal–Wallis and post hoc tests</li><li>Chi-square, Fisher’s exact test and odds ratios</li><li>Hardy–Weinberg equilibrium as quality control</li></ul>
+  <p class="course-meta"><span>About 4½ hours</span><span>38 steps and 31 questions</span></p>
+  <div class="course-progress" aria-live="polite"><div class="cp-bar"><i></i></div><span class="cp-text">Not started yet</span></div>
+  <div class="course-actions">
+    <a class="btn primary course-go" href="week3.html">Start the practical</a>
+  </div>
+</article>
+<article class="course" data-course="week4">
+  <div class="course-part">Week 4</div>
+  <h2><a href="week4.html">Regression</a></h2>
+  <p class="course-lede">Fit lines through data and read what they say: correlation, simple and multiple linear regression, additive genotype models, confounding by sex and age, an ACTN3-by-sex interaction, logistic regression, and why the tests of week 3 are all linear models.</p>
+  <ul class="course-topics"><li>Correlation, and what it isn’t</li><li>Simple linear regression and least squares</li><li>Genotypes as predictors: additive and other codings</li><li>Confounding, adjustment and interactions</li><li>Checking a model with its residuals</li><li>Logistic regression and odds ratios</li></ul>
+  <p class="course-meta"><span>About 4½ hours</span><span>41 steps and 25 questions</span></p>
+  <div class="course-progress" aria-live="polite"><div class="cp-bar"><i></i></div><span class="cp-text">Not started yet</span></div>
+  <div class="course-actions">
+    <a class="btn primary course-go" href="week4.html">Start the practical</a>
+  </div>
+</article>
+<article class="course" data-course="week5">
+  <div class="course-part">Week 5</div>
+  <h2><a href="week5.html">Genome-scale inference</a></h2>
+  <p class="course-lede">Scale up from one test to thousands: false positives and how to control them, with HIV drug-resistance mutations and 12,625 probes in leukaemia; how ancestry can create false associations; linkage disequilibrium; and a mini-GWAS of the FAMuSS SNPs with QQ and Manhattan plots.</p>
+  <ul class="course-topics"><li>Why many tests give false positives</li><li>Bonferroni and the false discovery rate</li><li>Testing every gene on a microarray</li><li>Population structure and principal components</li><li>Linkage disequilibrium</li><li>A mini-GWAS, with QQ and Manhattan plots</li></ul>
+  <p class="course-meta"><span>About 4½ hours</span><span>48 steps and 31 questions</span></p>
+  <div class="course-progress" aria-live="polite"><div class="cp-bar"><i></i></div><span class="cp-text">Not started yet</span></div>
+  <div class="course-actions">
+    <a class="btn primary course-go" href="week5.html">Start the practical</a>
+  </div>
+</article>
+  </section>
+
+  <section class="land-info">
+    <div class="info-box">
+      <h2>Before you start</h2>
+      <ul>
+        <li>These practicals follow on from <a href="https://comparativechrono.github.io/r-training/">Week 1, Introduction to R</a> (R basics and the tidyverse). Do those first if you are new to R.</li>
+        <li>Use a laptop or desktop computer with an up-to-date <b>Chrome, Edge, Firefox or Safari</b>. A wide screen helps, because the instructions sit beside the workbench.</li>
+        <li>R is downloaded into your browser the first time you open a practical (about 30 MB), and each practical asks you to install the tidyverse once (about a minute the first time, and quicker after that).</li>
+        <li>Your ticks, answers and files are saved <b>in this browser, on this computer</b>, and the four practicals share your files, so the reports you write carry over from week to week. Use another computer, or a private window, and you start again. Each practical has <b>My answers</b> and <b>My files</b> buttons for downloading your work.</li>
+        <li>Each practical has an AI assistant you can ask about R and statistics, if you have a key for an AI service. Never type personal or patient data into it, or into any other AI tool.</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <h2>How the practicals work</h2>
+      <ul>
+        <li>Each practical is a day’s work, in short chapters. Each chapter explains an idea, shows you some R, and then gives you an activity to do in the workbench. Your tutor will lead some parts in the room.</li>
+        <li>The steps of an activity <b>tick themselves</b> when R sees that you have done them, and questions with a <b>Check</b> button are marked straight away. Once you have had a go at a question, <b>Show answer</b> shows ours.</li>
+        <li>Parts marked <b>If you have time</b> are extras for those who finish early, and each week ends with <b>homework</b>: neither counts towards finishing the practical.</li>
+        <li>Each week you write a short report in a <b>Quarto</b> document, which you render to a web page. These reports are practice for the analysis you will hand in for your assessment.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="land-foot">
+    <p>The data come from the FAMuSS study (Thompson and others, <i>Medicine &amp; Science in Sports &amp; Exercise</i>, 2004); the ALL study of acute lymphoblastic leukaemia (Chiaretti and others, <i>Blood</i>, 2004), as published in the Bioconductor package ALL; the Human Genome Diversity Project; and HIV-1 drug resistance measured by Virco. The FAMuSS, HGDP and Virco data are the versions published with Foulkes, <i>Applied Statistical Genetics with R</i> (Springer, 2009). See the <a href="https://github.com/comparativechrono/statistics-training">repository</a> for details. R runs in your browser thanks to <a href="https://docs.r-wasm.org/webr/">webR</a>. The RStudio tab is an imitation made for teaching, and it isn’t made or endorsed by Posit.</p>
+  </footer>
+</main>
+
+<script>window.RT_COURSES = [{"id":"week2","page":"week2.html","dataPage":"week2","title":"Week 2: Describing data","short":"Describing data","week":2,"time":"About 4 hours","tasks":["st-install","st-library","st-wd","st-read","st-view","d-bmi-mean","d-bmi-med","d-bmi-iqr","d-race","d-sex","d-geno","sh-hist","sh-box","sh-dens","pd-tails","pd-het","pd-miss","pd-depth","pd-sim","pd-simhist","pd-low","u-means","u-hist","u-120","u-se","u-ci","u-af","u-afci","u-boot","r-create","r-render","r-ci","r-inline","r-render2"],"questions":["st-q-cols","st-q-text","d-q-median","d-q-missing","d-q-bmi","d-q-skew","d-q-geno","d-q-percent","sh-q-box","sh-q-shape","sh-q-bins","pd-q-975","pd-q-het","pd-q-miss","pd-q-which","pd-q-rnaseq","u-q-se","u-q-af","u-q-n","u-q-sdse","u-q-ci","r-q-new","r-q-path","r-q-why"]},{"id":"week3","page":"week3.html","dataPage":"week3","title":"Week 3: Testing hypotheses","short":"Testing hypotheses","week":3,"time":"About 4½ hours","tasks":["st3-install","st3-library","st3-wd","st3-leuk","st3-fms","st3-count","lg-two","lg-means","lg-fun","lg-null","lg-hist","lg-p","lg-rag","tw-qq","tw-t","tw-w","tw-cd52","tw-sex","tw-paired","sv-box","sv-aov","sv-tukey","sv-meis","sv-actn3","sv-kw","ct-tab","ct-fisher","ct-obese","ct-chisq","ct-or","ct-hwe","ct-cauc","ct-akt1","rp-create","rp-render","rp-fisher","rp-hwe","rp-render2"],"questions":["st3-q-bcr","st3-q-abl","lg-q-p","lg-q-rag","lg-q-meaning","lg-q-rag2","lg-q-type1","tw-q-diff","tw-q-gain","tw-q-cd52","tw-q-welch","tw-q-paired","tw-q-big","sv-q-fwer","sv-q-actn3","sv-q-anova","sv-q-tukey","ct-q-exp","ct-q-or","ct-q-hwe","ct-q-fisher","ct-q-dir","ct-q-wahlund","ct-q-nr3c1","ch-q-1","ch-q-2","ch-q-3","ch-q-4","ch-q-5","ch-q-6","rp-q-sentence"]},{"id":"week4","page":"week4.html","dataPage":"week4","title":"Week 4: Regression","short":"Regression","week":4,"time":"About 4½ hours","tasks":["st4-install","st4-library","st4-wd","st4-read","st4-recode","st4-check","co-scatter","co-r","co-bmiage","co-spear","lr-fit","lr-sum","lr-ci","lr-pred","lr-smooth","lr-bmi","gp-add","gp-factor","gp-anova","gp-dom","cf-bmi","cf-adj","cf-actn3","cf-int","cf-plot","cf-women","ck-resid","ck-qq","lo-m1","lo-or","lo-m2","lo-ci","lo-actn3","un-t","un-lm","un-anova","rp4-create","rp4-render","rp4-int","rp4-glm","rp4-render2"],"questions":["st4-q-esr1","co-q-r","co-q-r2","co-q-curve","lr-q-slope","lr-q-r2","lr-q-pred","lr-q-bmi","lr-q-int","gp-q-slope","gp-q-tt","gp-q-why","cf-q-adj","cf-q-women","cf-q-conf","cf-q-int","cf-q-adjust","ck-q-funnel","ck-q-indep","lo-q-or","lo-q-esr1","lo-q-age","lo-q-dich","un-q-coef","un-q-welch"]},{"id":"week5","page":"week5.html","dataPage":"week5","title":"Week 5: Genome-scale inference","short":"Genome-scale inference","week":5,"time":"About 4½ hours","tasks":["st5-install","st5-library","st5-wd","st5-snps","st5-virco","mt-sim","mt-count","mt-hist","mt-mut","mt-virco","mt-vhist","co-bonf","co-bh","co-table","co-pvb","co-pvbh","co-hand","gw-read","gw-mat","gw-tests","gw-results","gw-count","gw-hist","gw-volcano","ps-read","ps-freq","ps-plot","ps-sim","ps-pca","ps-pcplot","ps-naive","ps-adj","ps-qq","ld-hgdp","ld-table","ld-r2","ld-heat","g5-qc","g5-pass","g5-assoc","g5-scan","g5-qq","g5-man","rp5-create","rp5-render","rp5-qq","rp5-man","rp5-render2"],"questions":["st5-q-50k","mt-q-fwer","mt-q-exp","mt-q-uniform","mt-q-shape","co-q-thr","co-q-bonf10","co-q-bh10","co-q-fdr","co-q-more","co-q-two","gw-q-exp","gw-q-bh","gw-q-false","gw-q-abl1","gw-q-5e8","gw-q-winner","ps-q-freq","ps-q-naive","ps-q-ten","ps-q-pc1","ps-q-scale","ld-q-r2","ld-q-tag","ld-q-bonf","g5-q-pass","g5-q-n05","g5-q-top","g5-q-actn3","g5-q-qq","g5-q-manh"]}];</script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/landing.js"></script>
+</body>
+</html>

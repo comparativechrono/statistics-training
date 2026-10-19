@@ -1,0 +1,89 @@
+/* =====================================================================
+   The practicals: what their chapters add to the instructions (R code
+   and its output, diagrams, the "If you have time" parts), the student's
+   name, and the panel that shows their progress (its class names, cert-…,
+   come from the week 1 site's certificates). Used by the practicals'
+   pages (after app.css and wb.css) and by the landing page.
+   ===================================================================== */
+
+/* ---------------- R code and what R prints ---------------- */
+.rblock { margin: 0.7em 0; }
+.rblock .cf-name { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.rout { margin: 0.6em 0 0.9em; border-left: 3px solid #c9d3df; background: #f6f8fa; border-radius: 0 7px 7px 0; }
+.rout-t { font-size: 0.76rem; font-weight: 650; color: var(--muted); padding: 5px 10px 0; }
+.rout pre { margin: 0; padding: 7px 12px 8px; font-family: var(--mono); font-size: 0.83rem; line-height: 1.45; overflow-x: auto; color: #24303f; white-space: pre; }
+
+/* ---------------- a vectorised operation, drawn ---------------- */
+.vecop { margin: 1em 0 1.2em; padding: 12px 14px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; overflow-x: auto; }
+.vrow { display: flex; align-items: center; gap: 10px; min-height: 30px; }
+.vlab { width: 72px; flex: none; font-size: 0.8rem; color: var(--muted); text-align: right; }
+.vcells { display: flex; gap: 4px; }
+.vc { width: 34px; height: 26px; display: inline-grid; place-items: center; font-family: var(--mono); font-size: 0.84rem; border-radius: 5px; background: #e6ebf1; color: #24303f; border: 1px solid #cfd8e3; }
+.vc.rec { background: #f4f6f9; color: #8a96a8; border-style: dashed; }
+.vc.res { background: #fff1d6; border-color: #f0c978; color: #6b4a00; font-weight: 650; }
+.vopsym { width: 34px; text-align: center; font-family: var(--mono); font-size: 1.05rem; font-weight: 700; color: var(--ink-2); }
+.vrow.vline { min-height: 6px; }
+.vrule { height: 2px; flex: 1; max-width: 320px; background: var(--line-2); border-radius: 1px; }
+.vwarn { margin: 8px 0 0 82px; font-family: var(--mono); font-size: 0.8rem; color: var(--bad); white-space: pre-wrap; }
+.vecop figcaption { margin: 8px 0 0 82px; font-size: 0.84rem; color: var(--ink-2); }
+
+/* ---------------- RStudio's four panes, where they are in RStudio ---------------- */
+.ds-row.panes { grid-template-columns: 1fr 1fr; }
+
+/* ---------------- R's data structures, drawn ---------------- */
+.ds-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1em 0; }
+.ds { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; background: #fff; }
+.ds > b { display: block; font-size: 0.92rem; }
+.ds .ds-sub { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 8px; }
+.ds-cols { display: flex; gap: 6px; align-items: flex-start; }
+.ds-col { display: flex; flex-direction: column; gap: 3px; }
+.ds-col .ds-name { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); text-align: center; }
+.ds-col span.v { width: 32px; height: 18px; border-radius: 3px; display: grid; place-items: center; font-family: var(--mono); font-size: 0.68rem; color: #fff; }
+.ds-col.n span.v { background: #4f7fbf; }
+.ds-col.c span.v { background: #c46f2c; }
+.ds-col.l span.v { background: #4e9a5e; }
+
+/* ---------------- "If you have time" ---------------- */
+.optional { border: 1.5px dashed #c9d3df; border-radius: var(--radius); padding: 10px 14px 4px; margin: 1.6em 0 1em; background: #fbfcfd; }
+.opt-t { font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.opt-tag { font-size: 0.74rem; font-weight: 700; color: #5b4a8a; background: #efeafb; border-radius: 99px; padding: 2px 9px; }
+.opt-note { margin: 4px 0 6px; font-size: 0.84rem; color: var(--muted); }
+
+/* ---------------- tables in the text ---------------- */
+.table table.plain { border-collapse: collapse; font-size: 0.88rem; }
+.table table.plain td, .table table.plain th { padding: 4px 10px; }
+.table table.plain td code { white-space: nowrap; }
+
+/* ---------------- the student's name ---------------- */
+#userBtn.unnamed { border-color: #e0b341; box-shadow: 0 0 0 2px rgba(224, 179, 65, 0.25); }
+.user-form > p:first-child { margin-top: 0; color: var(--ink-2); line-height: 1.5; }
+.user-label { display: block; font-weight: 650; margin: 14px 0 5px; }
+.user-form #studentNameIn { box-sizing: border-box; font-family: var(--font); font-size: 1.02rem; }
+.user-note { min-height: 1.4em; margin: 8px 0 0; font-size: 0.84rem; color: var(--muted); }
+.user-note.bad { color: var(--bad); }
+.name-prev { margin: 12px 0 0; font-size: 0.92rem; }
+.name-prev i { color: var(--ink-2); }
+.name-prev-name { font-weight: 700; font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; }
+.prompt-actions .grow { flex: 1; }
+
+/* ---------------- the progress panel (the week 1 site's certificate) ---------------- */
+.ch-tab[data-ch='certificate'] .num { background: #fff1d6; color: #8a5a00; }
+.ch-tab.cert-ready[data-ch='certificate'] .num { background: #e0a526; color: #fff; }
+.cert-panel { margin: 1em 0; }
+.cert-name { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+.cert-name b { font-size: 1.02rem; }
+.cert-locked { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius); border: 1px solid #f0dca3; background: var(--warn-soft); }
+.cert-lock-h { display: flex; gap: 8px; align-items: flex-start; color: #5c4300; }
+.cert-lock-h .ic { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+.cert-bar { height: 8px; border-radius: 99px; background: #f3e4b8; margin: 10px 0; overflow: hidden; }
+.cert-bar > i { display: block; height: 100%; background: linear-gradient(90deg, #e0a526, #16794a); border-radius: 99px; }
+.cert-left { margin: 6px 0; padding-left: 1.2em; }
+.cert-left li { margin: 3px 0; }
+.cert-done { margin: 14px 0 8px; font-size: 1.02rem; }
+.cert-noname { color: var(--warn); }
+.cert-prev-box { margin: 10px 0; border: 1px solid var(--line); border-radius: 6px; background: #eef1f5; padding: 10px; min-height: 120px; }
+.cert-canvas { display: block; width: 100%; height: auto; box-shadow: 0 2px 10px rgba(16, 24, 40, 0.18); background: #fff; }
+.cert-wait { display: flex; align-items: center; gap: 10px; color: var(--muted); padding: 30px 10px; justify-content: center; }
+.cert-err { color: var(--bad); }
+.cert-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.cert-cele p { margin: 0 0 10px; line-height: 1.5; }

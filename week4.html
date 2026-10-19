@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 4: Regression – Biostatistics for Genomic Medicine</title>
+<meta name="description" content="Week 4 of Biostatistics for Genomic Medicine: correlation, linear regression, genotypes as predictors, confounding and interactions, checking a model, logistic regression and odds ratios, with the FAMuSS data. R runs in your web browser, so there is nothing to install.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2340'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%238ec5ff'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='17' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3C/svg%3E">
+<script src="assets/js/isolation.js"></script>
+<link rel="stylesheet" href="assets/vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/wb.css">
+<link rel="stylesheet" href="assets/css/r.css">
+<link rel="stylesheet" href="assets/css/rstudio.css">
+<link rel="stylesheet" href="assets/css/nb.css">
+<link rel="stylesheet" href="assets/css/term.css">
+<link rel="stylesheet" href="assets/css/files.css">
+<link rel="stylesheet" href="assets/css/ai.css">
+<link rel="stylesheet" href="assets/css/course.css">
+<link rel="stylesheet" href="assets/css/stats.css">
+</head>
+<body data-page="week4" data-title="Week 4: Regression" data-course="week4" data-first="rstudio">
+<div class="app">
+
+  <header class="topbar">
+    <button class="btn top-toggle" id="tutToggle" type="button" title="Hide the instructions so that the workbench fills the window (Ctrl+\)" aria-controls="tut" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/></svg></button>
+    <a class="brand" href="index.html" title="All the practicals of Biostatistics for Genomic Medicine">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#26315a"/><rect x="6" y="6" width="9" height="9" rx="2" fill="#8ec5ff"/><path d="M8.6 8.8l2.4 1.7-2.4 1.7" fill="none" stroke="#1b2340" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="6" width="9" height="9" rx="2" fill="#415187"/><path d="M19 9h5M19 12h3" stroke="#a9b4d6" stroke-width="1.4" stroke-linecap="round"/><rect x="6" y="17" width="9" height="9" rx="2" fill="#415187"/><path d="M8 19.5h5v4H8z" fill="none" stroke="#a9b4d6" stroke-width="1.3"/><rect x="17" y="17" width="9" height="9" rx="2" fill="#415187"/><path d="M19 19.5h5M19 22h5M19 24.3h3" stroke="#a9b4d6" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <div>
+        <div class="brand-title">Week 4: Regression</div>
+        <div class="brand-sub">Biostatistics for Genomic Medicine, week 4: regression, the framework behind the tests</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <div class="progress-wrap" title="The steps you have done and the questions you have answered (saved in this browser)"><span class="progress-label">0% done</span><div class="progress"><i></i></div></div>
+    <span class="store-status" id="storeStatus" title="Your files are saved in this browser, on this computer"></span>
+    <button class="btn" id="userBtn" type="button" title="Your name (if you want to give it), as it appears on the answers you download"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="user-name">Your name</span></button>
+    <button class="btn" id="projectBtn" type="button" title="Download all your files, add files, or start afresh"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span>My files</span></button>
+    <button class="btn" id="answersBtn" type="button"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg><span>My answers</span></button>
+    <button class="btn" id="helpBtn" type="button" title="How this page works"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.6-2.8 4M12 17.5h.01"/></svg><span>Help</span></button>
+    <button class="btn" id="fullBtn" type="button" title="Full screen"><span>Full screen</span></button>
+  </header>
+
+  <div class="main">
+    <aside class="tut" id="tut" aria-label="Instructions">
+      <nav class="ch-nav" aria-label="Chapters"></nav>
+<!--CHAPTERS-->
+<section class="chapter" id="start" data-num="0" data-title="Start here" data-bench="rstudio">
+  <h1>Week 4: regression</h1>
+  <div class="meta-row"><span class="pill time">≈ 10 min</span></div>
+  <p class="lede">Regression measures how an outcome changes with one or more predictors. It is the most widely used method in medical statistics, and the basis of genetic association studies.</p>
+
+<h2 id="st4-why">From tests to models</h2>
+<p>A test tells you whether there is evidence of an effect. A <b>model</b> tells you how big the effect is, and lets you ask about one thing while allowing for others. This week you meet the regression models that do most of the work in medical research and in genetics: linear regression for continuous outcomes, and logistic regression for yes-or-no outcomes. At the end you will see that the tests of last week are special cases of these models.</p>
+<p>You will use the FAMuSS data again, and the leukaemia data at the very end. Read both, as in the last two weeks. Then turn the genotypes into numbers: for each person, the number of copies of an allele they carry. <code>case_when()</code> gives each condition the value after its <code>~</code>, and gives <code>NA</code> to everything else, including missing genotypes. <code>obese</code> is TRUE for a BMI over 25 (strictly, overweight or obese).</p>
+
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="fms &lt;- read_csv(&quot;famuss.csv&quot;)
+leuk &lt;- read_csv(&quot;leukaemia.csv&quot;)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">fms &lt;- read_csv(&quot;famuss.csv&quot;)
+leuk &lt;- read_csv(&quot;leukaemia.csv&quot;)</pre></div>
+<div class="rout"><pre>&gt; fms &lt;- fms %&gt;%
++   mutate(actn3 = case_when(actn3_r577x == &quot;CC&quot; ~ 0,
++                            actn3_r577x == &quot;CT&quot; ~ 1,
++                            actn3_r577x == &quot;TT&quot; ~ 2),
++          esr1 = case_when(esr1_rs1042717 == &quot;GG&quot; ~ 0,
++                           esr1_rs1042717 == &quot;GA&quot; ~ 1,
++                           esr1_rs1042717 == &quot;AA&quot; ~ 2),
++          obese = pre.BMI &gt; 25)
+&gt; count(fms, actn3_r577x, actn3)
+# A tibble: 4 × 3
+  actn3_r577x actn3     n
+  &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;
+1 CC              0   216
+2 CT              1   318
+3 TT              2   201
+4 &lt;NA&gt;           NA   662</pre></div>
+<p>Always check a recoding like this, by counting the old values against the new ones.</p>
+<div class="activity">
+  <div class="act-t">Get ready</div>
+  <ol class="steps">
+    <li data-task="st4-install" data-auto="rstudio:installed" data-check="installed:tidyverse">Install the tidyverse on this page: <code>install.packages(&quot;tidyverse&quot;)</code> <button class="do showme" type="button" data-rs-type="install.packages(&quot;tidyverse&quot;)">show me</button></li>
+    <li data-task="st4-library" data-rcheck="&quot;package:tidyverse&quot; %in% search()">Load it with <code>library(tidyverse)</code> <button class="do showme" type="button" data-rs-type="library(tidyverse)">show me</button>.</li>
+    <li data-task="st4-wd" data-rcheck="basename(getwd()) == &quot;data&quot;">Set the working directory to your data folder: <code>setwd(&quot;~/data&quot;)</code> <button class="do showme" type="button" data-rs-type="setwd(&quot;~/data&quot;)">show me</button></li>
+    <li data-task="st4-read" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); is.data.frame(o) &amp;&amp; nrow(o) == 1397 &amp;&amp; all(c(&quot;id&quot;, &quot;NDRM.CH&quot;) %in% names(o)) }, logical(1))) &amp;&amp; any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); is.data.frame(o) &amp;&amp; nrow(o) == 89 &amp;&amp; all(c(&quot;mol.biol&quot;, &quot;ABL1&quot;) %in% names(o)) }, logical(1)))">Read <code>famuss.csv</code> into <code>fms</code> and <code>leukaemia.csv</code> into <code>leuk</code>.</li>
+    <li data-task="st4-recode" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); isTRUE(tryCatch({ is.data.frame(o) &amp;&amp; nrow(o) == 1397 &amp;&amp; all(c(&quot;actn3&quot;, &quot;esr1&quot;, &quot;obese&quot;) %in% names(o)) &amp;&amp; is.numeric(o$actn3) &amp;&amp; isTRUE(sum(o$actn3, na.rm = TRUE) == 720) &amp;&amp; isTRUE(sum(o$esr1, na.rm = TRUE) == 610) &amp;&amp; is.logical(o$obese) }, error = function(e) FALSE)) }, logical(1)))">Add the columns <code>actn3</code>, <code>esr1</code> and <code>obese</code> to <code>fms</code>, as above.</li>
+    <li data-task="st4-check" data-rcheck="(function(v) { is.data.frame(v) &amp;&amp; nrow(v) == 4 &amp;&amp; all(c(&quot;actn3_r577x&quot;, &quot;actn3&quot;, &quot;n&quot;) %in% names(v)) })(.Last.value)">Check the coding of ACTN3 by counting the old values against the new ones.</li>
+  </ol>
+</div>
+<div class="q" data-q="st4-q-esr1" data-type="mcq">
+  <div class="q-text">In the coding above, what does <code>esr1</code> count?</div>
+  <div class="mcq"><label data-correct data-why="GG has none, GA has one and AA has two. Which allele you count is a choice: say which it is when you report a result."><input type="radio"> The number of copies of the A allele of esr1_rs1042717</label><label data-why="GG is coded 0, so the coding counts the other allele, A."><input type="radio"> The number of copies of the G allele</label><label data-why="People who weren’t genotyped get NA."><input type="radio"> Whether the person was genotyped</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="correlation" data-num="1" data-title="Correlation" data-bench="rstudio" hidden>
+  <h1>Correlation</h1>
+  <div class="meta-row"><span class="pill time">≈ 25 min</span></div>
+  <p class="lede">The correlation coefficient measures how closely two continuous variables follow a straight line. It is a good start, but it can’t tell you how much one changes with the other.</p>
+
+<p>Taller people tend to be heavier. A scatter plot shows the relationship:</p>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="ggplot(fms, aes(x = Pre.height, y = Pre.weight)) +
+  geom_point(alpha = 0.4)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">ggplot(fms, aes(x = Pre.height, y = Pre.weight)) +
+  geom_point(alpha = 0.4)</pre></div>
+<p>The <b>correlation coefficient</b>, <i>r</i> (Pearson’s correlation), measures how closely two variables follow a straight line. It goes from −1 (a perfect straight line going down) through 0 (no straight-line relationship) to +1 (a perfect straight line going up):</p>
+<div class="formula" role="math"><i>r</i> = Σ (<i>x</i><sub><i>i</i></sub> − <i>x̄</i>)(<i>y</i><sub><i>i</i></sub> − <i>ȳ</i>) / √[ Σ (<i>x</i><sub><i>i</i></sub> − <i>x̄</i>)² × Σ (<i>y</i><sub><i>i</i></sub> − <i>ȳ</i>)² ]<div class="formula-note">positive when values above the mean of x tend to go with values above the mean of y</div></div>
+<figure class="fig" role="img"><svg viewBox="0 0 560 130" xmlns="http://www.w3.org/2000/svg" focusable="false"><circle cx="66.6" cy="66.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="40.4" cy="82.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="63.9" cy="66.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="62" cy="59.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="74.5" cy="51.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="54.5" cy="79.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="42.4" cy="88.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="14.2" cy="99.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="61.6" cy="70" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="73.8" cy="62.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="63.5" cy="63.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="33.2" cy="82.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="61.7" cy="66.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="42" cy="91.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="87.7" cy="52.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="52.5" cy="75.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="83.3" cy="69" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="84.1" cy="49.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="74.4" cy="66.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="64.5" cy="57.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="57.7" cy="78.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="52" cy="82.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="72.7" cy="59.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="51" cy="74.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="41" cy="97.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="100.6" cy="42.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="86.6" cy="50.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="55.6" cy="72.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="45" cy="90.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="55.8" cy="78.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="71.4" cy="49" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="39.6" cy="95.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="72" cy="58.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="78.2" cy="61.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="69.4" cy="64.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="32" cy="92.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="33" cy="91.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="51.7" cy="80.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="95.4" cy="31.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="66.5" cy="63.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="46.4" cy="75" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="69.8" cy="69.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="31.4" cy="96.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="56.4" cy="69.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="42.1" cy="93.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="66.4" cy="66" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="75.3" cy="51.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="44.2" cy="101.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="60.3" cy="76.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="63.4" cy="87.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="57.6" cy="73.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="50" cy="76.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="61.1" cy="69.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="81.2" cy="45.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="79.6" cy="52.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="61.8" cy="66.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="64.7" cy="73.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="66" cy="60.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="52.5" cy="85.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="69.1" cy="69.5" r="2" fill="#0b6b8a" opacity="0.7"/><rect x="12" y="26" width="94" height="94" fill="none" stroke="#8a96a8"/><text x="59" y="16" font-size="12" text-anchor="middle" font-weight="600">r = 0.9</text><circle cx="144.4" cy="87.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="144.8" cy="79.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="160.8" cy="75.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="188.6" cy="48.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="167.8" cy="104" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="161.4" cy="92.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="184.4" cy="44.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="181.1" cy="58.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="178.7" cy="58.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="163.2" cy="63.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="164.3" cy="90.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="170.2" cy="50.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="166.3" cy="98" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="190.2" cy="59.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="178.6" cy="74.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="177.5" cy="46.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="158.6" cy="68.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="175.4" cy="81.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="172.5" cy="63" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="155.3" cy="63.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="150.8" cy="65.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="179.9" cy="64" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="156.3" cy="89.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="132.3" cy="90.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="167.3" cy="65.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="186.6" cy="61.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="163.8" cy="61.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="169.3" cy="72.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="149.8" cy="67.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="158.2" cy="51.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="155" cy="85.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="170.9" cy="81.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="145.1" cy="99.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="155.7" cy="82.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="185.9" cy="55.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="174.8" cy="58.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="133" cy="97.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="160.2" cy="90.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="177.5" cy="77.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="151.1" cy="69" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="158.5" cy="80.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="144.3" cy="72" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="170.2" cy="52.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="206.2" cy="46.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="163.4" cy="85.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="196.8" cy="62.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="180" cy="64.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="123.6" cy="96.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="172.1" cy="68.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="167.2" cy="70.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="152.6" cy="72.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="160.9" cy="74.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="196.9" cy="56.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="152.3" cy="75.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="145.4" cy="81.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="192.8" cy="75.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="167" cy="85.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="172.3" cy="66.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="172.4" cy="74.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="137.8" cy="99.4" r="2" fill="#0b6b8a" opacity="0.7"/><rect x="122" y="26" width="94" height="94" fill="none" stroke="#8a96a8"/><text x="169" y="16" font-size="12" text-anchor="middle" font-weight="600">r = 0.5</text><circle cx="272.2" cy="59.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="246.2" cy="55.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="267" cy="98.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="303.6" cy="67.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="263.9" cy="68.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="289.4" cy="94.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="300.7" cy="85.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="293" cy="81.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="253.2" cy="81.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="270.8" cy="70.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="251.7" cy="88.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="284.6" cy="78.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="270.7" cy="65.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="257.5" cy="41.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="267.1" cy="66.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="276.6" cy="57.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="272.1" cy="84.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="283.4" cy="63.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="276.9" cy="41.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="291.7" cy="51.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="300.4" cy="56.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="276.3" cy="47.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="273.2" cy="70.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="302.3" cy="58.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="261.5" cy="77.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="264.6" cy="55" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="273.4" cy="72.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="268.1" cy="80.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="290.3" cy="88.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="280.2" cy="80.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="273.3" cy="92.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="298.3" cy="97.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="259.1" cy="79.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="280.3" cy="84.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="252.5" cy="80.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="262.8" cy="83.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="305.3" cy="104.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="278.7" cy="67.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="272.3" cy="78.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="296.5" cy="76.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="250.8" cy="78.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="284.9" cy="78.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="269.5" cy="70.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="270.9" cy="71.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="289.5" cy="82.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="253.3" cy="52.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="285.3" cy="84.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="255.9" cy="73" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="282.2" cy="65.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="284.8" cy="79.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="272.3" cy="96.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="266.9" cy="80.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="296.2" cy="93.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="309.1" cy="59.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="270.5" cy="82.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="282.5" cy="67.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="290.4" cy="99.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="273.3" cy="65.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="293.5" cy="66.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="277.5" cy="68.4" r="2" fill="#0b6b8a" opacity="0.7"/><rect x="232" y="26" width="94" height="94" fill="none" stroke="#8a96a8"/><text x="279" y="16" font-size="12" text-anchor="middle" font-weight="600">r = 0</text><circle cx="380.4" cy="48.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="403.6" cy="78.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="379.7" cy="67.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="395" cy="76" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="415.3" cy="67.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="404.8" cy="95.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="400.2" cy="85.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="389.1" cy="51.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="361.1" cy="69.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="378.8" cy="57.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="382.5" cy="90" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="395.2" cy="70" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="409" cy="85" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="407" cy="91.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="403.3" cy="69.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="384.7" cy="74.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="408.8" cy="93.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="374.6" cy="63" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="398.4" cy="69.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="381.4" cy="62.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="375" cy="76.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="428.5" cy="106.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="364.7" cy="53.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="377.2" cy="57.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="348.7" cy="58.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="405.9" cy="81" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="374.4" cy="47.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="405.9" cy="87.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="407.5" cy="78.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="368.8" cy="68" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="391.9" cy="86.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="363.5" cy="61.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="400.4" cy="79.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="372.5" cy="88.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="400.9" cy="83.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="401.5" cy="82.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="380.2" cy="65.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="376.5" cy="71.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="373.4" cy="86.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="404.9" cy="72.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="378.9" cy="71.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="425.2" cy="91.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="381.6" cy="82" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="415.9" cy="77.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="374.9" cy="56.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="373" cy="66.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="405.8" cy="87.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="377.1" cy="81.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="397.7" cy="81.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="368.5" cy="37.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="377.1" cy="71.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="394.8" cy="80.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="388.9" cy="69" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="380.3" cy="78" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="383.3" cy="58.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="388.5" cy="56.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="389.9" cy="83.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="392.2" cy="77.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="380.7" cy="70" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="403.8" cy="73.7" r="2" fill="#0b6b8a" opacity="0.7"/><rect x="342" y="26" width="94" height="94" fill="none" stroke="#8a96a8"/><text x="389" y="16" font-size="12" text-anchor="middle" font-weight="600">r = −0.7</text><circle cx="471.5" cy="54.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="483.1" cy="82" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="522.8" cy="61.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="473.8" cy="63.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="502" cy="98.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="496.8" cy="107.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="500.7" cy="108.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="513.8" cy="99.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="506.9" cy="116.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="465.7" cy="28.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="506.7" cy="104.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="490.9" cy="106.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="480.5" cy="83.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="511.1" cy="88" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="487.9" cy="100.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="488.5" cy="97" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="480.1" cy="87" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="476.5" cy="71.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="475.5" cy="63.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="527.7" cy="51.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="483.1" cy="93.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="477.2" cy="80.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="508.7" cy="97.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="514.3" cy="87.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="521.3" cy="69.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="503.4" cy="110.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="464.3" cy="36.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="516.5" cy="80.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="480.8" cy="75.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="505.8" cy="104.1" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="503.8" cy="110.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="503.7" cy="98.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="484.5" cy="87.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="532.9" cy="32" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="514.1" cy="95.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="505.3" cy="102.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="514.4" cy="84.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="517.2" cy="82.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="523.7" cy="67.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="467.7" cy="44.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="504.3" cy="101.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="482.2" cy="86.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="502.5" cy="92.4" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="492.9" cy="91.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="480.5" cy="83.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="522.6" cy="67.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="524.7" cy="54.6" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="515.7" cy="83.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="476.3" cy="75.2" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="509.2" cy="97.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="494.5" cy="110.8" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="525.5" cy="65.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="506.5" cy="104" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="523.1" cy="65.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="530.1" cy="47.3" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="499.3" cy="97.7" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="463.3" cy="27.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="497.4" cy="96.9" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="534.6" cy="27.5" r="2" fill="#0b6b8a" opacity="0.7"/><circle cx="497.8" cy="109.4" r="2" fill="#0b6b8a" opacity="0.7"/><rect x="452" y="26" width="94" height="94" fill="none" stroke="#8a96a8"/><text x="499" y="16" font-size="12" text-anchor="middle" font-weight="600">a curve: r ≈ 0</text></svg><figcaption>Correlations of different strengths. The last panel shows a strong relationship that isn’t a straight line: its correlation is about 0.</figcaption></figure>
+<p><code>cor()</code> calculates <i>r</i> (<code>use = "complete.obs"</code> leaves out the people missing either value), and <code>cor.test()</code> tests whether it differs from 0 and gives a confidence interval:</p>
+<div class="rout"><pre>&gt; cor(fms$Pre.height, fms$Pre.weight, use = &quot;complete.obs&quot;)
+[1] 0.5339761
+&gt; cor.test(fms$Pre.height, fms$Pre.weight)
+
+	Pearson&#x27;s product-moment correlation
+
+data:  fms$Pre.height and fms$Pre.weight
+t = 20.269, df = 1030, p-value &lt; 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.4888826 0.5762237
+sample estimates:
+      cor
+0.5339761</pre></div>
+<p><i>r</i>² (here 0.53² = 0.29) is the proportion of the variation in one variable that goes with variation in the other: 29% of the variation in weight goes with height.</p>
+<p><b>Spearman’s correlation</b> is the correlation of the ranks. It measures any relationship that goes consistently up or down, whether or not it is a straight line, and it isn’t thrown by outliers. It warns that it can’t compute an exact p-value with ties (people with the same values), so it uses an approximation, which is fine with this many people:</p>
+<div class="rout"><pre>&gt; cor.test(fms$pre.BMI, fms$NDRM.CH, method = &quot;spearman&quot;)
+
+	Spearman&#x27;s rank correlation rho
+
+data:  fms$pre.BMI and fms$NDRM.CH
+S = 206112394, p-value = 2.909e-11
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho
+-0.207464
+
+Warning message:
+In cor.test.default(fms$pre.BMI, fms$NDRM.CH, method = &quot;spearman&quot;) :
+  cannot compute exact p-value with ties</pre></div>
+<div class="callout concept">
+  <div class="co-t">Correlation is not causation</div>
+  <p>People with a higher BMI gained less strength, in percentage terms (Spearman’s ρ = −0.21). That doesn’t mean that a higher BMI <i>causes</i> smaller gains. Something else could cause both: men have a higher BMI on average and gained less, in percentage terms, than women. A variable like this is a <b>confounder</b>, and you will meet it again in chapter 3. Correlation also only measures one kind of relationship: always plot the data.</p>
+</div>
+<div class="activity">
+  <div class="act-t">Correlations</div>
+  <ol class="steps">
+    <li data-task="co-scatter" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomPoint&quot;) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$x) &amp;&amp; identical(rlang::as_label(m$x), &quot;Pre.height&quot;), logical(1))) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$y) &amp;&amp; identical(rlang::as_label(m$y), &quot;Pre.weight&quot;), logical(1))), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw the scatter plot of weight against height, as above.</li>
+    <li data-task="co-r" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(0.5339761)) &lt; 1e-05)) })(.Last.value)">Calculate the correlation between height and weight.</li>
+    <li data-task="co-bmiage" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Pearson&quot;, v$method) &amp;&amp; abs(v$estimate - 0.2145853) &lt; 1e-4 })(.Last.value)">Test the correlation between <code>pre.BMI</code> and <code>Age</code>.</li>
+    <li data-task="co-spear" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Spearman&quot;, v$method) &amp;&amp; abs(v$estimate - (-0.207464)) &lt; 1e-4 })(.Last.value)">Calculate Spearman’s correlation between <code>pre.BMI</code> and <code>NDRM.CH</code>, as above.</li>
+  </ol>
+</div>
+<div class="q" data-q="co-q-r" data-accept="^0?\.53[0-9]*$" data-placeholder="A number">
+  <div class="q-text">What is the correlation between height and weight, to two decimal places?</div>
+  <div class="q-model">0.53 (95% CI 0.49 to 0.58): a moderately strong positive correlation.</div>
+</div>
+<div class="q" data-q="co-q-r2" data-type="mcq">
+  <div class="q-text">The correlation between BMI and age is 0.21. What does that mean?</div>
+  <div class="mcq"><label data-why="That would be a slope. A correlation has no units. (The slope is 0.18 a year: chapter 2.)"><input type="radio"> BMI rises by 0.21 for each year of age</label><label data-why="A correlation describes the relationship between two variables, not a proportion of people."><input type="radio"> 21% of the participants are older than average</label><label data-correct data-why="The correlation is clearly positive (p = 4 × 10&lt;sup&gt;−12&lt;/sup&gt;) but weak: most of the variation in BMI has nothing to do with age."><input type="radio"> Older participants tended to have a higher BMI, but age goes with only about 4.6% (0.21²) of the variation in BMI</label></div>
+</div>
+<div class="q" data-q="co-q-curve" data-type="mcq">
+  <div class="q-text">Two variables have a correlation of 0.02. What can you conclude?</div>
+  <div class="mcq"><label data-correct data-why="Pearson’s correlation only measures straight-line relationships, which is why you should always plot the data."><input type="radio"> That there is no straight-line relationship between them; there could still be a strong curved one</label><label data-why="A U-shaped relationship can have a correlation of about 0, as in the last panel of the figure."><input type="radio"> That the two variables are independent</label><label data-why="Correlation, or its absence, can’t settle questions of cause."><input type="radio"> That one doesn’t cause the other</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="linear" data-num="2" data-title="Linear regression" data-bench="rstudio" hidden>
+  <h1>Simple linear regression</h1>
+  <div class="meta-row"><span class="pill time">≈ 40 min</span></div>
+  <p class="lede">A regression line tells you how much an outcome changes, on average, for each unit of a predictor, and how sure you can be about it.</p>
+
+<h2 id="lr-model">The model</h2>
+<p>Simple linear regression describes the average of an outcome, <i>y</i>, as a straight line in a predictor, <i>x</i>:</p>
+<div class="formula" role="math"><i>y</i> = β<sub>0</sub> + β<sub>1</sub><i>x</i> + ε<div class="formula-note">β0, the intercept, is the average of y when x = 0; β1, the slope, is how much the average of y changes when x goes up by 1; ε is the scatter of each person around the line</div></div>
+<p>The line is fitted by <b>least squares</b>: of all the straight lines, it is the one that makes the sum of the squared <b>residuals</b> (the vertical distances from the points to the line) as small as possible.</p>
+<figure class="fig" role="img"><svg viewBox="0 0 560 222" xmlns="http://www.w3.org/2000/svg" focusable="false"><line x1="331.2" y1="89" x2="331.2" y2="84.9" stroke="#d9961c" stroke-width="1.6"/><line x1="451.4" y1="81.6" x2="451.4" y2="56.8" stroke="#d9961c" stroke-width="1.6"/><line x1="375.2" y1="74.5" x2="375.2" y2="74.6" stroke="#d9961c" stroke-width="1.6"/><line x1="272.1" y1="103.6" x2="272.1" y2="98.8" stroke="#d9961c" stroke-width="1.6"/><line x1="451.7" y1="75.1" x2="451.7" y2="56.7" stroke="#d9961c" stroke-width="1.6"/><line x1="139.6" y1="156.1" x2="139.6" y2="129.9" stroke="#d9961c" stroke-width="1.6"/><line x1="273.4" y1="101.5" x2="273.4" y2="98.5" stroke="#d9961c" stroke-width="1.6"/><line x1="312.8" y1="76.3" x2="312.8" y2="89.3" stroke="#d9961c" stroke-width="1.6"/><line x1="101.9" y1="141" x2="101.9" y2="138.7" stroke="#d9961c" stroke-width="1.6"/><line x1="441.5" y1="51.2" x2="441.5" y2="59.1" stroke="#d9961c" stroke-width="1.6"/><line x1="384.9" y1="62.7" x2="384.9" y2="72.3" stroke="#d9961c" stroke-width="1.6"/><line x1="149.2" y1="112.6" x2="149.2" y2="127.6" stroke="#d9961c" stroke-width="1.6"/><line x1="329.2" y1="87.8" x2="329.2" y2="85.4" stroke="#d9961c" stroke-width="1.6"/><line x1="424.6" y1="64.8" x2="424.6" y2="63" stroke="#d9961c" stroke-width="1.6"/><line x1="175.8" y1="117.5" x2="175.8" y2="121.4" stroke="#d9961c" stroke-width="1.6"/><line x1="425" y1="29.8" x2="425" y2="62.9" stroke="#d9961c" stroke-width="1.6"/><line x1="205.8" y1="102.7" x2="205.8" y2="114.3" stroke="#d9961c" stroke-width="1.6"/><line x1="351.9" y1="86.7" x2="351.9" y2="80.1" stroke="#d9961c" stroke-width="1.6"/><path d="M50 150.9 L520 40.7" fill="none" stroke="#c8414f" stroke-width="2.4" opacity="1"/><circle cx="331.2" cy="89" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="451.4" cy="81.6" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="375.2" cy="74.5" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="272.1" cy="103.6" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="451.7" cy="75.1" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="139.6" cy="156.1" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="273.4" cy="101.5" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="312.8" cy="76.3" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="101.9" cy="141" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="441.5" cy="51.2" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="384.9" cy="62.7" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="149.2" cy="112.6" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="329.2" cy="87.8" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="424.6" cy="64.8" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="175.8" cy="117.5" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="425" cy="29.8" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="205.8" cy="102.7" r="3.6" fill="#0b6b8a" opacity="0.9"/><circle cx="351.9" cy="86.7" r="3.6" fill="#0b6b8a" opacity="0.9"/><line x1="50" y1="184" x2="520" y2="184" stroke="#8a96a8"/><line x1="50" y1="14" x2="50" y2="184" stroke="#8a96a8"/><line x1="50" y1="184" x2="50" y2="188" stroke="#8a96a8"/><text x="50" y="201" font-size="12" text-anchor="middle">0</text><line x1="144" y1="184" x2="144" y2="188" stroke="#8a96a8"/><text x="144" y="201" font-size="12" text-anchor="middle">2</text><line x1="238" y1="184" x2="238" y2="188" stroke="#8a96a8"/><text x="238" y="201" font-size="12" text-anchor="middle">4</text><line x1="332" y1="184" x2="332" y2="188" stroke="#8a96a8"/><text x="332" y="201" font-size="12" text-anchor="middle">6</text><line x1="426" y1="184" x2="426" y2="188" stroke="#8a96a8"/><text x="426" y="201" font-size="12" text-anchor="middle">8</text><line x1="520" y1="184" x2="520" y2="188" stroke="#8a96a8"/><text x="520" y="201" font-size="12" text-anchor="middle">10</text><line x1="46" y1="184" x2="50" y2="184" stroke="#8a96a8"/><text x="43" y="188" font-size="12" text-anchor="end">0</text><line x1="46" y1="127.3" x2="50" y2="127.3" stroke="#8a96a8"/><text x="43" y="131.3" font-size="12" text-anchor="end">4</text><line x1="46" y1="70.7" x2="50" y2="70.7" stroke="#8a96a8"/><text x="43" y="74.7" font-size="12" text-anchor="end">8</text><line x1="46" y1="14" x2="50" y2="14" stroke="#8a96a8"/><text x="43" y="18" font-size="12" text-anchor="end">12</text><text x="285" y="218" font-size="12.5" text-anchor="middle">predictor, x</text><text x="12" y="99" font-size="12.5" text-anchor="middle" transform="rotate(-90 12 99)">outcome, y</text><text x="68.8" y="25.3" font-size="12" text-anchor="start" fill="#c8414f" font-weight="600">fitted line: ŷ = β₀ + β₁x</text><text x="68.8" y="41.3" font-size="12" text-anchor="start" fill="#d9961c">residuals (amber): y − ŷ</text></svg><figcaption>Least squares: the fitted line (red) makes the sum of the squared residuals (amber) as small as possible.</figcaption></figure>
+
+<h2 id="lr-lm">Fitting a line with lm()</h2>
+<p><code>lm()</code> (“linear model”) takes a formula, <code>outcome ~ predictor</code>, and the data:</p>
+<div class="rout"><pre>&gt; fit &lt;- lm(Pre.weight ~ Pre.height, data = fms)
+&gt; fit
+
+Call:
+lm(formula = Pre.weight ~ Pre.height, data = fms)
+
+Coefficients:
+(Intercept)   Pre.height
+   -181.377        5.039</pre></div>
+<p>So the average weight goes up by 5.04 pounds for each inch of height. The intercept, −181 pounds, is the average weight at a height of 0 inches: a meaningless extrapolation, far outside the data, but the line needs it. <code>summary()</code> tells you much more:</p>
+<div class="rout"><pre>&gt; summary(fit)
+
+Call:
+lm(formula = Pre.weight ~ Pre.height, data = fms)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-57.255 -19.140  -6.333  12.977 134.108
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) -181.3765    16.6302  -10.91   &lt;2e-16 ***
+Pre.height     5.0393     0.2486   20.27   &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 29.15 on 1030 degrees of freedom
+  (365 observations deleted due to missingness)
+Multiple R-squared:  0.2851,	Adjusted R-squared:  0.2844
+F-statistic: 410.8 on 1 and 1030 DF,  p-value: &lt; 2.2e-16</pre></div>
+<ul>
+<li>The <b>Coefficients</b> table gives each estimate with its <b>standard error</b>, and a <b>t-test</b> of whether it is 0. For the slope, t = 20.3 and p &lt; 2 × 10<sup>−16</sup>: weight certainly changes with height.</li>
+<li>The <b>residual standard error</b>, 29.15 pounds, is the typical distance of a person from the line.</li>
+<li><b>R²</b> (Multiple R-squared), 0.285, is the proportion of the variation in weight that the model explains. With one predictor it is <i>r</i>²: 0.534² = 0.285.</li>
+<li>R tells you that it left out the 365 people who were missing either value.</li>
+</ul>
+<p><code>confint()</code> gives confidence intervals for the coefficients, and <code>predict()</code> the average outcome for new values of the predictor:</p>
+<div class="rout"><pre>&gt; confint(fit)
+                  2.5 %      97.5 %
+(Intercept) -214.009379 -148.743646
+Pre.height     4.551407    5.527136
+&gt; predict(fit, newdata = tibble(Pre.height = 70))
+       1
+171.3725</pre></div>
+<p>A participant 70 inches tall (1.78 m) would weigh 171 pounds (78 kg), on average. ggplot2 can draw the line, with a 95% confidence band for it, with <code>geom_smooth(method = "lm")</code>:</p>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="ggplot(fms, aes(x = Pre.height, y = Pre.weight)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = &quot;lm&quot;)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">ggplot(fms, aes(x = Pre.height, y = Pre.weight)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = &quot;lm&quot;)</pre></div>
+<div class="activity">
+  <div class="act-t">Fit a line</div>
+  <ol class="steps">
+    <li data-task="lr-fit" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;Pre.height&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;Pre.height&quot;]] - (5.039272)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the regression of weight on height, as above.</li>
+    <li data-task="lr-sum" data-rcheck="(function(v) { inherits(v, &quot;summary.lm&quot;) &amp;&amp; abs(v$coefficients[2, 1] - 5.039272) &lt; 1e-4 })(.Last.value)">Look at its summary().</li>
+    <li data-task="lr-ci" data-rcheck="(function(v) { is.matrix(v) &amp;&amp; all(dim(v) == c(2, 2)) &amp;&amp; abs(v[2, 1] - 4.551407) &lt; 1e-4 })(.Last.value)">Calculate the confidence intervals of its coefficients.</li>
+    <li data-task="lr-pred" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(171.3725)) &lt; 0.01)) })(.Last.value)">Predict the average weight of a participant 70 inches tall.</li>
+    <li data-task="lr-smooth" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomSmooth&quot;) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$x) &amp;&amp; identical(rlang::as_label(m$x), &quot;Pre.height&quot;), logical(1))) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$y) &amp;&amp; identical(rlang::as_label(m$y), &quot;Pre.weight&quot;), logical(1))), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw the scatter plot with the fitted line.</li>
+    <li data-task="lr-bmi" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;Age&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;Age&quot;]] - (0.1771595)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Now fit the regression of <code>pre.BMI</code> on <code>Age</code>, and look at its summary.</li>
+  </ol>
+</div>
+<div class="q" data-q="lr-q-slope" data-accept="^5\.04[0-9]*$||^5\.03[5-9][0-9]*$||^5\.0$" data-placeholder="A number">
+  <div class="q-text">By how many pounds does the average weight go up for each inch of height, to two decimal places?</div>
+  <div class="q-model">5.04 pounds (95% CI 4.55 to 5.53).</div>
+</div>
+<div class="q" data-q="lr-q-r2" data-accept="^0?\.28[0-9]*$||^0?\.29$||^28(\.5)? ?%$||^29 ?%$" data-placeholder="A proportion">
+  <div class="q-text">What proportion of the variation in weight does height explain?</div>
+  <div class="q-model">0.285, or 28.5% (R², the Multiple R-squared). Most of the variation in weight has nothing to do with height.</div>
+</div>
+<div class="q" data-q="lr-q-pred" data-accept="^171(\.[0-9]+)?( ?(pounds|lb|lbs))?$" data-placeholder="A number">
+  <div class="q-text">What is the predicted average weight, in pounds, of a participant 70 inches tall?</div>
+  <div class="q-model">171 pounds (171.4), from <code>predict(fit, newdata = tibble(Pre.height = 70))</code>, which is −181.38 + 5.04 × 70.</div>
+</div>
+<div class="q" data-q="lr-q-bmi" data-accept="^0?\.177[0-9]*$||^0?\.18$" data-placeholder="A number">
+  <div class="q-text">How much does the average BMI go up per year of age, to two decimal places?</div>
+  <div class="q-model">0.18 (0.177) per year, with p = 4 × 10<sup>−12</sup>. But R² is only 0.046: age explains less than 5% of the variation in BMI. An effect can be clear and still small.</div>
+</div>
+<div class="q" data-q="lr-q-int" data-type="mcq">
+  <div class="q-text">The intercept of the regression of weight on height is −181 pounds. What does it mean?</div>
+  <div class="mcq"><label data-why="The model is only meant to describe heights near those in the data, between about 58 and 80 inches."><input type="radio"> The model is wrong, because weights can’t be negative</label><label data-correct data-why="To make the intercept meaningful, you can centre the predictor: with lm(Pre.weight ~ I(Pre.height - 66)), the intercept is the average weight at 66 inches."><input type="radio"> It is the line’s value at a height of 0, far outside the data, so on its own it means nothing</label><label data-why="No one in the data is anywhere near 0 inches tall."><input type="radio"> Short people weigh less than nothing</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="genotypes" data-num="3" data-title="Genotypes as predictors" data-bench="rstudio" hidden>
+  <h1>Genotypes as predictors</h1>
+  <div class="meta-row"><span class="pill time">≈ 30 min</span></div>
+  <p class="lede">The same regression works for genotypes, once you decide how to turn a genotype into a predictor.</p>
+
+<h2 id="gp-add">The additive model</h2>
+<p>A genetic association study asks whether an outcome changes with genotype. Coding the genotype as the number of copies of an allele (0, 1 or 2) makes it a numeric predictor, and the slope is the change in the outcome for each copy. This is the <b>additive</b> model:</p>
+<div class="rout"><pre>&gt; summary(lm(NDRM.CH ~ actn3, data = fms))
+
+Call:
+lm(formula = NDRM.CH ~ actn3, data = fms)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-58.113 -23.297  -8.113  16.887 196.795
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   48.297      2.206  21.890  &lt; 2e-16 ***
+actn3          4.908      1.790   2.742  0.00629 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 32.95 on 601 degrees of freedom
+  (794 observations deleted due to missingness)
+Multiple R-squared:  0.01235,	Adjusted R-squared:  0.01071
+F-statistic: 7.517 on 1 and 601 DF,  p-value: 0.006293</pre></div>
+<p>Each copy of the 577X allele (T) goes with a gain in strength 4.9 percentage points larger (95% CI 1.4 to 8.4; p = 0.006). The effect is small: R² is 0.012, so the genotype explains about 1% of the variation in gains. That is typical of the common variants that affect complex traits.</p>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="fms %&gt;%
+  drop_na(actn3, NDRM.CH) %&gt;%
+  ggplot(aes(x = actn3, y = NDRM.CH)) +
+  geom_jitter(width = 0.15, alpha = 0.3) +
+  geom_smooth(method = &quot;lm&quot;)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">fms %&gt;%
+  drop_na(actn3, NDRM.CH) %&gt;%
+  ggplot(aes(x = actn3, y = NDRM.CH)) +
+  geom_jitter(width = 0.15, alpha = 0.3) +
+  geom_smooth(method = &quot;lm&quot;)</pre></div>
+
+<h2 id="gp-codings">Other ways of coding a genotype</h2>
+<p>If you give <code>lm()</code> the genotype as text, it treats it as a category: it chooses the first genotype alphabetically (CC) as the <b>reference</b>, and estimates the difference of each other genotype from it. This <b>genotypic</b> model doesn’t assume that each copy has the same effect:</p>
+<div class="rout"><pre>&gt; lm(NDRM.CH ~ actn3_r577x, data = fms)
+
+Call:
+lm(formula = NDRM.CH ~ actn3_r577x, data = fms)
+
+Coefficients:
+  (Intercept)  actn3_r577xCT  actn3_r577xTT
+       48.340          4.809          9.820
+&gt; anova(lm(NDRM.CH ~ actn3_r577x, data = fms))
+Analysis of Variance Table
+
+Response: NDRM.CH
+             Df Sum Sq Mean Sq F value Pr(&gt;F)
+actn3_r577x   2   8161  4080.7  3.7531  0.024 *
+Residuals   600 652359  1087.3
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</pre></div>
+<p>CT is 4.8 points above CC, and TT 9.8 points above it: close to the 0, 4.9, 9.8 that the additive model assumes. Its <code>anova()</code> table is exactly last week’s ANOVA (F = 3.75, p = 0.024). There are other codings too:</p>
+<div class="table"><table class="plain"><thead><tr><th>Coding</th><th>The predictor</th><th>Degrees of freedom</th><th>Assumes</th></tr></thead><tbody><tr><td><b>Additive</b> (or allelic)</td><td>0, 1, 2 copies of the allele</td><td>1</td><td>each copy adds the same amount: the usual choice, and the one GWAS use</td></tr><tr><td><b>Genotypic</b></td><td>the genotype as a category (CC, CT, TT)</td><td>2</td><td>any pattern of effects, at the cost of an extra parameter</td></tr><tr><td><b>Dominant</b></td><td>1 if any copy (CT or TT), 0 if none (CC)</td><td>1</td><td>one copy has the full effect</td></tr><tr><td><b>Recessive</b></td><td>1 if two copies (TT), 0 otherwise</td><td>1</td><td>only two copies have an effect</td></tr></tbody></table></div>
+<p>The additive model is the usual first choice, and the one genome-wide studies use: it has a single degree of freedom, it has good power even when the true effect isn’t quite additive, and its slope is easy to report.</p>
+<div class="activity">
+  <div class="act-t">Genotypes as predictors</div>
+  <ol class="steps">
+    <li data-task="gp-add" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;actn3&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;actn3&quot;]] - (4.908169)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the additive model of NDRM.CH on actn3, as above, and look at its summary.</li>
+    <li data-task="gp-factor" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;actn3_r577xTT&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;actn3_r577xTT&quot;]] - (9.819736)) &lt; 0.001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the genotypic model, with the genotype as a category.</li>
+    <li data-task="gp-anova" data-rcheck="(function(v) { inherits(v, &quot;anova&quot;) &amp;&amp; abs(v[[&quot;F value&quot;]][1] - 3.7531) &lt; 0.001 })(.Last.value)">Look at its ANOVA table with anova().</li>
+    <li data-task="gp-dom" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; length(m) == 2 &amp;&amp; isTRUE(abs(m[[2]] - (6.721586)) &lt; 0.001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the dominant model: the predictor is whether a person has any copy of T. Inside the formula, <code>I(actn3 &gt;= 1)</code> makes it.</li>
+  </ol>
+</div>
+<div class="q" data-q="gp-q-slope" data-accept="^4\.91[0-9]*$||^4\.90[5-9][0-9]*$||^4\.9$" data-placeholder="A number">
+  <div class="q-text">In the additive model, how much larger is the gain in strength for each copy of the 577X allele, to two decimal places?</div>
+  <div class="q-model">4.91 percentage points (95% CI 1.39 to 8.42), from the slope of <code>lm(NDRM.CH ~ actn3, data = fms)</code>.</div>
+</div>
+<div class="q" data-q="gp-q-tt" data-type="mcq">
+  <div class="q-text">In the genotypic model, the coefficient <code>actn3_r577xTT</code> is 9.8. What does it mean?</div>
+  <div class="mcq"><label data-why="That would be the additive slope, which is 4.9. TT has two copies."><input type="radio"> Each copy of T adds 9.8 points</label><label data-why="The intercept (48.3) is the mean for CC; TT’s mean is 48.3 + 9.8 = 58.2."><input type="radio"> People with genotype TT gained 9.8% in strength</label><label data-correct data-why="Each coefficient of a category is its difference from the reference category."><input type="radio"> People with genotype TT gained, on average, 9.8 percentage points more than people with CC, the reference</label></div>
+</div>
+<div class="q" data-q="gp-q-why" data-type="mcq">
+  <div class="q-text">Why do genome-wide association studies usually use the additive model?</div>
+  <div class="mcq"><label data-correct data-why="A study of a million SNPs needs a test that works well whatever the true pattern is, and a simple effect size."><input type="radio"> It has one degree of freedom, keeps good power across many patterns of effect, and gives one number to report per SNP</label><label data-why="Some effects are dominant or recessive, but the additive test still detects most of them."><input type="radio"> Because every genetic effect is additive</label><label data-why="It can: it is just an ANOVA with three groups."><input type="radio"> Because the genotypic model can’t be fitted for SNPs</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="confounding" data-num="4" data-title="Confounding" data-bench="rstudio" hidden>
+  <h1>Several predictors, confounding and interactions</h1>
+  <div class="meta-row"><span class="pill time">≈ 45 min</span></div>
+  <p class="lede">With several predictors, each coefficient is an effect allowing for the others. That is how you deal with confounding, and how you ask whether an effect differs between groups.</p>
+
+<h2 id="cf-multi">Multiple regression</h2>
+<p>A model can have several predictors:</p>
+<div class="formula" role="math"><i>y</i> = β<sub>0</sub> + β<sub>1</sub><i>x</i><sub>1</sub> + β<sub>2</sub><i>x</i><sub>2</sub> + … + ε<div class="formula-note">each coefficient is the change in the average of y for a change of 1 in its predictor, with the other predictors held constant</div></div>
+<p>A categorical predictor, such as <code>Gender</code>, becomes an <b>indicator</b> (or dummy) variable: R chooses a reference group (Female, which comes first alphabetically), and the coefficient <code>GenderMale</code> is the difference between men and women.</p>
+
+<h2 id="cf-conf">Confounding</h2>
+<p>A <b>confounder</b> is a variable that is associated with both the predictor you are interested in (the exposure) and the outcome, and isn’t on the causal path between them. It can create an association, or hide or distort one.</p>
+<figure class="fig" role="img"><svg viewBox="0 0 560 190" xmlns="http://www.w3.org/2000/svg" focusable="false">
+<defs><marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#39465a"/></marker>
+<marker id="arwq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8a96a8"/></marker></defs>
+<rect x="196" y="12" width="168" height="44" rx="9" fill="#fff4dc" stroke="#d9961c" stroke-width="1.6"/>
+<text x="280" y="31" font-size="13" text-anchor="middle" font-weight="650">confounder</text>
+<text x="280" y="48" font-size="11.5" text-anchor="middle">for example, sex</text>
+<rect x="34" y="124" width="170" height="46" rx="9" fill="#cfe7ef" stroke="#0b6b8a" stroke-width="1.6"/>
+<text x="119" y="144" font-size="13" text-anchor="middle" font-weight="650">exposure</text>
+<text x="119" y="161" font-size="11.5" text-anchor="middle">for example, BMI</text>
+<rect x="356" y="124" width="170" height="46" rx="9" fill="#cfe7ef" stroke="#0b6b8a" stroke-width="1.6"/>
+<text x="441" y="144" font-size="13" text-anchor="middle" font-weight="650">outcome</text>
+<text x="441" y="161" font-size="11.5" text-anchor="middle">gain in strength</text>
+<line x1="236" y1="58" x2="150" y2="120" stroke="#39465a" stroke-width="1.8" marker-end="url(#arw)"/>
+<line x1="324" y1="58" x2="410" y2="120" stroke="#39465a" stroke-width="1.8" marker-end="url(#arw)"/>
+<line x1="208" y1="147" x2="350" y2="147" stroke="#8a96a8" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#arwq)"/>
+<text x="279" y="138" font-size="11.5" text-anchor="middle" fill="#8a96a8">association?</text>
+</svg><figcaption>A confounder (here, sex) affects both the exposure (BMI) and the outcome (the gain in strength), so the two are associated even if one has no effect on the other.</figcaption></figure>
+<p>In chapter 1 you saw that people with a higher BMI gained less strength. But men have a higher BMI (25.0 on average, against 23.9 for women) and gained less, in percentage terms. How much of the BMI association is really an association with sex? Compare the BMI coefficient before and after adding sex to the model:</p>
+<div class="rout"><pre>&gt; lm(NDRM.CH ~ pre.BMI, data = fms)
+
+Call:
+lm(formula = NDRM.CH ~ pre.BMI, data = fms)
+
+Coefficients:
+(Intercept)      pre.BMI
+     82.388       -1.224
+&gt; lm(NDRM.CH ~ pre.BMI + Gender, data = fms)
+
+Call:
+lm(formula = NDRM.CH ~ pre.BMI + Gender, data = fms)
+
+Coefficients:
+(Intercept)      pre.BMI   GenderMale
+    84.9252      -0.9812     -20.5393</pre></div>
+<p>Allowing for sex, the BMI coefficient shrinks from −1.22 to −0.98 per unit of BMI: about a fifth of the crude association was due to sex. The rest remains, and could itself be confounded by things that weren’t measured. Adjusting can only allow for the confounders you have measured, and measured well.</p>
+<p>In genetic studies, the usual covariates are <b>sex</b>, <b>age</b> and <b>ancestry</b> (week 5):</p>
+<div class="rout"><pre>&gt; summary(lm(NDRM.CH ~ actn3 + Gender + Age, data = fms))
+
+Call:
+lm(formula = NDRM.CH ~ actn3 + Gender + Age, data = fms)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-69.296 -19.002  -4.779  15.066 181.259
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  87.0881     5.7377  15.178  &lt; 2e-16 ***
+actn3         4.0990     1.6471   2.489   0.0131 *
+GenderMale  -22.4921     2.5097  -8.962  &lt; 2e-16 ***
+Age          -1.1814     0.2123  -5.565 3.97e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 30.17 on 598 degrees of freedom
+  (795 observations deleted due to missingness)
+Multiple R-squared:  0.1755,	Adjusted R-squared:  0.1714
+F-statistic: 42.43 on 3 and 598 DF,  p-value: &lt; 2.2e-16</pre></div>
+<p>Allowing for sex and age, each copy of 577X goes with a gain 4.1 points larger (p = 0.013). Men gained 22.5 points less than women of the same genotype and age, and each extra year of age went with a gain 1.2 points smaller. R² rises to 0.18: sex and age explain far more of the variation than the genotype does.</p>
+<div class="callout warn">
+  <div class="co-t">Don’t adjust for everything</div>
+  <p>Adjust for confounders, not for variables that the exposure itself affects. If a genotype affected muscle mass, which in turn affected the gain in strength, adjusting for muscle mass would remove part of the very effect you want to measure. And with many predictors and few people, the estimates become unstable: as a rough guide, have at least 10 to 20 people (or, for a yes-or-no outcome, events) for each predictor.</p>
+</div>
+
+<h2 id="cf-int">Interactions</h2>
+<p>An <b>interaction</b> means that the effect of one predictor depends on the value of another. The original FAMuSS paper reported that the effect of ACTN3 R577X was seen in women but not in men. In a formula, <code>actn3 * Gender</code> includes both predictors and their interaction:</p>
+<div class="rout"><pre>&gt; summary(lm(NDRM.CH ~ actn3 * Gender, data = fms))
+
+Call:
+lm(formula = NDRM.CH ~ actn3 * Gender, data = fms)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-70.479 -20.479  -3.779  17.201 187.201
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)        55.118      2.649  20.811  &lt; 2e-16 ***
+actn3               7.681      2.143   3.585 0.000365 ***
+GenderMale        -16.687      4.225  -3.950 8.76e-05 ***
+actn3:GenderMale   -6.890      3.433  -2.007 0.045210 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 30.81 on 599 degrees of freedom
+  (794 observations deleted due to missingness)
+Multiple R-squared:  0.1391,	Adjusted R-squared:  0.1348
+F-statistic: 32.27 on 3 and 599 DF,  p-value: &lt; 2.2e-16</pre></div>
+<p>Now <code>actn3</code> (7.7) is the effect of each copy in women, the reference group, and <code>actn3:GenderMale</code> (−6.9) is how much smaller it is in men: about 7.7 − 6.9 = 0.8 points per copy. The interaction’s p-value (0.045) tests whether the effects differ.</p>
+<figure class="fig" role="img"><svg viewBox="0 0 560 222" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M103.8 87.4 L263 59 L422.2 30.6" fill="none" stroke="#c8414f" stroke-width="2.4" opacity="1"/><path d="M103.8 149 L263 146.1 L422.2 143.1" fill="none" stroke="#0b6b8a" stroke-width="2.4" opacity="1"/><circle cx="103.8" cy="87.4" r="4" fill="#c8414f" opacity="1"/><circle cx="103.8" cy="149" r="4" fill="#0b6b8a" opacity="1"/><circle cx="263" cy="59" r="4" fill="#c8414f" opacity="1"/><circle cx="263" cy="146.1" r="4" fill="#0b6b8a" opacity="1"/><circle cx="422.2" cy="30.6" r="4" fill="#c8414f" opacity="1"/><circle cx="422.2" cy="143.1" r="4" fill="#0b6b8a" opacity="1"/><text x="435" y="34.6" font-size="12.5" text-anchor="start" fill="#c8414f" font-weight="600">women</text><text x="435" y="147.1" font-size="12.5" text-anchor="start" fill="#0b6b8a" font-weight="600">men</text><line x1="56" y1="180" x2="470" y2="180" stroke="#8a96a8"/><line x1="56" y1="14" x2="56" y2="180" stroke="#8a96a8"/><line x1="103.8" y1="180" x2="103.8" y2="184" stroke="#8a96a8"/><text x="103.8" y="197" font-size="12" text-anchor="middle">CC (0)</text><line x1="263" y1="180" x2="263" y2="184" stroke="#8a96a8"/><text x="263" y="197" font-size="12" text-anchor="middle">CT (1)</text><line x1="422.2" y1="180" x2="422.2" y2="184" stroke="#8a96a8"/><text x="422.2" y="197" font-size="12" text-anchor="middle">TT (2)</text><line x1="52" y1="180" x2="56" y2="180" stroke="#8a96a8"/><text x="49" y="184" font-size="12" text-anchor="end">30</text><line x1="52" y1="124.7" x2="56" y2="124.7" stroke="#8a96a8"/><text x="49" y="128.7" font-size="12" text-anchor="end">45</text><line x1="52" y1="69.3" x2="56" y2="69.3" stroke="#8a96a8"/><text x="49" y="73.3" font-size="12" text-anchor="end">60</text><line x1="52" y1="14" x2="56" y2="14" stroke="#8a96a8"/><text x="49" y="18" font-size="12" text-anchor="end">75</text><text x="263" y="214" font-size="12.5" text-anchor="middle">ACTN3 R577X genotype (copies of T, the 577X allele)</text><text x="18" y="97" font-size="12.5" text-anchor="middle" transform="rotate(-90 18 97)">mean NDRM.CH (%)</text></svg><figcaption>An interaction: the mean gain rises with the number of copies of 577X in women, but hardly at all in men. Without an interaction the lines would be parallel.</figcaption></figure>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="fms %&gt;%
+  drop_na(actn3, NDRM.CH, Gender) %&gt;%
+  ggplot(aes(x = actn3, y = NDRM.CH, colour = Gender)) +
+  geom_jitter(width = 0.15, alpha = 0.3) +
+  geom_smooth(method = &quot;lm&quot;)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">fms %&gt;%
+  drop_na(actn3, NDRM.CH, Gender) %&gt;%
+  ggplot(aes(x = actn3, y = NDRM.CH, colour = Gender)) +
+  geom_jitter(width = 0.15, alpha = 0.3) +
+  geom_smooth(method = &quot;lm&quot;)</pre></div>
+<p>Be careful with interactions. A test for an interaction has much less power than the test of the main effect, and it is easy to find one by chance if you look at enough subgroups. An interaction is most convincing when it was expected beforehand, as this one was, and when it is replicated.</p>
+<div class="activity">
+  <div class="act-t">Adjust, and look for an interaction</div>
+  <ol class="steps">
+    <li data-task="cf-bmi" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;pre.BMI&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;pre.BMI&quot;]] - (-1.223543)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the regression of NDRM.CH on pre.BMI.</li>
+    <li data-task="cf-adj" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;pre.BMI&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;pre.BMI&quot;]] - (-0.9811961)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Now adjust it for Gender.</li>
+    <li data-task="cf-actn3" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;actn3&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;actn3&quot;]] - (4.098977)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the additive model of ACTN3, adjusted for Gender and Age, and look at its summary.</li>
+    <li data-task="cf-int" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;actn3:GenderMale&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;actn3:GenderMale&quot;]] - (-6.889804)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the model with the interaction between actn3 and Gender.</li>
+    <li data-task="cf-plot" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomSmooth&quot;) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$x) &amp;&amp; identical(rlang::as_label(m$x), &quot;actn3&quot;), logical(1))) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$y) &amp;&amp; identical(rlang::as_label(m$y), &quot;NDRM.CH&quot;), logical(1))) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$colour) &amp;&amp; identical(rlang::as_label(m$colour), &quot;Gender&quot;), logical(1))), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw the plot of NDRM.CH against actn3, with a line for each sex, as above.</li>
+    <li data-task="cf-women" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; length(m) == 2 &amp;&amp; &quot;actn3&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;actn3&quot;]] - (7.680619)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the additive model in women only (filter the data in the <code>data</code> argument).</li>
+  </ol>
+</div>
+<div class="q" data-q="cf-q-adj" data-accept="^[-−]0?\.98[0-9]*$" data-placeholder="A number">
+  <div class="q-text">What is the coefficient of pre.BMI once the model is adjusted for Gender, to two decimal places?</div>
+  <div class="q-model">−0.98 (95% CI −1.40 to −0.57): each unit of BMI goes with a gain about 1 point smaller, among people of the same sex.</div>
+</div>
+<div class="q" data-q="cf-q-women" data-accept="^7\.68[0-9]*$||^7\.7$" data-placeholder="A number">
+  <div class="q-text">In women only, how much larger is the gain in strength for each copy of 577X, to two decimal places?</div>
+  <div class="q-model">7.68 percentage points (p = 0.002). In men it is 0.79 (p = 0.66).</div>
+</div>
+<div class="q" data-q="cf-q-conf" data-type="mcq">
+  <div class="q-text">Why is sex a possible confounder of the association between BMI and the gain in strength?</div>
+  <div class="mcq"><label data-correct data-why="That is what a confounder is: related to both, and not on the path between them."><input type="radio"> Sex is associated with BMI and with the gain in strength, and BMI doesn’t cause a person’s sex</label><label data-why="Whether a variable is a confounder depends on how it relates to the exposure and the outcome, not on its p-value."><input type="radio"> Because it has a small p-value in the model</label><label data-why="Confounders can be of any type."><input type="radio"> Because it is a categorical variable</label></div>
+</div>
+<div class="q" data-q="cf-q-int" data-type="mcq">
+  <div class="q-text">What does the interaction term <code>actn3:GenderMale</code> = −6.9 (p = 0.045) mean?</div>
+  <div class="mcq"><label data-correct data-why="Women: 7.7 points per copy; men: 7.7 − 6.9 = 0.8 points per copy."><input type="radio"> The effect of each copy of 577X is about 6.9 points smaller in men than in women</label><label data-why="That is closer to the main effect of sex. The interaction is about how the genotype’s effect differs."><input type="radio"> Men have 6.9 points less gain than women</label><label data-why="It has an effect in women, and the interaction says that it differs between the sexes."><input type="radio"> ACTN3 has no effect</label></div>
+</div>
+<div class="q" data-q="cf-q-adjust">
+  <div class="q-text">The coefficient of actn3 fell from 4.9 to 4.1 when Gender and Age were added. Was the original estimate confounded? What else could make a coefficient change when variables are added?</div>
+  <div class="q-model">Partly: the change suggests that some of the crude association went with sex or age, for example if the genotype’s frequency differed a little between the sexes in this sample. But a coefficient can also change because adding variables that explain a lot of the outcome makes the estimate more precise, and because the people missing a covariate drop out of the model. Here the adjusted model has 602 of the original 603 people (one has no age), so the change is mostly about the adjustment. A genotype is fixed at conception, so sex and age can’t be on its causal path.</div>
+</div>
+
+</section>
+
+<section class="chapter" id="checking" data-num="5" data-title="Checking a model" data-bench="rstudio" hidden>
+  <h1>Checking a model</h1>
+  <div class="meta-row"><span class="pill time">≈ 20 min</span></div>
+  <p class="lede">A model is only as good as its assumptions. Look at its residuals before you trust its p-values.</p>
+
+<p>Linear regression makes assumptions, which you can remember as <b>LINE</b>:</p>
+<ul>
+<li><b>L</b>inear: the average of the outcome changes in a straight line with each predictor;</li>
+<li><b>I</b>ndependent: the people (or samples) are independent of each other;</li>
+<li><b>N</b>ormal: the residuals are roughly normal (this matters least, in large samples);</li>
+<li><b>E</b>qual variance: the scatter around the line is about the same everywhere.</li>
+</ul>
+<p>Independence is the most important, and the hardest to check from the data: think about how the data were collected (repeated measurements of the same people, or relatives, aren’t independent). The others can be checked by looking at the <b>residuals</b>, the differences between the observed values and the fitted ones.</p>
+<figure class="fig" role="img"><svg viewBox="0 0 560 196" xmlns="http://www.w3.org/2000/svg" focusable="false"><line x1="34" y1="99" x2="188" y2="99" stroke="#8a96a8" stroke-width="1.2" stroke-dasharray="4 4"/><circle cx="71.4" cy="91.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="140.6" cy="100.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="51" cy="98.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="68.9" cy="45.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="131.5" cy="114.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="110.3" cy="95" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="66.4" cy="96" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="72.5" cy="104.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="41.5" cy="100.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="169.2" cy="84.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="93.5" cy="90.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="182.2" cy="91.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="47.8" cy="109.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="134.3" cy="108.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="87.6" cy="105" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="132.7" cy="114.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="169.1" cy="105.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="47.9" cy="102.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="175.6" cy="108.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="175.6" cy="98.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="122.4" cy="102.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="80" cy="128" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="90.3" cy="93.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="149.3" cy="104.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="52.8" cy="107.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="176.1" cy="119.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="160.7" cy="108.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="60.4" cy="99.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="115.2" cy="104.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="169.4" cy="99.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="112.1" cy="102" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="73.9" cy="108.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="40.3" cy="105.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="99.9" cy="89.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="93.2" cy="83.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="64" cy="124.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="96" cy="88.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="179.7" cy="80.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="67.8" cy="97.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="40.5" cy="110.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="149.3" cy="103.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="101.7" cy="91.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="72.2" cy="112" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="99.1" cy="90.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="123.8" cy="100.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><rect x="34" y="28" width="154" height="142" fill="none" stroke="#8a96a8"/><text x="111" y="18" font-size="12" text-anchor="middle" font-weight="600">no pattern: good</text><text x="111" y="188" font-size="11.5" text-anchor="middle">fitted values</text><line x1="216" y1="99" x2="370" y2="99" stroke="#8a96a8" stroke-width="1.2" stroke-dasharray="4 4"/><circle cx="233" cy="32.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="236" cy="59.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="337.5" cy="91.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="293.7" cy="164" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="229.7" cy="54.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="223.1" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="303.7" cy="143.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="328.3" cy="132.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="221" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="341.6" cy="72.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="225.4" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="360.3" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="304.6" cy="168.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="246.4" cy="72.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="232.7" cy="38.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="308.3" cy="161" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="243" cy="73.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="238.3" cy="68.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="238.9" cy="65.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="284.2" cy="156" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="288.8" cy="168.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="277.6" cy="153.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="249.2" cy="86.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="285.2" cy="139.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="323.2" cy="114.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="309.1" cy="136.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="283.2" cy="151.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="234.1" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="293.4" cy="159.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="322.7" cy="124.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="296.7" cy="147.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="328.3" cy="115.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="309.4" cy="148" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="352.2" cy="41.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="362.7" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="253" cy="107.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="362" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="274.1" cy="123.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="295.4" cy="163.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="311.1" cy="125.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="263.4" cy="132.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="343" cy="69.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="359.4" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="343.2" cy="76.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="309.4" cy="138.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><rect x="216" y="28" width="154" height="142" fill="none" stroke="#8a96a8"/><text x="293" y="18" font-size="12" text-anchor="middle" font-weight="600">a curve: not linear</text><text x="293" y="188" font-size="11.5" text-anchor="middle">fitted values</text><line x1="398" y1="99" x2="552" y2="99" stroke="#8a96a8" stroke-width="1.2" stroke-dasharray="4 4"/><circle cx="524.6" cy="136.1" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="508" cy="168.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="521.5" cy="127.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="464.5" cy="111.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="473.5" cy="144.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="441.5" cy="104.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="412.6" cy="99.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="463.4" cy="115.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="419.6" cy="95.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="444.8" cy="110.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="519" cy="129.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="531.2" cy="99.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="462.2" cy="134.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="517" cy="29.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="510.8" cy="99" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="489" cy="45.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="522.7" cy="144.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="517.5" cy="50.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="458.8" cy="118.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="546.4" cy="165" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="535.9" cy="93.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="491" cy="114.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="501.8" cy="67.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="528.4" cy="75.5" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="533.7" cy="82.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="490.5" cy="104.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="527.8" cy="119.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="408.2" cy="102.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="535.8" cy="59.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="455.6" cy="120.6" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="522.5" cy="74.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="489.4" cy="141.9" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="448.8" cy="103.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="449.9" cy="83.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="477.9" cy="68" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="453" cy="79.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="425.7" cy="99.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="465" cy="77.2" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="515.9" cy="77.8" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="445.1" cy="92.3" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="428.2" cy="99" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="410" cy="101.7" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="483.1" cy="103.4" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="483.6" cy="150" r="2.6" fill="#0b6b8a" opacity="0.7"/><circle cx="449.9" cy="78" r="2.6" fill="#0b6b8a" opacity="0.7"/><rect x="398" y="28" width="154" height="142" fill="none" stroke="#8a96a8"/><text x="475" y="18" font-size="12" text-anchor="middle" font-weight="600">a funnel: unequal variance</text><text x="475" y="188" font-size="11.5" text-anchor="middle">fitted values</text></svg><figcaption>Plots of residuals against fitted values. With no pattern (left), the assumptions look reasonable. A curve means the relationship isn’t a straight line; a funnel means the variance isn’t equal.</figcaption></figure>
+<p><code>fitted()</code> and <code>residuals()</code> take them out of a model:</p>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="diag &lt;- tibble(fitted = fitted(fit), residual = residuals(fit))
+ggplot(diag, aes(x = fitted, y = residual)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">diag &lt;- tibble(fitted = fitted(fit), residual = residuals(fit))
+ggplot(diag, aes(x = fitted, y = residual)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0)</pre></div>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="ggplot(diag, aes(sample = residual)) +
+  stat_qq() +
+  stat_qq_line()">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">ggplot(diag, aes(sample = residual)) +
+  stat_qq() +
+  stat_qq_line()</pre></div>
+<p>For weight and height, the residuals are a little skewed to the right (a few people are much heavier than their height predicts) and spread out a little more for taller people. With 1,032 people, the coefficients and their confidence intervals are still reliable, but a model of log(weight) would fit better. Base R draws similar plots with <code>plot(fit)</code>.</p>
+<div class="activity">
+  <div class="act-t">Check the model</div>
+  <ol class="steps">
+    <li data-task="ck-resid" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomPoint&quot;), logical(1))) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomHline&quot;), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Plot the residuals of the regression of weight on height against its fitted values, as above.</li>
+    <li data-task="ck-qq" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomPoint&quot;) &amp;&amp; inherits(l$stat, &quot;StatQq&quot;), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw a QQ plot of the residuals.</li>
+  </ol>
+</div>
+<div class="q" data-q="ck-q-funnel" data-type="mcq">
+  <div class="q-text">A plot of residuals against fitted values is shaped like a funnel, narrow on the left and wide on the right. What does it suggest?</div>
+  <div class="mcq"><label data-why="A curve shows up as residuals that are above zero at the ends and below in the middle (or the other way round)."><input type="radio"> The relationship is curved</label><label data-why="With no problems, the residuals form an even band around zero."><input type="radio"> Everything is fine</label><label data-correct data-why="Unequal variance makes the standard errors, and so the p-values and confidence intervals, unreliable."><input type="radio"> The variance isn’t equal: the scatter grows with the fitted values, and a log transformation of the outcome often helps</label></div>
+</div>
+<div class="q" data-q="ck-q-indep" data-type="mcq">
+  <div class="q-text">A study measures a biomarker three times in each of 50 patients, and analyses the 150 measurements with lm() as if they were 150 patients. What is wrong?</div>
+  <div class="mcq"><label data-correct data-why="Its standard errors are too small and its p-values too small. A model for repeated measurements (a mixed model) is needed, or one summary per patient."><input type="radio"> The measurements aren’t independent: measurements of the same patient are alike, so the model is overconfident</label><label data-why="Normal residuals don’t make up for observations that aren’t independent."><input type="radio"> Nothing, as long as the residuals are normal</label><label data-why="It can use any number."><input type="radio"> lm() can’t use more than 100 observations</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="logistic" data-num="6" data-title="Logistic regression" data-bench="rstudio" hidden>
+  <h1>Logistic regression and odds ratios</h1>
+  <div class="meta-row"><span class="pill time">≈ 40 min</span></div>
+  <p class="lede">For a yes-or-no outcome, logistic regression models the log odds, and its exponentiated coefficients are odds ratios.</p>
+
+<h2 id="lg-why">Yes-or-no outcomes</h2>
+<p>Many outcomes in medicine are binary: disease or not, response to treatment or not, case or control. A straight line is a poor model of a probability, because it goes below 0 and above 1. <b>Logistic regression</b> models the <b>log odds</b> instead, which can take any value:</p>
+<div class="formula" role="math">log( <i>p</i> / (1 − <i>p</i>) ) = β<sub>0</sub> + β<sub>1</sub><i>x</i><sub>1</sub> + β<sub>2</sub><i>x</i><sub>2</sub> + …<div class="formula-note">p is the probability of the outcome, and p / (1 − p) its odds; each coefficient is the change in the log odds for a change of 1 in its predictor</div></div>
+<figure class="fig" role="img"><svg viewBox="0 0 560 222" xmlns="http://www.w3.org/2000/svg" focusable="false"><line x1="56" y1="159.7" x2="520" y2="159.7" stroke="#8a96a8" stroke-width="1" stroke-dasharray="3 4"/><line x1="56" y1="38.3" x2="520" y2="38.3" stroke="#8a96a8" stroke-width="1" stroke-dasharray="3 4"/><path d="M56 186.4 L520 11.6" fill="none" stroke="#8a96a8" stroke-width="1.8" stroke-dasharray="6 5" opacity="1"/><path d="M56 159.4 L58.3 159.4 L60.6 159.4 L63 159.4 L65.3 159.3 L67.6 159.3 L69.9 159.3 L72.2 159.3 L74.6 159.2 L76.9 159.2 L79.2 159.2 L81.5 159.1 L83.8 159.1 L86.2 159.1 L88.5 159 L90.8 159 L93.1 158.9 L95.4 158.9 L97.8 158.8 L100.1 158.8 L102.4 158.7 L104.7 158.7 L107 158.6 L109.4 158.5 L111.7 158.5 L114 158.4 L116.3 158.3 L118.6 158.2 L121 158.1 L123.3 158 L125.6 157.9 L127.9 157.8 L130.2 157.7 L132.6 157.6 L134.9 157.4 L137.2 157.3 L139.5 157.2 L141.8 157 L144.2 156.8 L146.5 156.7 L148.8 156.5 L151.1 156.3 L153.4 156.1 L155.8 155.9 L158.1 155.6 L160.4 155.4 L162.7 155.1 L165 154.9 L167.4 154.6 L169.7 154.3 L172 154 L174.3 153.6 L176.6 153.3 L179 152.9 L181.3 152.5 L183.6 152.1 L185.9 151.6 L188.2 151.2 L190.6 150.7 L192.9 150.2 L195.2 149.6 L197.5 149 L199.8 148.4 L202.2 147.8 L204.5 147.2 L206.8 146.5 L209.1 145.7 L211.4 145 L213.8 144.2 L216.1 143.4 L218.4 142.5 L220.7 141.6 L223 140.6 L225.4 139.7 L227.7 138.6 L230 137.6 L232.3 136.5 L234.6 135.3 L237 134.1 L239.3 132.9 L241.6 131.6 L243.9 130.3 L246.2 128.9 L248.6 127.5 L250.9 126.1 L253.2 124.6 L255.5 123.1 L257.8 121.5 L260.2 120 L262.5 118.3 L264.8 116.7 L267.1 115 L269.4 113.3 L271.8 111.6 L274.1 109.8 L276.4 108 L278.7 106.3 L281 104.4 L283.4 102.6 L285.7 100.8 L288 99 L290.3 97.2 L292.6 95.4 L295 93.6 L297.3 91.7 L299.6 90 L301.9 88.2 L304.2 86.4 L306.6 84.7 L308.9 83 L311.2 81.3 L313.5 79.7 L315.8 78 L318.2 76.5 L320.5 74.9 L322.8 73.4 L325.1 71.9 L327.4 70.5 L329.8 69.1 L332.1 67.7 L334.4 66.4 L336.7 65.1 L339 63.9 L341.4 62.7 L343.7 61.5 L346 60.4 L348.3 59.4 L350.6 58.3 L353 57.4 L355.3 56.4 L357.6 55.5 L359.9 54.6 L362.2 53.8 L364.6 53 L366.9 52.3 L369.2 51.5 L371.5 50.8 L373.8 50.2 L376.2 49.6 L378.5 49 L380.8 48.4 L383.1 47.8 L385.4 47.3 L387.8 46.8 L390.1 46.4 L392.4 45.9 L394.7 45.5 L397 45.1 L399.4 44.7 L401.7 44.4 L404 44 L406.3 43.7 L408.6 43.4 L411 43.1 L413.3 42.9 L415.6 42.6 L417.9 42.4 L420.2 42.1 L422.6 41.9 L424.9 41.7 L427.2 41.5 L429.5 41.3 L431.8 41.2 L434.2 41 L436.5 40.8 L438.8 40.7 L441.1 40.6 L443.4 40.4 L445.8 40.3 L448.1 40.2 L450.4 40.1 L452.7 40 L455 39.9 L457.4 39.8 L459.7 39.7 L462 39.6 L464.3 39.5 L466.6 39.5 L469 39.4 L471.3 39.3 L473.6 39.3 L475.9 39.2 L478.2 39.2 L480.6 39.1 L482.9 39.1 L485.2 39 L487.5 39 L489.8 38.9 L492.2 38.9 L494.5 38.9 L496.8 38.8 L499.1 38.8 L501.4 38.8 L503.8 38.7 L506.1 38.7 L508.4 38.7 L510.7 38.7 L513 38.6 L515.4 38.6 L517.7 38.6 L520 38.6" fill="none" stroke="#0b6b8a" stroke-width="2.6" opacity="1"/><line x1="56" y1="184" x2="520" y2="184" stroke="#8a96a8"/><line x1="56" y1="14" x2="56" y2="184" stroke="#8a96a8"/><line x1="56" y1="184" x2="56" y2="188" stroke="#8a96a8"/><text x="56" y="201" font-size="12" text-anchor="middle"></text><line x1="288" y1="184" x2="288" y2="188" stroke="#8a96a8"/><text x="288" y="201" font-size="12" text-anchor="middle"></text><line x1="520" y1="184" x2="520" y2="188" stroke="#8a96a8"/><text x="520" y="201" font-size="12" text-anchor="middle"></text><line x1="52" y1="159.7" x2="56" y2="159.7" stroke="#8a96a8"/><text x="49" y="163.7" font-size="12" text-anchor="end">0</text><line x1="52" y1="99" x2="56" y2="99" stroke="#8a96a8"/><text x="49" y="103" font-size="12" text-anchor="end">0.5</text><line x1="52" y1="38.3" x2="56" y2="38.3" stroke="#8a96a8"/><text x="49" y="42.3" font-size="12" text-anchor="end">1</text><text x="288" y="218" font-size="12.5" text-anchor="middle">predictor (for example, the number of risk alleles)</text><text x="18" y="99" font-size="12.5" text-anchor="middle" transform="rotate(-90 18 99)">P(outcome)</text><text x="373.1" y="84.4" font-size="12" text-anchor="start" fill="#0b6b8a" font-weight="600">logistic curve: always</text><text x="373.1" y="99.4" font-size="12" text-anchor="start" fill="#0b6b8a" font-weight="600">between 0 and 1</text><text x="63.7" y="28.6" font-size="11.5" text-anchor="start" fill="#8a96a8">a straight line goes below 0 and above 1</text></svg><figcaption>On the scale of probabilities, the logistic model is an S-shaped curve that stays between 0 and 1.</figcaption></figure>
+<p>Because the coefficients are on the log scale, <b>exponentiating</b> one gives an <b>odds ratio</b>: the factor by which the odds are multiplied for a change of 1 in its predictor. In R, <code>glm()</code> (a <i>generalised linear model</i>) with <code>family = binomial</code> fits a logistic regression:</p>
+<div class="rout"><pre>&gt; m1 &lt;- glm(obese ~ Gender, data = fms, family = binomial)
+&gt; coef(m1)
+(Intercept)  GenderMale
+ -0.9151340   0.5875292
+&gt; exp(coef(m1))
+(Intercept)  GenderMale
+   0.400463    1.799537</pre></div>
+<p>The odds of a BMI over 25 are 1.80 times as high in men as in women: exactly the odds ratio you calculated from the table last week. (The exponentiated intercept, 0.40, is the odds for women: 173 / 432.) Unlike the table, a model can adjust for other variables. Here is the A allele of the ESR1 SNP, adjusted for sex and age:</p>
+<div class="rout"><pre>&gt; m2 &lt;- glm(obese ~ esr1 + Gender + Age, data = fms, family = binomial)
+&gt; summary(m2)
+
+Call:
+glm(formula = obese ~ esr1 + Gender + Age, family = binomial,
+    data = fms)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -2.72350    0.31332  -8.692  &lt; 2e-16 ***
+esr1         0.23584    0.11181   2.109 0.034914 *
+GenderMale   0.52858    0.13868   3.812 0.000138 ***
+Age          0.07152    0.01210   5.909 3.44e-09 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1274.1  on 991  degrees of freedom
+Residual deviance: 1216.3  on 988  degrees of freedom
+  (405 observations deleted due to missingness)
+AIC: 1224.3
+
+Number of Fisher Scoring iterations: 4</pre></div>
+<p><code>summary()</code> shows the coefficients on the log-odds scale, with <i>z</i> tests (logistic regression uses the normal distribution, not the t distribution). To report odds ratios, exponentiate the coefficients and their confidence intervals. <code>confint()</code> calculates intervals for a glm by “profiling” the likelihood, and it says so:</p>
+<div class="rout"><pre>&gt; exp(cbind(OR = coef(m2), confint(m2)))
+Waiting for profiling to be done...
+                    OR      2.5 %    97.5 %
+(Intercept) 0.06564487 0.03527753 0.1206044
+esr1        1.26597654 1.01635050 1.5760740
+GenderMale  1.69652593 1.29302282 2.2274908
+Age         1.07413675 1.04908332 1.1001153</pre></div>
+<p>Each copy of the A allele goes with 1.27 times the odds of being overweight (95% CI 1.02 to 1.58), allowing for sex and age; each year of age multiplies the odds by 1.07. Odds ratios are how case–control studies and GWAS report the effects of alleles on disease.</p>
+<div class="activity">
+  <div class="act-t">Logistic regression</div>
+  <ol class="steps">
+    <li data-task="lo-m1" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;GenderMale&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;GenderMale&quot;]] - (0.5875292)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the logistic regression of obese on Gender.</li>
+    <li data-task="lo-or" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; any(abs(v - 1.799537) &lt; 1e-4) })(.Last.value)">Exponentiate its coefficients to get the odds ratio.</li>
+    <li data-task="lo-m2" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;esr1&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;esr1&quot;]] - (0.2358438)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the model of obese on esr1, Gender and Age, and look at its summary.</li>
+    <li data-task="lo-ci" data-rcheck="(function(v) { is.matrix(v) &amp;&amp; ncol(v) == 3 &amp;&amp; any(abs(v - 1.0163505) &lt; 1e-4) })(.Last.value)">Calculate its odds ratios with their confidence intervals.</li>
+    <li data-task="lo-actn3" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;actn3&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;actn3&quot;]] - (-0.1836)) &lt; 0.001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Is ACTN3 R577X associated with being overweight? Fit the model of obese on actn3, Gender and Age.</li>
+  </ol>
+</div>
+<div class="q" data-q="lo-q-or" data-accept="^1\.80?[0-9]*$||^1\.79[5-9][0-9]*$" data-placeholder="A number">
+  <div class="q-text">What is the odds ratio for being overweight in men compared with women, to two decimal places?</div>
+  <div class="q-model">1.80, the same as the odds ratio of the table in week 3: a logistic regression with one categorical predictor reproduces the table’s odds ratio.</div>
+</div>
+<div class="q" data-q="lo-q-esr1" data-accept="^1\.27[0-9]*$||^1\.266[0-9]*$" data-placeholder="A number">
+  <div class="q-text">What is the odds ratio for each copy of the A allele of esr1_rs1042717, allowing for sex and age, to two decimal places?</div>
+  <div class="q-model">1.27 (95% CI 1.02 to 1.58; p = 0.035).</div>
+</div>
+<div class="q" data-q="lo-q-age" data-type="mcq">
+  <div class="q-text">The odds ratio for Age is 1.07. What does it mean?</div>
+  <div class="mcq"><label data-why="An odds ratio multiplies the odds, not the probability."><input type="radio"> Each year of age adds 7% to the probability of being overweight</label><label data-correct data-why="Over 10 years, that is 1.07&lt;sup&gt;10&lt;/sup&gt;, about double the odds."><input type="radio"> Each extra year of age multiplies the odds of being overweight by 1.07, allowing for sex and genotype</label><label data-why="That would be a risk ratio, and it would be per year. Odds ratios and risk ratios are similar only for rare outcomes."><input type="radio"> Older people are 1.07 times as likely to be overweight</label></div>
+</div>
+<div class="q" data-q="lo-q-dich">
+  <div class="q-text">The linear regression of pre.BMI on esr1 gives p = 0.32, but the logistic regression of obese (BMI over 25) on esr1 gives p = 0.035. How could that happen, and what would you report?</div>
+  <div class="q-model">They ask different questions: one about the mean BMI, the other about the proportion above 25, so they can disagree, especially when the evidence is weak. Turning a continuous outcome into yes or no throws away information, and choosing a cut-off after seeing the data is a form of p-hacking. Decide on the outcome and the model before the analysis, report the one you planned, and treat this weak, inconsistent evidence with caution.</div>
+</div>
+
+</section>
+
+<section class="chapter" id="unify" data-num="7" data-title="Tests are models" data-bench="rstudio" hidden>
+  <h1>Why the tests are linear models</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">t-tests, ANOVA and correlation are all regression models in disguise. Seeing them that way makes statistics simpler, not harder.</p>
+
+<p>The tests of week 3 are linear models with particular predictors. Fit a t-test with equal variances, and then the regression of ABL1 on the subtype:</p>
+<div class="rout"><pre>&gt; two &lt;- leuk %&gt;% filter(mol.biol %in% c(&quot;BCR/ABL&quot;, &quot;NEG&quot;))
+&gt; t.test(ABL1 ~ mol.biol, data = two, var.equal = TRUE)
+
+	Two Sample t-test
+
+data:  ABL1 by mol.biol
+t = 9.2626, df = 77, p-value = 3.742e-14
+alternative hypothesis: true difference in means between group BCR/ABL and group NEG is not equal to 0
+95 percent confidence interval:
+ 0.8632271 1.3360135
+sample estimates:
+mean in group BCR/ABL     mean in group NEG
+             9.780811              8.681190
+&gt; summary(lm(ABL1 ~ mol.biol, data = two))
+
+Call:
+lm(formula = ABL1 ~ mol.biol, data = two)
+
+Residuals:
+     Min       1Q   Median       3Q      Max
+-1.76081 -0.34619  0.08881  0.31919  1.06881
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  9.78081    0.08656 112.994  &lt; 2e-16 ***
+mol.biolNEG -1.09962    0.11872  -9.263 3.74e-14 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5265 on 77 degrees of freedom
+Multiple R-squared:  0.527,	Adjusted R-squared:  0.5209
+F-statistic:  85.8 on 1 and 77 DF,  p-value: 3.742e-14</pre></div>
+<p>The regression’s coefficient <code>mol.biolNEG</code> (−1.10) is the difference between the means (NEG minus BCR/ABL, the reference), and its t (−9.26, with 77 degrees of freedom) and p-value (3.7 × 10<sup>−14</sup>) are the t-test’s. And the ANOVA of week 3 is the <code>anova()</code> of a model with a categorical predictor:</p>
+<div class="rout"><pre>&gt; anova(lm(HOXA9 ~ mol.biol, data = leuk))
+Analysis of Variance Table
+
+Response: HOXA9
+          Df Sum Sq Mean Sq F value    Pr(&gt;F)
+mol.biol   2 139.72  69.860  230.28 &lt; 2.2e-16 ***
+Residuals 86  26.09   0.303
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</pre></div>
+<div class="table"><table class="plain"><thead><tr><th>The test of week 3</th><th>As a model</th><th>The connection</th></tr></thead><tbody><tr><td>Two-sample t-test (equal variances)</td><td><code>lm(y ~ group)</code>, with two groups</td><td>the coefficient of the group = the difference in means</td></tr><tr><td>One-way ANOVA</td><td><code>lm(y ~ group)</code>, with three or more groups</td><td><code>anova()</code> of the model gives the same F test</td></tr><tr><td>Correlation</td><td><code>lm(y ~ x)</code></td><td>the slope is 0 exactly when the correlation is 0, and R² = r²</td></tr><tr><td>Chi-square test of a 2 × 2 table</td><td><code>glm(outcome ~ group, family = binomial)</code></td><td>the exponentiated coefficient is the odds ratio of the table</td></tr><tr><td>Adjusting for other variables</td><td>add them to the model: <code>lm(y ~ x + age + sex)</code></td><td>not possible with the simple tests at all</td></tr></tbody></table></div>
+<p>This matters for two reasons. You only need to understand one framework, the model, to understand all these tests. And a model can do what the simple tests can’t: allow for confounders, include several predictors, and estimate the size of each effect.</p>
+<div class="activity">
+  <div class="act-t">Tests as models</div>
+  <ol class="steps">
+    <li data-task="un-t" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Two Sample t-test&quot;, v$method) &amp;&amp; !grepl(&quot;Welch&quot;, v$method) })(.Last.value)">Do the t-test of ABL1 between the two subtypes with equal variances (Student’s t-test).</li>
+    <li data-task="un-lm" data-rcheck="(function(v) { (function(m) !is.null(m) &amp;&amp; &quot;mol.biolNEG&quot; %in% names(m) &amp;&amp; isTRUE(abs(m[[&quot;mol.biolNEG&quot;]] - (-1.09962)) &lt; 0.0001))(if (inherits(v, &quot;lm&quot;)) coef(v) else if (inherits(v, &quot;summary.lm&quot;) || inherits(v, &quot;summary.glm&quot;)) v$coefficients[, 1] else NULL) })(.Last.value)">Fit the same comparison as a linear model, and look at its summary.</li>
+    <li data-task="un-anova" data-rcheck="(function(v) { inherits(v, &quot;anova&quot;) &amp;&amp; abs(v[[&quot;F value&quot;]][1] - 230.28) &lt; 0.01 })(.Last.value)">Do the ANOVA of HOXA9 as the anova() of a linear model.</li>
+  </ol>
+</div>
+<div class="q" data-q="un-q-coef" data-type="mcq">
+  <div class="q-text">In <code>lm(ABL1 ~ mol.biol, data = two)</code>, what is the intercept, 9.78?</div>
+  <div class="mcq"><label data-why="That is the coefficient mol.biolNEG."><input type="radio"> The difference between the groups</label><label data-correct data-why="With a categorical predictor, the intercept is the mean of the reference group, and each other coefficient is a difference from it."><input type="radio"> The mean ABL1 expression of the reference group, BCR/ABL</label><label data-why="That would be about 9.2."><input type="radio"> The mean ABL1 expression of all 79 patients</label></div>
+</div>
+<div class="q" data-q="un-q-welch" data-type="mcq">
+  <div class="q-text">The t-test with equal variances gives t = 9.26, but Welch’s test (chapter 2 of last week) gave t = 9.13. Why?</div>
+  <div class="mcq"><label data-correct data-why="A standard linear model assumes the same variance in every group: the E of LINE."><input type="radio"> Welch’s test doesn’t assume equal variances, so it uses a slightly different standard error, and lm() assumes equal variances like Student’s test</label><label data-why="They make different assumptions. With similar variances, as here, they agree closely."><input type="radio"> One of them is wrong</label><label data-why="Both use all 79."><input type="radio"> Because lm() leaves out some patients</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="report" data-num="8" data-title="Your report" data-bench="rstudio" hidden>
+  <h1>Reporting regression models</h1>
+  <div class="meta-row"><span class="pill time">≈ 20 min</span></div>
+  <p class="lede">Put this week’s models into a report that renders from the data, with their effects reported in words.</p>
+
+<p>This week’s report is about ACTN3 R577X, the gain in strength, and an allele of ESR1 and being overweight. <b>Create this file</b> saves it as <code>week4.qmd</code>.</p>
+<div class="codefile" data-path="week4.qmd"><div class="cf-head"><span class="cf-name">week4.qmd</span><span class="grow"></span><button class="do" type="button" data-file-create="week4.qmd">Create this file</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">---
+title: &quot;Week 4: regression&quot;
+author: &quot;Your name&quot;
+format: html
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+fms &lt;- read_csv(&quot;data/famuss.csv&quot;, show_col_types = FALSE) %&gt;%
+  mutate(actn3 = case_when(actn3_r577x == &quot;CC&quot; ~ 0,
+                           actn3_r577x == &quot;CT&quot; ~ 1,
+                           actn3_r577x == &quot;TT&quot; ~ 2),
+         esr1 = case_when(esr1_rs1042717 == &quot;GG&quot; ~ 0,
+                          esr1_rs1042717 == &quot;GA&quot; ~ 1,
+                          esr1_rs1042717 == &quot;AA&quot; ~ 2),
+         obese = pre.BMI &gt; 25)
+```
+
+## ACTN3 R577X and the gain in strength
+
+```{r}
+#| label: actn3
+fit &lt;- lm(NDRM.CH ~ actn3 + Gender + Age, data = fms)
+summary(fit)
+confint(fit)
+```
+
+Each extra copy of the 577X allele was associated with a gain in strength
+`r round(coef(fit)[&quot;actn3&quot;], 1)` percentage points larger, allowing for sex
+and age.
+
+## Does the effect differ between women and men?
+
+Add the model with an interaction between `actn3` and `Gender` here.
+
+## ESR1 and being overweight
+
+Add the logistic regression of `obese` on `esr1`, `Gender` and `Age` here,
+with its odds ratios.</pre></div>
+<p>When you report a regression, give the coefficient (or the odds ratio), its confidence interval and its p-value, say what it is adjusted for, and say what the predictor counts: “each copy of the 577X allele”, not just “actn3”.</p>
+<div class="activity">
+  <div class="act-t">Write and render your report</div>
+  <ol class="steps">
+    <li data-task="rp4-create" data-auto="file:create path~week4.qmd">Create <code>week4.qmd</code> with the button above, and put your name in it.</li>
+    <li data-task="rp4-render" data-auto="knit:done path~week4.qmd ok=true">Render it.</li>
+    <li data-task="rp4-int" data-check="has:week4.qmd|actn3 ?\* ?Gender|actn3:Gender|Gender ?\* ?actn3">Add the model with the interaction between actn3 and Gender, and a sentence about what it shows.</li>
+    <li data-task="rp4-glm" data-check="has:week4.qmd|glm\([\s\S]*binomial">Add the logistic regression of obese on esr1, Gender and Age, with its odds ratios and confidence intervals.</li>
+    <li data-task="rp4-render2" data-check="has:week4.html|OR\s+2\.5 %|esr1\s+1\.26">Render the report again, and check that it shows the odds ratios.</li>
+  </ol>
+</div>
+
+</section>
+
+<section class="chapter finish-chapter" id="wrapup" data-num="★" data-title="Summary and homework" data-bench="rstudio" hidden>
+  <h1>Summary and homework</h1>
+  <p class="lede">What you have learnt this week, the formative homework, and how much of the practical you have done.</p>
+
+<h2 id="w4-ideas">This week’s main ideas</h2>
+<ul>
+<li><b>Correlation</b> measures how closely two variables follow a straight line; it isn’t causation, and it misses curved relationships.</li>
+<li><b>Linear regression</b> fits the line that minimises the squared residuals. The slope is the change in the average outcome per unit of the predictor; report it with its <b>confidence interval</b>. <b>R²</b> is the proportion of the variation explained.</li>
+<li>A genotype becomes a predictor by counting alleles (the <b>additive</b> model), or as a category (the genotypic model).</li>
+<li>In <b>multiple regression</b>, each coefficient allows for the other predictors. Adjusting for a <b>confounder</b> removes the part of an association that it explains; don’t adjust for variables on the causal path.</li>
+<li>An <b>interaction</b> means that an effect differs between groups: here ACTN3 R577X’s effect differs between women and men.</li>
+<li>Check the assumptions (<b>LINE</b>) with the residuals; independence matters most.</li>
+<li><b>Logistic regression</b> models the log odds of a yes-or-no outcome; exponentiated coefficients are <b>odds ratios</b>.</li>
+<li>The tests of week 3 are linear models, which can also adjust for other variables.</li>
+</ul>
+<div class="optional homework">
+  <div class="opt-t"><span class="opt-tag hw">Homework</span> A regression with a confounder (formative)</div>
+  <p class="opt-note">Do this after the session, before next week. It doesn’t count towards finishing the practical, but it builds your report.</p>
+
+<p>This homework is the <b>formative checkpoint</b> of the module: hand it in for feedback before week 5. It isn’t marked, but it is a rehearsal of the reporting that your assessment asks for. Add a new section to <code>week4.qmd</code>, render it, and send your tutor the <code>.qmd</code> and <code>.html</code> files (download them from the Files tab), together with your answers (<b>My answers</b>).</p>
+<div class="activity">
+  <div class="act-t">Homework 4</div>
+  <ol class="steps">
+    <li data-task="hw4-snp" data-check="has:week4.qmd|lm\(NDRM\.CH ~ (?!actn3)[^)]*\+[^)]*Gender">Choose a SNP other than ACTN3 R577X, code it additively, and fit a linear regression of NDRM.CH on it, adjusted for Gender and Age.</li>
+    <li data-task="hw4-ci" data-check="has:week4.qmd|confint\(">Report its coefficient with a confidence interval (confint()).</li>
+    <li data-task="hw4-resid" data-check="has:week4.qmd|residuals\(|resid\(">Check the model’s residuals with a plot.</li>
+    <li data-task="hw4-words" data-check="has:week4.qmd|confidence interval">Write a paragraph, for a clinician, that says what you tested, what you found (with the effect size, its confidence interval and the p-value), what you adjusted for and why, and one limitation.</li>
+    <li data-task="hw4-render" data-check="has:week4.html|confint">Render the report.</li>
+  </ol>
+</div>
+<div class="q" data-q="hw4-q-limit">
+  <div class="q-text">What is one important limitation of a single-SNP regression like yours?</div>
+  <div class="q-model">For example: the result is one of many possible tests (other SNPs, outcomes and codings), so a small p-value could be chance (week 5); the effect is small and explains little of the variation; there may be confounding by ancestry, which you haven’t adjusted for (week 5); the SNP may only be in linkage disequilibrium with the variant that matters; many participants weren’t genotyped, and if the missing data aren’t random the estimate could be biased; and an association needs replication in an independent study.</div>
+</div>
+
+</div>
+
+<h2 id="wrapup-progress">Your progress</h2>
+<p>This panel shows how much of this week’s practical you have done, and lists anything that is left. When everything is done (apart from the parts marked <b>If you have time</b> and the homework), the practical is complete.</p>
+<div class="cert-panel" data-cert-panel></div>
+</section>
+<!--/CHAPTERS-->
+    </aside>
+
+    <div class="splitter" role="separator" aria-orientation="vertical" title="Drag to resize, or double-click to reset"></div>
+
+    <section class="bench" aria-label="Workbench">
+      <div class="wb-tabs" role="tablist">
+        <button class="wb-tab rail-btn" type="button" id="tutRail" title="Show the instructions (Ctrl+\)" hidden><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M13 10l2 2-2 2"/></svg><span>Instructions</span></button>
+        <button class="wb-tab on" type="button" role="tab" data-wb="rstudio" title="RStudio, an integrated development environment for R"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg><span class="lbl">RStudio</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="editor" title="Your files and a text editor"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span class="lbl">Files</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="assistant" title="AI assistant"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l2 5.5L19.5 10 14 12l-2 5.5L10 12l-5.5-2L10 8.5z"/><path d="M19 17l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span class="lbl">AI</span><span class="dot"></span></button>
+        <button class="bench-close" type="button" aria-label="Back to the instructions">✕ Instructions</button>
+      </div>
+      <div class="wb-body">
+        <div class="wb-pane" data-wb="rstudio"><div id="rsRoot"></div></div>
+        <div class="wb-pane" data-wb="editor" hidden><div id="edRoot"></div></div>
+        <div class="wb-pane" data-wb="assistant" hidden><div id="aiRoot"></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<button class="bench-fab" type="button" aria-label="Open the workbench"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Workbench</button>
+<noscript><p style="padding:20px">This page needs JavaScript.</p></noscript>
+
+<script>window.RWB_STARTERS = [{"p":"all_expression.csv","s":5128376},{"p":"famuss.csv","s":1136486},{"p":"hgdp_akt1.csv","s":75405},{"p":"leukaemia.csv","s":5286},{"p":"virco.csv","s":675050}];
+window.RWB_STARTERS_VERSION = 1;</script>
+<script>window.RT_COURSES = [{"id":"week2","page":"week2.html","dataPage":"week2","title":"Week 2: Describing data","short":"Describing data","week":2,"time":"About 4 hours","tasks":["st-install","st-library","st-wd","st-read","st-view","d-bmi-mean","d-bmi-med","d-bmi-iqr","d-race","d-sex","d-geno","sh-hist","sh-box","sh-dens","pd-tails","pd-het","pd-miss","pd-depth","pd-sim","pd-simhist","pd-low","u-means","u-hist","u-120","u-se","u-ci","u-af","u-afci","u-boot","r-create","r-render","r-ci","r-inline","r-render2"],"questions":["st-q-cols","st-q-text","d-q-median","d-q-missing","d-q-bmi","d-q-skew","d-q-geno","d-q-percent","sh-q-box","sh-q-shape","sh-q-bins","pd-q-975","pd-q-het","pd-q-miss","pd-q-which","pd-q-rnaseq","u-q-se","u-q-af","u-q-n","u-q-sdse","u-q-ci","r-q-new","r-q-path","r-q-why"]},{"id":"week3","page":"week3.html","dataPage":"week3","title":"Week 3: Testing hypotheses","short":"Testing hypotheses","week":3,"time":"About 4½ hours","tasks":["st3-install","st3-library","st3-wd","st3-leuk","st3-fms","st3-count","lg-two","lg-means","lg-fun","lg-null","lg-hist","lg-p","lg-rag","tw-qq","tw-t","tw-w","tw-cd52","tw-sex","tw-paired","sv-box","sv-aov","sv-tukey","sv-meis","sv-actn3","sv-kw","ct-tab","ct-fisher","ct-obese","ct-chisq","ct-or","ct-hwe","ct-cauc","ct-akt1","rp-create","rp-render","rp-fisher","rp-hwe","rp-render2"],"questions":["st3-q-bcr","st3-q-abl","lg-q-p","lg-q-rag","lg-q-meaning","lg-q-rag2","lg-q-type1","tw-q-diff","tw-q-gain","tw-q-cd52","tw-q-welch","tw-q-paired","tw-q-big","sv-q-fwer","sv-q-actn3","sv-q-anova","sv-q-tukey","ct-q-exp","ct-q-or","ct-q-hwe","ct-q-fisher","ct-q-dir","ct-q-wahlund","ct-q-nr3c1","ch-q-1","ch-q-2","ch-q-3","ch-q-4","ch-q-5","ch-q-6","rp-q-sentence"]},{"id":"week4","page":"week4.html","dataPage":"week4","title":"Week 4: Regression","short":"Regression","week":4,"time":"About 4½ hours","tasks":["st4-install","st4-library","st4-wd","st4-read","st4-recode","st4-check","co-scatter","co-r","co-bmiage","co-spear","lr-fit","lr-sum","lr-ci","lr-pred","lr-smooth","lr-bmi","gp-add","gp-factor","gp-anova","gp-dom","cf-bmi","cf-adj","cf-actn3","cf-int","cf-plot","cf-women","ck-resid","ck-qq","lo-m1","lo-or","lo-m2","lo-ci","lo-actn3","un-t","un-lm","un-anova","rp4-create","rp4-render","rp4-int","rp4-glm","rp4-render2"],"questions":["st4-q-esr1","co-q-r","co-q-r2","co-q-curve","lr-q-slope","lr-q-r2","lr-q-pred","lr-q-bmi","lr-q-int","gp-q-slope","gp-q-tt","gp-q-why","cf-q-adj","cf-q-women","cf-q-conf","cf-q-int","cf-q-adjust","ck-q-funnel","ck-q-indep","lo-q-or","lo-q-esr1","lo-q-age","lo-q-dich","un-q-coef","un-q-welch"]},{"id":"week5","page":"week5.html","dataPage":"week5","title":"Week 5: Genome-scale inference","short":"Genome-scale inference","week":5,"time":"About 4½ hours","tasks":["st5-install","st5-library","st5-wd","st5-snps","st5-virco","mt-sim","mt-count","mt-hist","mt-mut","mt-virco","mt-vhist","co-bonf","co-bh","co-table","co-pvb","co-pvbh","co-hand","gw-read","gw-mat","gw-tests","gw-results","gw-count","gw-hist","gw-volcano","ps-read","ps-freq","ps-plot","ps-sim","ps-pca","ps-pcplot","ps-naive","ps-adj","ps-qq","ld-hgdp","ld-table","ld-r2","ld-heat","g5-qc","g5-pass","g5-assoc","g5-scan","g5-qq","g5-man","rp5-create","rp5-render","rp5-qq","rp5-man","rp5-render2"],"questions":["st5-q-50k","mt-q-fwer","mt-q-exp","mt-q-uniform","mt-q-shape","co-q-thr","co-q-bonf10","co-q-bh10","co-q-fdr","co-q-more","co-q-two","gw-q-exp","gw-q-bh","gw-q-false","gw-q-abl1","gw-q-5e8","gw-q-winner","ps-q-freq","ps-q-naive","ps-q-ten","ps-q-pc1","ps-q-scale","ld-q-r2","ld-q-tag","ld-q-bonf","g5-q-pass","g5-q-n05","g5-q-top","g5-q-actn3","g5-q-qq","g5-q-manh"]}];</script>
+<script>window.RT_PAGE = {"course":"week 4 of Biostatistics for Genomic Medicine, a course for healthcare professionals: linear and logistic regression, in R in RStudio","aiData":"The course’s data are in ~/data: famuss.csv (the FAMuSS study: 1,397 young adults who did 12 weeks of strength training of their non-dominant arm; one row per person, with the columns id, Gender, Age, Race, Pre.height (inches), Pre.weight (pounds), pre.BMI, Pre_NDRM_Max and Post_NDRM_Max (the heaviest weight lifted with the non-dominant arm before and after the training, in pounds), NDRM.CH (its percentage change), the same for the dominant arm (Pre_DRM_Max, Post_DRM_Max, DRM.CH), and 222 columns of genotypes named gene_variant, such as actn3_r577x and esr1_rs1042717, holding genotypes such as \"CC\", \"CT\" and \"TT\"; many values are missing (NA), because not everyone was measured or genotyped), leukaemia.csv (89 adults with B-cell acute lymphoblastic leukaemia from the ALL study: the columns sample, sex, age, BT (the B-cell stage), mol.biol (the molecular subtype: NEG, BCR/ABL or ALL1/AF4), remission (CR, complete remission, or REF, refractory) and the expression (log2) of five genes: ABL1, HOXA9, MEIS1, CD52 and RAG1), all_expression.csv (the expression, log2, of all 12,625 probes of the microarray in the 79 NEG and BCR/ABL patients of leukaemia.csv: one row per probe, with the columns probe, symbol and one column per patient, named as in leukaemia.csv’s sample column), hgdp_akt1.csv (1,064 people from 51 populations of the Human Genome Diversity Project, with the columns ID, Gender, Population, Geographic.origin, Geographic.area and their genotypes at four SNPs in AKT1: AKT1.C0756A, AKT1.C6024T, AKT1.G2347T and AKT1.G2375A) and virco.csv (1,066 samples of HIV-1 from the Virco data: SeqID and other details, the fold resistance to eight protease inhibitors (APV.Fold, ATV.Fold, IDV.Fold for indinavir, LPV.Fold, NFV.Fold for nelfinavir, RTV.Fold, SQV.Fold, TPV.Fold; how many times as much drug it takes to inhibit the virus as a reference virus), and the amino acid at each of the 99 positions of the protease, in the columns P1 to P99: \"-\" is the reference amino acid, \".\" a position that could not be read, and letters the amino acids found). This week uses famuss.csv.","aiStyle":"Show small, complete examples that run here, in the style of this course: the tidyverse (library(tidyverse)) for reading and wrangling data (read_csv, filter, select, mutate, group_by, summarise, count, pivot_longer) and for plots (ggplot2), and base R’s statistics functions (mean, sd, quantile, t.test, wilcox.test, aov, TukeyHSD, chisq.test, fisher.test, cor.test, lm, glm, p.adjust, prcomp). Explain the statistics in plain words for healthcare professionals who are learning biostatistics: what a result means, and what it does not mean. Use na.rm = TRUE or drop the missing values, because the FAMuSS data have many. Never put personal or patient data into an answer.","aiChat":["How do I interpret the slope of a regression line?","What does it mean to adjust for a confounder?","How do I turn a logistic regression coefficient into an odds ratio?","Why is a t-test the same as a linear model?"],"ex":{"obj":"fms","Obj":"Fms","dataName":"the FAMuSS data","file":"~/data/famuss.csv","read":"fms <- read_csv(\"~/data/famuss.csv\")","mean":"mean(fms$NDRM.CH, na.rm = TRUE)","cols":["id","Gender","Age","Race","Pre.height","Pre.weight","pre.BMI","NDRM.CH","actn3_r577x","esr1_rs1042717","actn3","esr1","obese"],"factors":["Gender","Race","actn3_r577x","esr1_rs1042717"]}};</script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/vfs.js"></script>
+<script src="assets/js/project.js"></script>
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/shell-lang.js"></script>
+<script src="assets/js/tools-wasm.js"></script>
+<script src="assets/js/shell-extra.js"></script>
+<script src="assets/js/shell-r.js"></script>
+<script src="assets/js/terminal.js"></script>
+<script src="assets/vendor/codemirror/codemirror.js"></script>
+<script src="assets/vendor/codemirror/r.js"></script>
+<script src="assets/vendor/codemirror/markdown.js"></script>
+<script src="assets/vendor/codemirror/yaml.js"></script>
+<script src="assets/vendor/codemirror/shell.js"></script>
+<script src="assets/vendor/codemirror/javascript.js"></script>
+<script src="assets/vendor/codemirror/python.js"></script>
+<script src="assets/vendor/codemirror/overlay.js"></script>
+<script src="assets/vendor/codemirror/multiplex.js"></script>
+<script src="assets/vendor/codemirror/yaml-frontmatter.js"></script>
+<script src="assets/vendor/codemirror/rmarkdown.js"></script>
+<script src="assets/vendor/codemirror/matchbrackets.js"></script>
+<script src="assets/vendor/codemirror/closebrackets.js"></script>
+<script src="assets/vendor/codemirror/comment.js"></script>
+<script src="assets/vendor/codemirror/searchcursor.js"></script>
+<script src="assets/vendor/codemirror/active-line.js"></script>
+<script src="assets/vendor/codemirror/runmode.js"></script>
+<script src="assets/vendor/dompurify/purify.min.js"></script>
+<script src="assets/vendor/marked/marked.min.js"></script>
+<script src="assets/js/rsession.js"></script>
+<script src="assets/js/rui.js"></script>
+<script src="assets/js/dataview.js"></script>
+<script src="assets/js/rconsole.js"></script>
+<script src="assets/js/knit.js"></script>
+<script src="assets/js/rstudio.js"></script>
+<script src="assets/js/rsource.js"></script>
+<script src="assets/js/shiny.js"></script>
+<script src="assets/js/kernels.js"></script>
+<script src="assets/js/notebook.js"></script>
+<script src="assets/js/pdfview.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/assistant.js"></script>
+<script src="assets/js/page.js"></script>
+<script src="assets/js/tutorial.js"></script>
+<script src="assets/js/workbench.js"></script>
+</body>
+</html>

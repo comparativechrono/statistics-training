@@ -1,0 +1,158 @@
+[
+ {
+  "code": "leuk <- read_csv(\"leukaemia.csv\")",
+  "output": "Rows: 89 Columns: 11\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (5): sample, sex, BT, mol.biol, remission\ndbl (6): age, ABL1, HOXA9, MEIS1, CD52, RAG1\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+ },
+ {
+  "code": "count(leuk, mol.biol)",
+  "output": "# A tibble: 3 × 2\n  mol.biol     n\n  <chr>    <int>\n1 ALL1/AF4    10\n2 BCR/ABL     37\n3 NEG         42"
+ },
+ {
+  "code": "two <- leuk %>% filter(mol.biol %in% c(\"BCR/ABL\", \"NEG\"))",
+  "output": ""
+ },
+ {
+  "code": "two %>% group_by(mol.biol) %>% summarise(n = n(), mean = mean(ABL1), sd = sd(ABL1))",
+  "output": "# A tibble: 2 × 4\n  mol.biol     n  mean    sd\n  <chr>    <int> <dbl> <dbl>\n1 BCR/ABL     37  9.78 0.586\n2 NEG         42  8.68 0.468"
+ },
+ {
+  "code": "diff_means <- function(y, group) {\n  mean(y[group == \"BCR/ABL\"]) - mean(y[group == \"NEG\"])\n}",
+  "output": ""
+ },
+ {
+  "code": "obs <- diff_means(two$ABL1, two$mol.biol)",
+  "output": ""
+ },
+ {
+  "code": "obs",
+  "output": "[1] 1.09962"
+ },
+ {
+  "code": "set.seed(1)",
+  "output": ""
+ },
+ {
+  "code": "diff_means(two$ABL1, sample(two$mol.biol))",
+  "output": "[1] 0.2948777"
+ },
+ {
+  "code": "diff_means(two$ABL1, sample(two$mol.biol))",
+  "output": "[1] 0.1926963"
+ },
+ {
+  "code": "set.seed(1)",
+  "output": ""
+ },
+ {
+  "code": "null <- replicate(5000, diff_means(two$ABL1, sample(two$mol.biol)))",
+  "output": ""
+ },
+ {
+  "code": "max(abs(null))",
+  "output": "[1] 0.6486486"
+ },
+ {
+  "code": "mean(abs(null) >= abs(obs))",
+  "output": "[1] 0"
+ },
+ {
+  "code": "t.test(ABL1 ~ mol.biol, data = two)",
+  "output": "\n\tWelch Two Sample t-test\n\ndata:  ABL1 by mol.biol\nt = 9.1326, df = 68.791, p-value = 1.759e-13\nalternative hypothesis: true difference in means between group BCR/ABL and group NEG is not equal to 0\n95 percent confidence interval:\n 0.859405 1.339836\nsample estimates:\nmean in group BCR/ABL     mean in group NEG\n             9.780811              8.681190"
+ },
+ {
+  "code": "wilcox.test(ABL1 ~ mol.biol, data = two)",
+  "output": "\n\tWilcoxon rank sum exact test\n\ndata:  ABL1 by mol.biol\nW = 1430.5, p-value = 9.492e-13\nalternative hypothesis: true location shift is not equal to 0"
+ },
+ {
+  "code": "t.test(fms$Post_NDRM_Max, fms$Pre_NDRM_Max, paired = TRUE)",
+  "output": "\n\tPaired t-test\n\ndata:  fms$Post_NDRM_Max and fms$Pre_NDRM_Max\nt = 64.071, df = 1010, p-value < 2.2e-16\nalternative hypothesis: true mean difference is not equal to 0\n95 percent confidence interval:\n 8.359760 8.888014\nsample estimates:\nmean difference\n       8.623887"
+ },
+ {
+  "code": "leuk %>% group_by(mol.biol) %>% summarise(n = n(), mean = mean(HOXA9), sd = sd(HOXA9))",
+  "output": "# A tibble: 3 × 4\n  mol.biol     n  mean    sd\n  <chr>    <int> <dbl> <dbl>\n1 ALL1/AF4    10  7.99 1.15\n2 BCR/ABL     37  4.02 0.290\n3 NEG         42  4.03 0.520"
+ },
+ {
+  "code": "summary(aov(HOXA9 ~ mol.biol, data = leuk))",
+  "output": "            Df Sum Sq Mean Sq F value Pr(>F)\nmol.biol     2 139.72   69.86   230.3 <2e-16 ***\nResiduals   86  26.09    0.30\n---\nSignif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1"
+ },
+ {
+  "code": "TukeyHSD(aov(HOXA9 ~ mol.biol, data = leuk))",
+  "output": "  Tukey multiple comparisons of means\n    95% family-wise confidence level\n\nFit: aov(formula = HOXA9 ~ mol.biol, data = leuk)\n\n$mol.biol\n                         diff        lwr        upr     p adj\nBCR/ABL-ALL1/AF4 -3.972459459 -4.4406476 -3.5042713 0.0000000\nNEG-ALL1/AF4     -3.963000000 -4.4252207 -3.5007793 0.0000000\nNEG-BCR/ABL       0.009459459 -0.2867237  0.3056426 0.9968065"
+ },
+ {
+  "code": "kruskal.test(HOXA9 ~ mol.biol, data = leuk)",
+  "output": "\n\tKruskal-Wallis rank sum test\n\ndata:  HOXA9 by mol.biol\nKruskal-Wallis chi-squared = 26.573, df = 2, p-value = 1.697e-06"
+ },
+ {
+  "code": "tab <- table(two$mol.biol, two$remission)",
+  "output": ""
+ },
+ {
+  "code": "tab",
+  "output": "\n          CR REF\n  BCR/ABL 22   8\n  NEG     38   1"
+ },
+ {
+  "code": "ct <- chisq.test(tab)",
+  "output": "Warning message:\nIn chisq.test(tab) : Chi-squared approximation may be incorrect"
+ },
+ {
+  "code": "ct",
+  "output": "\n\tPearson's Chi-squared test with Yates' continuity correction\n\ndata:  tab\nX-squared = 6.6899, df = 1, p-value = 0.009696"
+ },
+ {
+  "code": "ct$expected",
+  "output": "\n                CR      REF\n  BCR/ABL 26.08696 3.913043\n  NEG     33.91304 5.086957"
+ },
+ {
+  "code": "fisher.test(tab)",
+  "output": "\n\tFisher's Exact Test for Count Data\n\ndata:  tab\np-value = 0.00802\nalternative hypothesis: true odds ratio is not equal to 1\n95 percent confidence interval:\n 0.001595656 0.619891879\nsample estimates:\nodds ratio\n0.07492174"
+ },
+ {
+  "code": "geno <- fms %>% drop_na(actn3_r577x) %>% count(actn3_r577x)",
+  "output": ""
+ },
+ {
+  "code": "geno",
+  "output": "# A tibble: 3 × 2\n  actn3_r577x     n\n  <chr>       <int>\n1 CC            216\n2 CT            318\n3 TT            201"
+ },
+ {
+  "code": "n <- sum(geno$n)",
+  "output": ""
+ },
+ {
+  "code": "p_C <- (2 * geno$n[1] + geno$n[2]) / (2 * n)",
+  "output": ""
+ },
+ {
+  "code": "p_C",
+  "output": "[1] 0.5102041"
+ },
+ {
+  "code": "expected <- n * c(p_C^2, 2 * p_C * (1 - p_C), (1 - p_C)^2)",
+  "output": ""
+ },
+ {
+  "code": "expected",
+  "output": "[1] 191.3265 367.3469 176.3265"
+ },
+ {
+  "code": "x2 <- sum((geno$n - expected)^2 / expected)",
+  "output": ""
+ },
+ {
+  "code": "x2",
+  "output": "[1] 13.2634"
+ },
+ {
+  "code": "pchisq(x2, df = 1, lower.tail = FALSE)",
+  "output": "[1] 0.0002706381"
+ },
+ {
+  "code": "hwe_p(fms$actn3_r577x)",
+  "output": "[1] 0.0002706381"
+ },
+ {
+  "code": "fms %>% filter(Race == \"Caucasian\") %>% pull(actn3_r577x) %>% hwe_p()",
+  "output": "[1] 0.07598464"
+ }
+]

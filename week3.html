@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 3: Testing hypotheses – Biostatistics for Genomic Medicine</title>
+<meta name="description" content="Week 3 of Biostatistics for Genomic Medicine: the logic of a hypothesis test, comparing two and several groups, tests for genotypes and other categorical data, and Hardy–Weinberg equilibrium, with leukaemia and FAMuSS data. R runs in your web browser, so there is nothing to install.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2340'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%238ec5ff'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='17' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3C/svg%3E">
+<script src="assets/js/isolation.js"></script>
+<link rel="stylesheet" href="assets/vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/wb.css">
+<link rel="stylesheet" href="assets/css/r.css">
+<link rel="stylesheet" href="assets/css/rstudio.css">
+<link rel="stylesheet" href="assets/css/nb.css">
+<link rel="stylesheet" href="assets/css/term.css">
+<link rel="stylesheet" href="assets/css/files.css">
+<link rel="stylesheet" href="assets/css/ai.css">
+<link rel="stylesheet" href="assets/css/course.css">
+<link rel="stylesheet" href="assets/css/stats.css">
+</head>
+<body data-page="week3" data-title="Week 3: Testing hypotheses" data-course="week3" data-first="rstudio">
+<div class="app">
+
+  <header class="topbar">
+    <button class="btn top-toggle" id="tutToggle" type="button" title="Hide the instructions so that the workbench fills the window (Ctrl+\)" aria-controls="tut" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M16 10l-2 2 2 2"/></svg></button>
+    <a class="brand" href="index.html" title="All the practicals of Biostatistics for Genomic Medicine">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#26315a"/><rect x="6" y="6" width="9" height="9" rx="2" fill="#8ec5ff"/><path d="M8.6 8.8l2.4 1.7-2.4 1.7" fill="none" stroke="#1b2340" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="6" width="9" height="9" rx="2" fill="#415187"/><path d="M19 9h5M19 12h3" stroke="#a9b4d6" stroke-width="1.4" stroke-linecap="round"/><rect x="6" y="17" width="9" height="9" rx="2" fill="#415187"/><path d="M8 19.5h5v4H8z" fill="none" stroke="#a9b4d6" stroke-width="1.3"/><rect x="17" y="17" width="9" height="9" rx="2" fill="#415187"/><path d="M19 19.5h5M19 22h5M19 24.3h3" stroke="#a9b4d6" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <div>
+        <div class="brand-title">Week 3: Testing hypotheses</div>
+        <div class="brand-sub">Biostatistics for Genomic Medicine, week 3: hypothesis tests and comparing groups</div>
+      </div>
+    </a>
+    <div class="spacer"></div>
+    <div class="progress-wrap" title="The steps you have done and the questions you have answered (saved in this browser)"><span class="progress-label">0% done</span><div class="progress"><i></i></div></div>
+    <span class="store-status" id="storeStatus" title="Your files are saved in this browser, on this computer"></span>
+    <button class="btn" id="userBtn" type="button" title="Your name (if you want to give it), as it appears on the answers you download"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="user-name">Your name</span></button>
+    <button class="btn" id="projectBtn" type="button" title="Download all your files, add files, or start afresh"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span>My files</span></button>
+    <button class="btn" id="answersBtn" type="button"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg><span>My answers</span></button>
+    <button class="btn" id="helpBtn" type="button" title="How this page works"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.6-2.8 4M12 17.5h.01"/></svg><span>Help</span></button>
+    <button class="btn" id="fullBtn" type="button" title="Full screen"><span>Full screen</span></button>
+  </header>
+
+  <div class="main">
+    <aside class="tut" id="tut" aria-label="Instructions">
+      <nav class="ch-nav" aria-label="Chapters"></nav>
+<!--CHAPTERS-->
+<section class="chapter" id="start" data-num="0" data-title="Start here" data-bench="rstudio">
+  <h1>Week 3: testing hypotheses and comparing groups</h1>
+  <div class="meta-row"><span class="pill time">≈ 15 min</span></div>
+  <p class="lede">Last week you described data. This week you ask whether a difference you can see in the data could just be chance, and you learn the tests that answer that question for different kinds of data.</p>
+
+<h2 id="st3-all">This week’s new data: acute lymphoblastic leukaemia</h2>
+<p>Acute lymphoblastic leukaemia (ALL) is a cancer of the cells that would become lymphocytes. It is not one disease: different genetic changes drive it, and they matter for treatment. In about a quarter of adults, the leukaemic cells carry the <b>Philadelphia chromosome</b>, a translocation between chromosomes 9 and 22 that fuses the genes <i>BCR</i> and <i>ABL1</i>. The fusion protein, BCR-ABL1, is a tyrosine kinase that is always switched on, and it is the target of drugs such as imatinib. Another group has a translocation between chromosomes 4 and 11 that fuses <i>KMT2A</i> (also called <i>MLL</i>, or <i>ALL1</i>) to <i>AFF1</i> (<i>AF4</i>).</p>
+<p>The <b>ALL study</b> (Chiaretti and others, 2004) measured the expression of about 12,600 genes, with microarrays, in leukaemic cells from adults with ALL. <code>leukaemia.csv</code> has 89 of its patients with B-cell ALL, with one row for each patient:</p>
+<div class="table"><table class="plain"><thead><tr><th>Column</th><th>What it holds</th></tr></thead><tbody><tr><td><code>sample</code></td><td>the patient’s code</td></tr><tr><td><code>sex</code>, <code>age</code></td><td>F or M, and age in years</td></tr><tr><td><code>BT</code></td><td>the stage of B-cell development the leukaemia resembles (B1 to B4)</td></tr><tr><td><code>mol.biol</code></td><td>the molecular subtype: <code>BCR/ABL</code> (the Philadelphia chromosome), <code>ALL1/AF4</code> (the t(4;11) fusion) or <code>NEG</code> (neither)</td></tr><tr><td><code>remission</code></td><td>whether the first treatment led to complete remission (<code>CR</code>) or not (<code>REF</code>, refractory); missing for some patients</td></tr><tr><td><code>ABL1</code>, <code>HOXA9</code>, <code>MEIS1</code>, <code>CD52</code>, <code>RAG1</code></td><td>the expression of five genes, on a log2 scale (each unit is a doubling)</td></tr></tbody></table></div>
+<p>You will also use the FAMuSS data again, from <code>famuss.csv</code>.</p>
+<div class="rout"><pre>&gt; leuk &lt;- read_csv(&quot;leukaemia.csv&quot;)
+Rows: 89 Columns: 11
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (5): sample, sex, BT, mol.biol, remission
+dbl (6): age, ABL1, HOXA9, MEIS1, CD52, RAG1
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+&gt; count(leuk, mol.biol)
+# A tibble: 3 × 2
+  mol.biol     n
+  &lt;chr&gt;    &lt;int&gt;
+1 ALL1/AF4    10
+2 BCR/ABL     37
+3 NEG         42</pre></div>
+
+<div class="activity">
+  <div class="act-t">Get ready</div>
+  <ol class="steps">
+    <li data-task="st3-install" data-auto="rstudio:installed" data-check="installed:tidyverse">Install the tidyverse on this page: <code>install.packages(&quot;tidyverse&quot;)</code> <button class="do showme" type="button" data-rs-type="install.packages(&quot;tidyverse&quot;)">show me</button></li>
+    <li data-task="st3-library" data-rcheck="&quot;package:tidyverse&quot; %in% search()">Load it with <code>library(tidyverse)</code> <button class="do showme" type="button" data-rs-type="library(tidyverse)">show me</button>.</li>
+    <li data-task="st3-wd" data-rcheck="basename(getwd()) == &quot;data&quot;">Set the working directory to your data folder: <code>setwd(&quot;~/data&quot;)</code> <button class="do showme" type="button" data-rs-type="setwd(&quot;~/data&quot;)">show me</button></li>
+    <li data-task="st3-leuk" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); is.data.frame(o) &amp;&amp; nrow(o) == 89 &amp;&amp; all(c(&quot;sample&quot;, &quot;sex&quot;, &quot;age&quot;, &quot;mol.biol&quot;, &quot;remission&quot;, &quot;ABL1&quot;, &quot;HOXA9&quot;, &quot;MEIS1&quot;, &quot;CD52&quot;, &quot;RAG1&quot;) %in% names(o)) }, logical(1)))">Read <code>leukaemia.csv</code> into a tibble called <code>leuk</code>.</li>
+    <li data-task="st3-fms" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); is.data.frame(o) &amp;&amp; nrow(o) == 1397 &amp;&amp; all(c(&quot;id&quot;, &quot;Gender&quot;, &quot;NDRM.CH&quot;, &quot;actn3_r577x&quot;) %in% names(o)) }, logical(1)))">Read <code>famuss.csv</code> into <code>fms</code>, as last week.</li>
+    <li data-task="st3-count" data-rcheck="(function(v) { is.data.frame(v) &amp;&amp; nrow(v) == 3 &amp;&amp; all(c(&quot;mol.biol&quot;, &quot;n&quot;) %in% names(v)) })(.Last.value)">Count the patients of each molecular subtype.</li>
+  </ol>
+</div>
+<div class="q" data-q="st3-q-bcr" data-accept="^37$" data-placeholder="A number">
+  <div class="q-text">How many of the patients have the BCR/ABL fusion?</div>
+  <div class="q-model">37, from <code>count(leuk, mol.biol)</code>. There are 42 NEG patients and 10 with ALL1/AF4.</div>
+</div>
+<div class="q" data-q="st3-q-abl" data-type="mcq">
+  <div class="q-text">Why might the expression of <i>ABL1</i> itself be higher in BCR/ABL leukaemias?</div>
+  <div class="mcq"><label data-why="The fusion keeps the kinase part of ABL1, which is why BCR-ABL1 is an active kinase."><input type="radio"> It shouldn’t be: the fusion destroys ABL1</label><label data-why="These samples were taken at diagnosis, before treatment."><input type="radio"> Because imatinib increases ABL1 expression</label><label data-correct data-why="The probes for ABL1 bind to the part of ABL1 that is in the fusion. You will test whether the difference is real in the next chapter."><input type="radio"> The fusion gene contains most of ABL1, so the microarray’s ABL1 probes also detect the BCR-ABL1 transcript, which is made from BCR’s strong promoter</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="logic" data-num="1" data-title="The logic of a test" data-bench="rstudio" hidden>
+  <h1>The logic of a hypothesis test</h1>
+  <div class="meta-row"><span class="pill time">≈ 40 min</span></div>
+  <p class="lede">A hypothesis test asks one question: if there were really no difference, how surprising would the data be? Build the answer yourself, by shuffling labels.</p>
+
+<h2 id="lg-q">The question</h2>
+<p>Is <i>ABL1</i> expressed differently in BCR/ABL leukaemias and in NEG leukaemias? Start by looking:</p>
+<div class="rout"><pre>&gt; two &lt;- leuk %&gt;% filter(mol.biol %in% c(&quot;BCR/ABL&quot;, &quot;NEG&quot;))
+&gt; two %&gt;% group_by(mol.biol) %&gt;% summarise(n = n(), mean = mean(ABL1), sd = sd(ABL1))
+# A tibble: 2 × 4
+  mol.biol     n  mean    sd
+  &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 BCR/ABL     37  9.78 0.586
+2 NEG         42  8.68 0.468</pre></div>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="ggplot(two, aes(x = mol.biol, y = ABL1)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1, alpha = 0.5)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">ggplot(two, aes(x = mol.biol, y = ABL1)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.1, alpha = 0.5)</pre></div>
+<p>The mean in the BCR/ABL group is about 1.1 higher, on a log2 scale: a little over twice as much ABL1 RNA. But the values in each group vary, and with only 37 and 42 patients you would expect the two means to differ a bit even if, in all such patients, they were the same. How can you tell a real difference from chance?</p>
+
+<h2 id="lg-steps">The logic of a hypothesis test</h2>
+<ol>
+<li><b>State a null hypothesis</b>, H<sub>0</sub>: the thing you would like to disprove. Here, “the mean expression of ABL1 is the same in both subtypes.” The <b>alternative hypothesis</b>, H<sub>1</sub>, is that it isn’t.</li>
+<li><b>Choose a test statistic</b>: a number that measures how far the data are from what H<sub>0</sub> says. Here, the difference between the two means.</li>
+<li><b>Work out the null distribution</b>: the values the statistic would take, by chance, if H<sub>0</sub> were true.</li>
+<li><b>Compare</b>. The <b>p-value</b> is the probability, if H<sub>0</sub> were true, of a statistic at least as extreme as the one you observed. A small p-value means the data would be surprising if H<sub>0</sub> were true.</li>
+</ol>
+<figure class="fig" role="img"><svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M430 186 L430 177.1 L432.5 178 L435 178.7 L437.5 179.4 L440 180 L442.5 180.6 L445 181.2 L447.5 181.7 L450 182.1 L452.5 182.5 L455 182.9 L457.5 183.2 L460 183.5 L462.5 183.8 L465 184 L467.5 184.2 L470 184.4 L472.5 184.6 L475 184.8 L477.5 184.9 L480 185.1 L482.5 185.2 L485 185.3 L487.5 185.4 L490 185.4 L492.5 185.5 L495 185.6 L497.5 185.6 L500 185.7 L502.5 185.7 L505 185.8 L507.5 185.8 L510 185.8 L512.5 185.8 L515 185.9 L517.5 185.9 L520 185.9 L522.5 185.9 L525 185.9 L527.5 185.9 L530 185.9 L530 186 Z" fill="#f1b9bf" opacity="1" stroke="none"/><path d="M30 186 L30 185.9 L32.5 185.9 L35 185.9 L37.5 185.9 L40 185.9 L42.5 185.9 L45 185.9 L47.5 185.8 L50 185.8 L52.5 185.8 L55 185.8 L57.5 185.7 L60 185.7 L62.5 185.6 L65 185.6 L67.5 185.5 L70 185.4 L72.5 185.4 L75 185.3 L77.5 185.2 L80 185.1 L82.5 184.9 L85 184.8 L87.5 184.6 L90 184.4 L92.5 184.2 L95 184 L97.5 183.8 L100 183.5 L102.5 183.2 L105 182.9 L107.5 182.5 L110 182.1 L112.5 181.7 L115 181.2 L117.5 180.6 L120 180 L122.5 179.4 L125 178.7 L127.5 178 L130 177.1 L130 186 Z" fill="#f1b9bf" opacity="1" stroke="none"/><path d="M30 185.9 L32.5 185.9 L35 185.9 L37.5 185.9 L40 185.9 L42.5 185.9 L45 185.9 L47.5 185.8 L50 185.8 L52.5 185.8 L55 185.8 L57.5 185.7 L60 185.7 L62.5 185.6 L65 185.6 L67.5 185.5 L70 185.4 L72.5 185.4 L75 185.3 L77.5 185.2 L80 185.1 L82.5 184.9 L85 184.8 L87.5 184.6 L90 184.4 L92.5 184.2 L95 184 L97.5 183.8 L100 183.5 L102.5 183.2 L105 182.9 L107.5 182.5 L110 182.1 L112.5 181.7 L115 181.2 L117.5 180.6 L120 180 L122.5 179.4 L125 178.7 L127.5 178 L130 177.1 L132.5 176.3 L135 175.3 L137.5 174.3 L140 173.2 L142.5 172 L145 170.7 L147.5 169.3 L150 167.9 L152.5 166.3 L155 164.7 L157.5 162.9 L160 161 L162.5 159.1 L165 157 L167.5 154.8 L170 152.5 L172.5 150.1 L175 147.5 L177.5 144.9 L180 142.1 L182.5 139.3 L185 136.3 L187.5 133.2 L190 130.1 L192.5 126.8 L195 123.4 L197.5 120 L200 116.5 L202.5 112.9 L205 109.2 L207.5 105.5 L210 101.8 L212.5 98 L215 94.2 L217.5 90.3 L220 86.5 L222.5 82.7 L225 78.9 L227.5 75.2 L230 71.5 L232.5 67.8 L235 64.3 L237.5 60.8 L240 57.5 L242.5 54.3 L245 51.2 L247.5 48.2 L250 45.4 L252.5 42.8 L255 40.4 L257.5 38.2 L260 36.2 L262.5 34.3 L265 32.8 L267.5 31.4 L270 30.3 L272.5 29.4 L275 28.8 L277.5 28.4 L280 28.3 L282.5 28.4 L285 28.8 L287.5 29.4 L290 30.3 L292.5 31.4 L295 32.8 L297.5 34.3 L300 36.2 L302.5 38.2 L305 40.4 L307.5 42.8 L310 45.4 L312.5 48.2 L315 51.2 L317.5 54.3 L320 57.5 L322.5 60.8 L325 64.3 L327.5 67.8 L330 71.5 L332.5 75.2 L335 78.9 L337.5 82.7 L340 86.5 L342.5 90.3 L345 94.2 L347.5 98 L350 101.8 L352.5 105.5 L355 109.2 L357.5 112.9 L360 116.5 L362.5 120 L365 123.4 L367.5 126.8 L370 130.1 L372.5 133.2 L375 136.3 L377.5 139.3 L380 142.1 L382.5 144.9 L385 147.5 L387.5 150.1 L390 152.5 L392.5 154.8 L395 157 L397.5 159.1 L400 161 L402.5 162.9 L405 164.7 L407.5 166.3 L410 167.9 L412.5 169.3 L415 170.7 L417.5 172 L420 173.2 L422.5 174.3 L425 175.3 L427.5 176.3 L430 177.1 L432.5 178 L435 178.7 L437.5 179.4 L440 180 L442.5 180.6 L445 181.2 L447.5 181.7 L450 182.1 L452.5 182.5 L455 182.9 L457.5 183.2 L460 183.5 L462.5 183.8 L465 184 L467.5 184.2 L470 184.4 L472.5 184.6 L475 184.8 L477.5 184.9 L480 185.1 L482.5 185.2 L485 185.3 L487.5 185.4 L490 185.4 L492.5 185.5 L495 185.6 L497.5 185.6 L500 185.7 L502.5 185.7 L505 185.8 L507.5 185.8 L510 185.8 L512.5 185.8 L515 185.9 L517.5 185.9 L520 185.9 L522.5 185.9 L525 185.9 L527.5 185.9 L530 185.9" fill="none" stroke="#0b6b8a" stroke-width="2" opacity="1"/><line x1="430" y1="186" x2="430" y2="87.2" stroke="#c8414f" stroke-width="2"/><text x="430" y="79.2" font-size="12" text-anchor="middle" fill="#c8414f" font-weight="600">observed</text><text x="280" y="106.9" font-size="12" text-anchor="middle" fill="#39465a">what the statistic would be</text><text x="280" y="121.9" font-size="12" text-anchor="middle" fill="#39465a">if the null hypothesis were true</text><text x="489.4" y="162.3" font-size="11.5" text-anchor="middle" fill="#c8414f">tail</text><text x="70.6" y="162.3" font-size="11.5" text-anchor="middle" fill="#c8414f">tail</text><text x="73.8" y="43.7" font-size="11.5" text-anchor="start" fill="#c8414f">p-value = the area of the</text><text x="73.8" y="57.7" font-size="11.5" text-anchor="start" fill="#c8414f">two tails (as far out as, or</text><text x="73.8" y="71.7" font-size="11.5" text-anchor="start" fill="#c8414f">further than, what was seen)</text><line x1="30" y1="186" x2="530" y2="186" stroke="#8a96a8"/><line x1="30" y1="186" x2="30" y2="190" stroke="#8a96a8"/><text x="30" y="203" font-size="12" text-anchor="middle">-4</text><line x1="155" y1="186" x2="155" y2="190" stroke="#8a96a8"/><text x="155" y="203" font-size="12" text-anchor="middle">-2</text><line x1="280" y1="186" x2="280" y2="190" stroke="#8a96a8"/><text x="280" y="203" font-size="12" text-anchor="middle">0</text><line x1="405" y1="186" x2="405" y2="190" stroke="#8a96a8"/><text x="405" y="203" font-size="12" text-anchor="middle">2</text><line x1="530" y1="186" x2="530" y2="190" stroke="#8a96a8"/><text x="530" y="203" font-size="12" text-anchor="middle">4</text><text x="280" y="220" font-size="12.5" text-anchor="middle">test statistic</text></svg><figcaption>The null distribution of a test statistic. The p-value is the probability of a value at least as extreme as the one observed: the area of both tails, for a two-sided test.</figcaption></figure>
+
+<h2 id="lg-perm">A null distribution, by shuffling</h2>
+<p>If the subtype made no difference to ABL1, the labels BCR/ABL and NEG would just be names attached at random to the 79 values. So shuffle them: give the same values random labels, and calculate the difference between the means again. Each shuffle gives one value of the statistic as it would be if H<sub>0</sub> were true. This is a <b>permutation test</b>, and it needs no formulas at all.</p>
+<p>You will calculate the difference many times, so write a small <b>function</b> for it. <code>function(y, group)</code> makes a function with two arguments, and the last line inside the braces is the result it gives back:</p>
+<div class="rout"><pre>&gt; diff_means &lt;- function(y, group) {
++   mean(y[group == &quot;BCR/ABL&quot;]) - mean(y[group == &quot;NEG&quot;])
++ }
+&gt; obs &lt;- diff_means(two$ABL1, two$mol.biol)
+&gt; obs
+[1] 1.09962</pre></div>
+<p><code>sample()</code>, given a vector, shuffles it. Two shuffles give two differences that arise by chance alone:</p>
+<div class="rout"><pre>&gt; set.seed(1)
+&gt; diff_means(two$ABL1, sample(two$mol.biol))
+[1] 0.2948777
+&gt; diff_means(two$ABL1, sample(two$mol.biol))
+[1] 0.1926963</pre></div>
+<p>Now do it 5,000 times, and see how often chance alone gives a difference as large as the one you observed (in either direction, so compare the absolute values, with <code>abs()</code>):</p>
+<div class="rout"><pre>&gt; set.seed(1)
+&gt; null &lt;- replicate(5000, diff_means(two$ABL1, sample(two$mol.biol)))
+&gt; max(abs(null))
+[1] 0.6486486
+&gt; mean(abs(null) &gt;= abs(obs))
+[1] 0</pre></div>
+<p>In 5,000 shuffles, the largest difference was 0.65, and none was as large as 1.10. So the p-value is less than 1 in 5,000 (p &lt; 0.0002): if the subtype made no difference, a difference this large would be very surprising. You can reject the null hypothesis.</p>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="tibble(null = null) %&gt;%
+  ggplot(aes(x = null)) +
+  geom_histogram(binwidth = 0.02) +
+  geom_vline(xintercept = obs, colour = &quot;red&quot;)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">tibble(null = null) %&gt;%
+  ggplot(aes(x = null)) +
+  geom_histogram(binwidth = 0.02) +
+  geom_vline(xintercept = obs, colour = &quot;red&quot;)</pre></div>
+
+<h2 id="lg-errors">Decisions and errors</h2>
+<p>To turn a p-value into a decision, you choose a <b>significance level</b>, α, beforehand, usually 0.05, and reject H<sub>0</sub> when p ≤ α. Either way, you can be wrong:</p>
+<div class="table"><table class="plain"><thead><tr><th></th><th>You reject the null hypothesis (p ≤ α)</th><th>You don’t reject it (p > α)</th></tr></thead><tbody><tr><td><b>The null hypothesis is true</b> (no real difference)</td><td>a false positive: a <b>type I error</b>. Its probability is α, which you choose (usually 0.05)</td><td>right</td></tr><tr><td><b>The null hypothesis is false</b> (a real difference)</td><td>right: the probability of this is the <b>power</b> of the test</td><td>a false negative: a <b>type II error</b>. Its probability is β, and power = 1 − β</td></tr></tbody></table></div>
+<p>The <b>power</b> of a test is the chance of detecting a difference when there really is one. It grows with the size of the sample and the size of the difference, and it shrinks as the data become more variable. A small study can easily miss a real difference: a large p-value doesn’t show that there is no difference.</p>
+<div class="callout concept">
+  <div class="co-t">What a p-value is not</div>
+  <ul><li>It is <b>not</b> the probability that the null hypothesis is true. It is calculated <i>assuming</i> that H<sub>0</sub> is true.</li><li>It is <b>not</b> a measure of how large or important a difference is. A tiny difference in a huge study can have a tiny p-value. Always report the size of the difference, with a confidence interval.</li><li>p &gt; 0.05 does <b>not</b> show that there is no difference: “absence of evidence is not evidence of absence”.</li><li>0.05 is a convention, not a law of nature: p = 0.049 and p = 0.051 are practically the same evidence.</li></ul>
+</div>
+<div class="activity">
+  <div class="act-t">Test ABL1, and then RAG1</div>
+  <ol class="steps">
+    <li data-task="lg-two" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); isTRUE(tryCatch({ is.data.frame(o) &amp;&amp; nrow(o) == 79 &amp;&amp; all(o$mol.biol %in% c(&quot;BCR/ABL&quot;, &quot;NEG&quot;)) }, error = function(e) FALSE)) }, logical(1)))">Make <code>two</code>, the 79 patients with BCR/ABL or NEG leukaemia, as above.</li>
+    <li data-task="lg-means" data-rcheck="(function(v) { is.data.frame(v) &amp;&amp; nrow(v) == 2 &amp;&amp; any(vapply(v, function(x) is.numeric(x) &amp;&amp; any(abs(x - 9.780811) &lt; 0.001), logical(1))) })(.Last.value)">Make a table of the number of patients, and the mean and SD of ABL1, in each group.</li>
+    <li data-task="lg-fun" data-rcheck="exists(&quot;diff_means&quot;) &amp;&amp; is.function(diff_means) &amp;&amp; exists(&quot;two&quot;) &amp;&amp; isTRUE(abs(diff_means(two$ABL1, two$mol.biol) - 1.09962) &lt; 1e-4)">Make the function <code>diff_means()</code>, and use it to calculate <code>obs</code>.</li>
+    <li data-task="lg-null" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); is.numeric(o) &amp;&amp; is.null(dim(o)) &amp;&amp; length(o) == 5000 &amp;&amp; isTRUE(sd(o) &gt; 0.12 &amp;&amp; sd(o) &lt; 0.22 &amp;&amp; abs(mean(o)) &lt; 0.02) }, logical(1)))">Make the null distribution, <code>null</code>, from 5,000 shuffles.</li>
+    <li data-task="lg-hist" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomBar&quot;) &amp;&amp; inherits(l$stat, &quot;StatBin&quot;), logical(1))) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomVline&quot;), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw a histogram of the null distribution, with a red line at the observed difference, as above.</li>
+    <li data-task="lg-p" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(0.0)) &lt; 1e-12)) })(.Last.value)">Calculate the permutation p-value for ABL1.</li>
+    <li data-task="lg-rag" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; v &gt; 0.6 &amp;&amp; v &lt;= 1 })(.Last.value)">Now do the same for <code>RAG1</code>, a gene that has nothing to do with the fusion: calculate its observed difference and its own null distribution of 5,000 shuffles, and then its permutation p-value.</li>
+  </ol>
+</div>
+<div class="q" data-q="lg-q-p" data-accept="^0(\.0+)?$||^&lt; ?0?\.0002$||^&lt; ?1 ?/ ?5,?000$" data-placeholder="A number">
+  <div class="q-text">What permutation p-value did you get for ABL1?</div>
+  <div class="q-model">0: none of the 5,000 shuffles gave a difference as large as 1.10. That doesn’t mean p is exactly 0, only that it is less than 1 in 5,000 (p &lt; 0.0002). The t-test in the next chapter gives p = 1.8 × 10<sup>−13</sup>.</div>
+</div>
+<div class="q" data-q="lg-q-rag" data-accept="^0?\.[78][0-9]*$" data-placeholder="A number">
+  <div class="q-text">What permutation p-value did you get for RAG1, to one decimal place?</div>
+  <div class="q-model">About 0.8: chance alone often gives a difference as large as RAG1’s (0.07), so the data give no evidence of a difference. (Your value may differ a little, because the shuffles are random.)</div>
+</div>
+<div class="q" data-q="lg-q-meaning" data-type="mcq">
+  <div class="q-text">The test for ABL1 has p &lt; 0.0002. Which statement is right?</div>
+  <div class="mcq"><label data-correct data-why="That is exactly what a p-value is: a probability calculated as if the null hypothesis were true."><input type="radio"> If ABL1’s mean were the same in both subtypes, a difference this large would happen by chance less than once in 5,000 studies</label><label data-why="The p-value says nothing about size: look at the difference itself (1.10 on a log2 scale) and its confidence interval."><input type="radio"> The difference in ABL1 expression is large and important</label><label data-why="A p-value is calculated assuming H0 is true, so it can’t be the probability that H0 is true."><input type="radio"> There is less than a 0.02% chance that the null hypothesis is true</label></div>
+</div>
+<div class="q" data-q="lg-q-rag2" data-type="mcq">
+  <div class="q-text">RAG1’s p-value is about 0.8. What can you conclude?</div>
+  <div class="mcq"><label data-why="You can never prove a null hypothesis: a small difference might exist, too small for 79 patients to detect."><input type="radio"> RAG1’s expression is the same in the two subtypes</label><label data-why="That is the same misreading of a p-value as before."><input type="radio"> There is an 80% chance that RAG1 has no difference</label><label data-correct data-why="A large p-value means the data are consistent with no difference. That isn’t the same as showing there is none."><input type="radio"> The data give no evidence that RAG1’s expression differs between the subtypes</label></div>
+</div>
+<div class="q" data-q="lg-q-type1" data-type="mcq">
+  <div class="q-text">You test 20 genes, none of which really differs between the subtypes, each at α = 0.05. What do you expect?</div>
+  <div class="mcq"><label data-why="Each test has a 5% chance of a false positive, and 20 × 5% = 1."><input type="radio"> None of them to have p ≤ 0.05</label><label data-why="When the null hypothesis is true, the p-value is equally likely to be anywhere between 0 and 1."><input type="radio"> All of them to have p > 0.95</label><label data-correct data-why="With α = 0.05, each true null hypothesis is rejected 5% of the time. Testing many things at once is the subject of week 5."><input type="radio"> About one of them to have p ≤ 0.05, by chance: a false positive</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="two" data-num="2" data-title="Two groups" data-bench="rstudio" hidden>
+  <h1>Comparing two groups</h1>
+  <div class="meta-row"><span class="pill time">≈ 40 min</span></div>
+  <p class="lede">The t-test is the most used test in medical research. Learn what it calculates, what it assumes, what to use when those assumptions fail, and how to handle measurements made twice on the same people.</p>
+
+<h2 id="tw-t">The t-test</h2>
+<p>Shuffling works for any statistic, but for a difference between two means there is a quicker way. If the means are approximately normally distributed (which, thanks to the central limit theorem, they usually are), the difference divided by its standard error follows a known distribution, the <b>t distribution</b>:</p>
+<div class="formula" role="math"><i>t</i> = (<i>x̄</i><sub>1</sub> − <i>x̄</i><sub>2</sub>) / SE, &nbsp; where SE = √( <i>s</i><sub>1</sub>² / <i>n</i><sub>1</sub> + <i>s</i><sub>2</sub>² / <i>n</i><sub>2</sub> )<div class="formula-note">how many standard errors apart the two means are</div></div>
+<p>A t of 0 means the means are equal; the further t is from 0, in either direction, the stronger the evidence against H<sub>0</sub>. The t distribution looks like the normal distribution, but with heavier tails when the samples are small; its shape is set by the <b>degrees of freedom</b> (df). R’s <code>t.test()</code> does the whole calculation. With a formula, <code>ABL1 ~ mol.biol</code>, it compares ABL1 between the groups of mol.biol:</p>
+<div class="rout"><pre>&gt; t.test(ABL1 ~ mol.biol, data = two)
+
+	Welch Two Sample t-test
+
+data:  ABL1 by mol.biol
+t = 9.1326, df = 68.791, p-value = 1.759e-13
+alternative hypothesis: true difference in means between group BCR/ABL and group NEG is not equal to 0
+95 percent confidence interval:
+ 0.859405 1.339836
+sample estimates:
+mean in group BCR/ABL     mean in group NEG
+             9.780811              8.681190</pre></div>
+<p>Read it from the bottom. The means are 9.78 and 8.68, so the difference is 1.10. The <b>95% confidence interval</b> for the difference is 0.86 to 1.34: this is the most useful line, because it tells you how large the difference is likely to be. t = 9.13 means the means are more than 9 standard errors apart, and p = 1.8 × 10<sup>−13</sup> agrees with the permutation test. R uses <b>Welch’s</b> t-test by default, which doesn’t assume that the two groups have the same SD (hence the df of 68.8, which isn’t a whole number). <code>var.equal = TRUE</code> gives the original Student’s t-test, which does.</p>
+
+<h2 id="tw-assume">Assumptions</h2>
+<p>Every test makes assumptions, and its p-value is only right when they are (roughly) true. The t-test assumes that:</p>
+<ul>
+<li>the observations are <b>independent</b>: each patient is counted once, and patients don’t influence each other;</li>
+<li>each group is <b>roughly normal</b>, or the groups are large enough for the central limit theorem to make the means normal. Outliers and strong skew matter most in small samples.</li>
+</ul>
+<p>A <b>QQ plot</b> (quantile–quantile plot) checks normality. It plots the sorted values against the values you would expect from a normal distribution: if the data are normal, the points lie close to a straight line. A curve means skew, and points that peel away at the ends mean heavy tails or outliers.</p>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="ggplot(two, aes(sample = ABL1)) +
+  stat_qq() +
+  stat_qq_line() +
+  facet_wrap(~ mol.biol)">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">ggplot(two, aes(sample = ABL1)) +
+  stat_qq() +
+  stat_qq_line() +
+  facet_wrap(~ mol.biol)</pre></div>
+
+<h2 id="tw-wilcox">When the assumptions fail: the Wilcoxon test</h2>
+<p>The <b>Wilcoxon rank-sum test</b> (also called the Mann–Whitney test) replaces the values with their ranks (1 for the smallest, 2 for the next, and so on) and asks whether one group’s ranks tend to be higher. It doesn’t assume normality and isn’t affected by outliers, so it suits skewed data and small samples. The price is a little less power when the data really are normal, and its result is about the ranks rather than about a difference in means.</p>
+<div class="rout"><pre>&gt; wilcox.test(ABL1 ~ mol.biol, data = two)
+
+	Wilcoxon rank sum exact test
+
+data:  ABL1 by mol.biol
+W = 1430.5, p-value = 9.492e-13
+alternative hypothesis: true location shift is not equal to 0</pre></div>
+
+<h2 id="tw-paired">Paired data</h2>
+<p>The FAMuSS participants were measured before and after the training. These measurements are <b>paired</b>: each “after” belongs with a “before” from the same person, and people who are strong before tend to be strong after. A <b>paired t-test</b> tests whether the mean of the differences is zero, which removes the variation between people and makes the test much more powerful:</p>
+<div class="rout"><pre>&gt; t.test(fms$Post_NDRM_Max, fms$Pre_NDRM_Max, paired = TRUE)
+
+	Paired t-test
+
+data:  fms$Post_NDRM_Max and fms$Pre_NDRM_Max
+t = 64.071, df = 1010, p-value &lt; 2.2e-16
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ 8.359760 8.888014
+sample estimates:
+mean difference
+       8.623887</pre></div>
+<p>On average, people could lift 8.6 pounds more after the training (95% CI 8.4 to 8.9). Analysing paired data as if the groups were independent throws away this advantage, and is a common mistake.</p>
+<div class="activity">
+  <div class="act-t">Compare two groups</div>
+  <ol class="steps">
+    <li data-task="tw-qq" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomPoint&quot;) &amp;&amp; inherits(l$stat, &quot;StatQq&quot;) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$sample) &amp;&amp; identical(rlang::as_label(m$sample), &quot;ABL1&quot;), logical(1))), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw QQ plots of ABL1 in the two groups, as above. Do the points lie near the lines?</li>
+    <li data-task="tw-t" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Welch&quot;, v$method) &amp;&amp; abs(abs(v$statistic) - 9.1326) &lt; 0.01 })(.Last.value)">Compare ABL1 between the two groups with a t-test.</li>
+    <li data-task="tw-w" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Wilcoxon&quot;, v$method) })(.Last.value)">Compare it with a Wilcoxon test as well.</li>
+    <li data-task="tw-cd52" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;t-test&quot;, v$method) &amp;&amp; abs(abs(v$statistic) - 2.9394) &lt; 0.01 })(.Last.value)">Is <code>CD52</code> expressed differently in the two groups? Use a t-test.</li>
+    <li data-task="tw-sex" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;t-test&quot;, v$method) &amp;&amp; abs(abs(v$statistic) - 11.892) &lt; 0.01 })(.Last.value)">In the FAMuSS data, compare NDRM.CH between women and men with a t-test.</li>
+    <li data-task="tw-paired" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Paired&quot;, v$method) })(.Last.value)">Test whether the strength of the non-dominant arm changed during the training, with a paired t-test.</li>
+  </ol>
+</div>
+<div class="q" data-q="tw-q-diff" data-accept="^1\.10?[0-9]*$||^1\.099[5-9][0-9]*$" data-placeholder="A number">
+  <div class="q-text">How much higher is the mean expression of ABL1 in BCR/ABL leukaemias than in NEG ones, in log2 units (to two decimal places)?</div>
+  <div class="q-model">1.10 (95% CI 0.86 to 1.34). On a log2 scale, a difference of 1.10 means 2<sup>1.10</sup> = 2.1 times as much RNA.</div>
+</div>
+<div class="q" data-q="tw-q-gain" data-accept="^8\.62[0-9]*$||^8\.6$" data-placeholder="A number">
+  <div class="q-text">By how many pounds did the strength of the non-dominant arm increase, on average (to two decimal places)?</div>
+  <div class="q-model">8.62 pounds, the mean of the differences, with a 95% confidence interval of 8.36 to 8.89.</div>
+</div>
+<div class="q" data-q="tw-q-cd52" data-type="mcq">
+  <div class="q-text">CD52 is the target of the antibody alemtuzumab. Its t-test gives a mean difference of 0.57 (95% CI 0.18 to 0.96) and p = 0.004. What would you report?</div>
+  <div class="mcq"><label data-why="A p-value can’t show importance. The size of the difference, and the biology, have to do that."><input type="radio"> p = 0.004, so CD52 is important in BCR/ABL leukaemia</label><label data-why="The groups overlap a lot: this is a difference in means."><input type="radio"> CD52 is higher in BCR/ABL leukaemias in every patient</label><label data-correct data-why="Report the size and direction of the difference, with its uncertainty, as well as the p-value."><input type="radio"> CD52 expression is higher in BCR/ABL leukaemias, by about 0.6 log2 units (95% CI 0.2 to 1.0)</label></div>
+</div>
+<div class="q" data-q="tw-q-welch" data-type="mcq">
+  <div class="q-text">What is the difference between Welch’s t-test (R’s default) and Student’s t-test?</div>
+  <div class="mcq"><label data-why="Both assume roughly normal means. The Wilcoxon test is the one that doesn’t."><input type="radio"> Welch’s doesn’t assume normality</label><label data-why="Paired data need paired = TRUE."><input type="radio"> Welch’s is for paired data</label><label data-correct data-why="Welch’s test is the safer default. When the variances are similar, the two give almost the same answer."><input type="radio"> Welch’s doesn’t assume that the two groups have the same variance</label></div>
+</div>
+<div class="q" data-q="tw-q-paired" data-type="mcq">
+  <div class="q-text">Why is a paired t-test right for the strength before and after training, and not a two-sample t-test?</div>
+  <div class="mcq"><label data-correct data-why="A paired test analyses each person’s change, which removes the large differences in strength between people."><input type="radio"> The two measurements come from the same people, so they aren’t independent groups</label><label data-why="That would be a reason for a Wilcoxon test, not for pairing."><input type="radio"> Because strength isn’t normally distributed</label><label data-why="The size of the sample doesn’t decide this: the design does."><input type="radio"> Because there are more than 1,000 people</label></div>
+</div>
+<div class="q" data-q="tw-q-big" data-type="mcq">
+  <div class="q-text">The paired t-test gives p &lt; 2.2 × 10<sup>−16</sup>. Does that tell you the training had a large effect?</div>
+  <div class="mcq"><label data-correct data-why="With 1,011 people, even a small change would give a tiny p-value. Judge the size of an effect from the estimate and its confidence interval."><input type="radio"> No: the effect is the mean change, 8.6 pounds (95% CI 8.4 to 8.9); the tiny p-value mostly reflects the large sample</label><label data-why="A p-value mixes the size of the effect with the size of the sample."><input type="radio"> Yes: the smaller the p-value, the larger the effect</label><label data-why="A p-value can’t rule out bias, for example from people getting used to the test (see last week’s homework)."><input type="radio"> It means the result is certainly correct</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="several" data-num="3" data-title="Several groups" data-bench="rstudio" hidden>
+  <h1>Comparing several groups</h1>
+  <div class="meta-row"><span class="pill time">≈ 40 min</span></div>
+  <p class="lede">With three or more groups, start with one test of whether the groups differ at all, and only then ask which ones differ.</p>
+
+<h2 id="sv-why">Why not lots of t-tests?</h2>
+<p>With three subtypes there are three pairs of groups to compare. If you did a t-test for each, at α = 0.05, the chance of at least one false positive would be 1 − 0.95<sup>3</sup>, about 14%, not 5%. The more groups, the worse it gets. Instead, start with one test of the question “do the means differ at all?”</p>
+
+<h2 id="sv-anova">Analysis of variance</h2>
+<p><b>One-way analysis of variance</b> (ANOVA) compares the variation <b>between</b> the groups’ means with the variation <b>within</b> the groups. If the groups don’t really differ, the means should be about as variable as chance makes them, given the scatter within each group.</p>
+<figure class="fig" role="img"><svg viewBox="0 0 560 222" xmlns="http://www.w3.org/2000/svg" focusable="false"><line x1="50" y1="103.4" x2="520" y2="103.4" stroke="#8a96a8" stroke-width="1.4" stroke-dasharray="5 4"/><text x="517.2" y="97.4" font-size="11.5" text-anchor="end" fill="#8a96a8">grand mean</text><circle cx="155.9" cy="144.7" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="125.2" cy="122" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="169.4" cy="113.2" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="168.6" cy="134.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="154" cy="146.2" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="152.2" cy="128.3" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="130.7" cy="120.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="124" cy="111.8" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="148.1" cy="144.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="126.1" cy="145.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="132.2" cy="117.3" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="134.6" cy="120.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="124.7" cy="105.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="145.1" cy="113.4" r="3" fill="#0b6b8a" opacity="0.55"/><line x1="108.1" y1="127.3" x2="185.5" y2="127.3" stroke="#c8414f" stroke-width="3"/><line x1="191" y1="127.3" x2="191" y2="103.4" stroke="#d9961c" stroke-width="2"/><circle cx="275.1" cy="148.9" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="264.8" cy="113.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="297.5" cy="143.7" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="280.3" cy="126" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="301.3" cy="144.4" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="279.7" cy="123.5" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="306.5" cy="134.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="301.3" cy="120.5" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="261.5" cy="76.8" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="271.4" cy="124.2" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="304.3" cy="111.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="283.6" cy="142.3" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="307.6" cy="127.6" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="280.2" cy="114.2" r="3" fill="#0b6b8a" opacity="0.55"/><line x1="246.3" y1="123.6" x2="323.7" y2="123.6" stroke="#c8414f" stroke-width="3"/><line x1="329.2" y1="123.6" x2="329.2" y2="103.4" stroke="#d9961c" stroke-width="2"/><circle cx="426" cy="41.4" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="420.8" cy="50.5" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="408.7" cy="57.3" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="434.1" cy="70.4" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="405.9" cy="48.5" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="430" cy="52.7" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="405.2" cy="36.1" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="419.5" cy="64.7" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="409.7" cy="51.5" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="412.4" cy="52.1" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="445.4" cy="55.3" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="437.5" cy="56.4" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="414" cy="56.8" r="3" fill="#0b6b8a" opacity="0.55"/><circle cx="441.3" cy="67.8" r="3" fill="#0b6b8a" opacity="0.55"/><line x1="384.5" y1="59.3" x2="461.9" y2="59.3" stroke="#c8414f" stroke-width="3"/><line x1="467.5" y1="59.3" x2="467.5" y2="103.4" stroke="#d9961c" stroke-width="2"/><line x1="50" y1="184" x2="520" y2="184" stroke="#8a96a8"/><line x1="50" y1="14" x2="50" y2="184" stroke="#8a96a8"/><line x1="146.8" y1="184" x2="146.8" y2="188" stroke="#8a96a8"/><text x="146.8" y="201" font-size="12" text-anchor="middle">NEG</text><line x1="285" y1="184" x2="285" y2="188" stroke="#8a96a8"/><text x="285" y="201" font-size="12" text-anchor="middle">BCR/ABL</text><line x1="423.2" y1="184" x2="423.2" y2="188" stroke="#8a96a8"/><text x="423.2" y="201" font-size="12" text-anchor="middle">ALL1/AF4</text><line x1="46" y1="165.1" x2="50" y2="165.1" stroke="#8a96a8"/><text x="43" y="169.1" font-size="12" text-anchor="end">2</text><line x1="46" y1="127.3" x2="50" y2="127.3" stroke="#8a96a8"/><text x="43" y="131.3" font-size="12" text-anchor="end">4</text><line x1="46" y1="89.6" x2="50" y2="89.6" stroke="#8a96a8"/><text x="43" y="93.6" font-size="12" text-anchor="end">6</text><line x1="46" y1="51.8" x2="50" y2="51.8" stroke="#8a96a8"/><text x="43" y="55.8" font-size="12" text-anchor="end">8</text><line x1="46" y1="14" x2="50" y2="14" stroke="#8a96a8"/><text x="43" y="18" font-size="12" text-anchor="end">10</text><text x="12" y="99" font-size="12.5" text-anchor="middle" transform="rotate(-90 12 99)">expression</text><text x="146.8" y="27.2" font-size="11.5" text-anchor="start" fill="#0b6b8a">within groups: points around their group’s mean (red)</text><text x="146.8" y="42.2" font-size="11.5" text-anchor="start" fill="#d9961c">between groups: group means around the grand mean (amber)</text></svg><figcaption>ANOVA compares how far the groups’ means are from the grand mean (amber) with how far the values are from their own group’s mean (the spread within each group).</figcaption></figure>
+<div class="formula" role="math"><i>F</i> = (variation between the groups, per degree of freedom) / (variation within the groups, per degree of freedom)<div class="formula-note">If H0 is true (all the means are equal), F is about 1. The larger F is, the stronger the evidence that at least one mean differs.</div></div>
+<p>Here is <i>HOXA9</i>, a gene that controls the development of blood cells, in the three subtypes:</p>
+<div class="rout"><pre>&gt; leuk %&gt;% group_by(mol.biol) %&gt;% summarise(n = n(), mean = mean(HOXA9), sd = sd(HOXA9))
+# A tibble: 3 × 4
+  mol.biol     n  mean    sd
+  &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 ALL1/AF4    10  7.99 1.15
+2 BCR/ABL     37  4.02 0.290
+3 NEG         42  4.03 0.520</pre></div>
+<div class="codefile rblock"><div class="cf-head"><span class="cf-name">R</span><span class="grow"></span><button class="do showme" type="button" data-rs-type="ggplot(leuk, aes(x = mol.biol, y = HOXA9)) +
+  geom_boxplot()">show me</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">ggplot(leuk, aes(x = mol.biol, y = HOXA9)) +
+  geom_boxplot()</pre></div>
+<div class="rout"><pre>&gt; summary(aov(HOXA9 ~ mol.biol, data = leuk))
+            Df Sum Sq Mean Sq F value Pr(&gt;F)
+mol.biol     2 139.72   69.86   230.3 &lt;2e-16 ***
+Residuals   86  26.09    0.30
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</pre></div>
+<p>The ANOVA table has a row for the groups and a row for the residuals (the variation within groups), with their degrees of freedom (2 = 3 groups − 1, and 86 = 89 patients − 3 groups), sums of squares and mean squares. F = 230 is enormous, and p &lt; 2 × 10<sup>−16</sup>. ANOVA assumes, like the t-test, that the observations are independent and roughly normal within each group, and also that the groups have similar variances.</p>
+
+<h2 id="sv-post">Which groups differ?</h2>
+<p>A significant ANOVA tells you that the means aren’t all equal, but not which ones differ. A <b>post hoc</b> test compares every pair of groups, and adjusts for the number of comparisons so that the chance of any false positive stays at 5%. <b>Tukey’s honest significant difference</b> is the usual one:</p>
+<div class="rout"><pre>&gt; TukeyHSD(aov(HOXA9 ~ mol.biol, data = leuk))
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = HOXA9 ~ mol.biol, data = leuk)
+
+$mol.biol
+                         diff        lwr        upr     p adj
+BCR/ABL-ALL1/AF4 -3.972459459 -4.4406476 -3.5042713 0.0000000
+NEG-ALL1/AF4     -3.963000000 -4.4252207 -3.5007793 0.0000000
+NEG-BCR/ABL       0.009459459 -0.2867237  0.3056426 0.9968065</pre></div>
+<p>ALL1/AF4 leukaemias have about 4 log2 units (16 times) more HOXA9 than either of the others, which don’t differ from each other (adjusted p = 0.997). This is a famous result: leukaemias with <i>KMT2A</i> (<i>MLL</i>) fusions switch on <i>HOXA9</i> and <i>MEIS1</i>, and the newest drugs for them, the menin inhibitors, work by switching these genes off again.</p>
+
+<h2 id="sv-kw">When the assumptions fail: Kruskal–Wallis</h2>
+<p>The <b>Kruskal–Wallis test</b> is the rank-based version of ANOVA, just as the Wilcoxon test is of the t-test. Use it when the groups are skewed or have outliers, especially when they are small (the ALL1/AF4 group has only 10 patients):</p>
+<div class="rout"><pre>&gt; kruskal.test(HOXA9 ~ mol.biol, data = leuk)
+
+	Kruskal-Wallis rank sum test
+
+data:  HOXA9 by mol.biol
+Kruskal-Wallis chi-squared = 26.573, df = 2, p-value = 1.697e-06</pre></div>
+<div class="activity">
+  <div class="act-t">Compare three groups</div>
+  <ol class="steps">
+    <li data-task="sv-box" data-rcheck="(function(v) { inherits(v, &quot;ggplot&quot;) &amp;&amp; any(vapply(v$layers, function(l) inherits(l$geom, &quot;GeomBoxplot&quot;) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$x) &amp;&amp; identical(rlang::as_label(m$x), &quot;mol.biol&quot;), logical(1))) &amp;&amp; any(vapply(list(v$mapping, l$mapping), function(m) !is.null(m$y) &amp;&amp; identical(rlang::as_label(m$y), &quot;HOXA9&quot;), logical(1))), logical(1))) &amp;&amp; !inherits(try(ggplot2::ggplot_build(v), silent = TRUE), &quot;try-error&quot;) })(.Last.value)">Draw box plots of HOXA9 in the three subtypes, as above.</li>
+    <li data-task="sv-aov" data-rcheck="(function(v) { (function(s) !is.null(s) &amp;&amp; isTRUE(abs(s[[1]][[&quot;F value&quot;]][1] - 230.3) &lt; 0.5))(if (inherits(v, &quot;summary.aov&quot;)) v else if (inherits(v, &quot;aov&quot;)) summary(v) else NULL) })(.Last.value)">Do the ANOVA of HOXA9, and look at its table with summary().</li>
+    <li data-task="sv-tukey" data-rcheck="(function(v) { inherits(v, &quot;TukeyHSD&quot;) })(.Last.value)">Find out which subtypes differ, with Tukey’s test.</li>
+    <li data-task="sv-meis" data-rcheck="(function(v) { (function(s) !is.null(s) &amp;&amp; isTRUE(abs(s[[1]][[&quot;F value&quot;]][1] - 243.9) &lt; 0.5))(if (inherits(v, &quot;summary.aov&quot;)) v else if (inherits(v, &quot;aov&quot;)) summary(v) else NULL) })(.Last.value)">Now do an ANOVA of <code>MEIS1</code>, the partner of HOXA9.</li>
+    <li data-task="sv-actn3" data-rcheck="(function(v) { (function(s) !is.null(s) &amp;&amp; isTRUE(abs(s[[1]][[&quot;F value&quot;]][1] - 3.753) &lt; 0.01))(if (inherits(v, &quot;summary.aov&quot;)) v else if (inherits(v, &quot;aov&quot;)) summary(v) else NULL) })(.Last.value)">In the FAMuSS data, use an ANOVA to ask whether NDRM.CH differs between the three genotypes of <code>actn3_r577x</code>.</li>
+    <li data-task="sv-kw" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Kruskal&quot;, v$method) &amp;&amp; abs(v$statistic - 6.9413) &lt; 0.01 })(.Last.value)">Do the same comparison with a Kruskal–Wallis test.</li>
+  </ol>
+</div>
+<div class="q" data-q="sv-q-fwer" data-accept="^0?\.14[0-9]*$||^14(\.[0-9]+)? ?%$" data-placeholder="A probability">
+  <div class="q-text">If you compared 3 groups with 3 separate t-tests, each at α = 0.05, what would be the chance of at least one false positive when no groups differ, to two decimal places?</div>
+  <div class="q-model">0.14: 1 − 0.95<sup>3</sup> = 0.143. (This assumes the tests are independent, which they aren’t quite, but it gives the idea.)</div>
+</div>
+<div class="q" data-q="sv-q-actn3" data-accept="^0?\.024[0-9]*$||^0?\.02$" data-placeholder="A number">
+  <div class="q-text">What is the p-value of the ANOVA of NDRM.CH by ACTN3 genotype?</div>
+  <div class="q-model">0.024: there is some evidence that the gain in strength differs between the genotypes. The means are 48.3% (CC), 53.1% (CT) and 58.2% (TT), so people with more copies of the 577X allele gained a little more. The Kruskal–Wallis test agrees (p = 0.031). Next week you will model this as a trend.</div>
+</div>
+<div class="q" data-q="sv-q-anova" data-type="mcq">
+  <div class="q-text">The ANOVA of HOXA9 has p &lt; 2 × 10<sup>−16</sup>. What does it tell you on its own?</div>
+  <div class="mcq"><label data-why="The ANOVA doesn’t say which group is which: the summary table and the box plots do."><input type="radio"> That ALL1/AF4 has the highest mean</label><label data-correct data-why="To find out which groups differ, you need a post hoc test such as Tukey’s."><input type="radio"> That the three means are not all equal</label><label data-why="Tukey’s test shows that BCR/ABL and NEG don’t differ: only ALL1/AF4 stands out."><input type="radio"> That all three means differ from each other</label></div>
+</div>
+<div class="q" data-q="sv-q-tukey" data-type="mcq">
+  <div class="q-text">Why use Tukey’s test, rather than three t-tests, to compare the pairs of subtypes?</div>
+  <div class="mcq"><label data-why="The adjustment makes each comparison a little less powerful, in exchange for controlling false positives."><input type="radio"> It is more powerful than a t-test for each pair</label><label data-correct data-why="Its p-values and confidence intervals are adjusted for all the pairs being compared at once."><input type="radio"> It adjusts for the three comparisons, so that the chance of any false positive stays at 5%</label><label data-why="Tukey’s test makes the same assumptions as ANOVA."><input type="radio"> It doesn’t assume normality</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="categorical" data-num="4" data-title="Categorical data" data-bench="rstudio" hidden>
+  <h1>Categorical data and genotypes</h1>
+  <div class="meta-row"><span class="pill time">≈ 45 min</span></div>
+  <p class="lede">Counts need tests of their own: the chi-square test and Fisher’s exact test, the odds ratio to measure association, and the Hardy–Weinberg test, which checks the quality of genotypes.</p>
+
+<h2 id="ct-tables">Tables of counts</h2>
+<p>When both variables are categorical, the data are counts, and they are best shown as a <b>contingency table</b>. Did the patients with BCR/ABL leukaemia do worse after their first treatment? <code>table()</code> counts each combination of subtype and response (and leaves out the patients whose response is missing):</p>
+<div class="rout"><pre>&gt; tab &lt;- table(two$mol.biol, two$remission)
+&gt; tab
+
+          CR REF
+  BCR/ABL 22   8
+  NEG     38   1</pre></div>
+<p>8 of the 30 BCR/ABL patients (27%) didn’t go into remission (REF), against 1 of the 39 NEG patients (3%).</p>
+
+<h2 id="ct-chisq">The chi-square test</h2>
+<p>If remission didn’t depend on the subtype, each subtype would have the same proportion of REF patients as the table as a whole, 9 of 69. The <b>expected count</b> of each cell is what it would hold if that were so:</p>
+<div class="formula" role="math">expected count = (row total × column total) / grand total</div>
+<p>The <b>chi-square</b> (χ²) statistic adds up how far the observed counts (O) are from the expected counts (E):</p>
+<div class="formula" role="math">χ² = Σ (O − E)² / E<div class="formula-note">with (rows − 1) × (columns − 1) degrees of freedom: 1 for a 2 × 2 table</div></div>
+<div class="rout"><pre>&gt; ct &lt;- chisq.test(tab)
+Warning message:
+In chisq.test(tab) : Chi-squared approximation may be incorrect
+&gt; ct
+
+	Pearson&#x27;s Chi-squared test with Yates&#x27; continuity correction
+
+data:  tab
+X-squared = 6.6899, df = 1, p-value = 0.009696
+&gt; ct$expected
+
+                CR      REF
+  BCR/ABL 26.08696 3.913043
+  NEG     33.91304 5.086957</pre></div>
+<p>R warns that the chi-square approximation may be incorrect. The test relies on a large-sample approximation, which needs every <b>expected</b> count to be at least about 5, and two of them are less than that. (For a 2 × 2 table, R also applies Yates’ continuity correction, which makes the test a little more cautious.)</p>
+
+<h2 id="ct-fisher">Fisher’s exact test, and the odds ratio</h2>
+<p><b>Fisher’s exact test</b> calculates the p-value exactly, from all the tables with the same totals, so it is right however small the counts are. Use it whenever expected counts are small:</p>
+<div class="rout"><pre>&gt; fisher.test(tab)
+
+	Fisher&#x27;s Exact Test for Count Data
+
+data:  tab
+p-value = 0.00802
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.001595656 0.619891879
+sample estimates:
+odds ratio
+0.07492174</pre></div>
+<p>Besides the p-value (0.008), Fisher’s test gives the <b>odds ratio</b>, a measure of how strongly the two variables are associated. The <b>odds</b> of something is the probability that it happens divided by the probability that it doesn’t: 22 of the BCR/ABL patients went into remission and 8 didn’t, so their odds of remission were 22 / 8 = 2.75. For the NEG patients they were 38 / 1 = 38.</p>
+<div class="formula" role="math">odds ratio = odds in group 1 / odds in group 2 = (22 / 8) / (38 / 1) = 0.072<div class="formula-note">Fisher’s test gives 0.075, a slightly different kind of estimate. An odds ratio of 1 means no association.</div></div>
+<p>So the BCR/ABL patients had less than a tenth of the odds of remission of the NEG patients: equally, their odds of being refractory were more than ten times as high. Which way round an odds ratio is depends on the order of the rows and columns, so always say what it compares. Its confidence interval (0.002 to 0.62) is very wide, because only 9 patients were refractory.</p>
+<p>Odds ratios are everywhere in genetic epidemiology: case–control studies and GWAS report the effect of an allele as an odds ratio. Next week you will estimate them with logistic regression, which can also adjust for other variables.</p>
+
+<h2 id="ct-hwe">Hardy–Weinberg equilibrium</h2>
+<p>Last week you saw that, if the two copies of a gene are inherited independently, the genotypes of a SNP with allele frequencies <i>p</i> and <i>q</i> = 1 − <i>p</i> should be in the proportions <i>p</i>², 2<i>pq</i> and <i>q</i>². This is <b>Hardy–Weinberg equilibrium</b> (HWE). It holds when mating is random and there is no selection, migration or mutation to disturb it. Testing it is a standard <b>quality control</b> step for genotyping data, because the commonest reason for a SNP to fail is a problem with the genotyping, such as heterozygotes that are called as homozygotes.</p>
+<p>The test is a chi-square test of the observed genotype counts against the counts expected from the allele frequency. It has 1 degree of freedom: 3 genotypes, minus 1 because the counts must add up to the total, minus 1 more because the allele frequency was estimated from the same data. Here it is for ACTN3 R577X, step by step:</p>
+<div class="rout"><pre>&gt; geno &lt;- fms %&gt;% drop_na(actn3_r577x) %&gt;% count(actn3_r577x)
+&gt; geno
+# A tibble: 3 × 2
+  actn3_r577x     n
+  &lt;chr&gt;       &lt;int&gt;
+1 CC            216
+2 CT            318
+3 TT            201
+&gt; n &lt;- sum(geno$n)
+&gt; p_C &lt;- (2 * geno$n[1] + geno$n[2]) / (2 * n)
+&gt; p_C
+[1] 0.5102041
+&gt; expected &lt;- n * c(p_C^2, 2 * p_C * (1 - p_C), (1 - p_C)^2)
+&gt; expected
+[1] 191.3265 367.3469 176.3265
+&gt; x2 &lt;- sum((geno$n - expected)^2 / expected)
+&gt; x2
+[1] 13.2634
+&gt; pchisq(x2, df = 1, lower.tail = FALSE)
+[1] 0.0002706381</pre></div>
+<p>There are fewer heterozygotes than expected (318 against 367), and p = 0.0003. To test other SNPs, wrap the steps in a function that takes a vector of genotypes, works out which two letters are the alleles, and gives back the p-value. You will use this function again in week 5:</p>
+<div class="codefile" data-path="hwe.R"><div class="cf-head"><span class="cf-name">hwe.R</span><span class="grow"></span><button class="do" type="button" data-file-create="hwe.R">Create this file</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">hwe_p &lt;- function(g) {
+  g &lt;- g[!is.na(g)]                         # the people who were genotyped
+  alleles &lt;- unique(unlist(strsplit(g, &quot;&quot;)))  # the two letters, e.g. &quot;C&quot; and &quot;T&quot;
+  n &lt;- length(g)
+  n_11 &lt;- sum(g == paste0(alleles[1], alleles[1]))   # e.g. CC
+  n_22 &lt;- sum(g == paste0(alleles[2], alleles[2]))   # e.g. TT
+  n_12 &lt;- n - n_11 - n_22                             # the heterozygotes
+  p &lt;- (2 * n_11 + n_12) / (2 * n)                    # the frequency of the first allele
+  expected &lt;- n * c(p^2, 2 * p * (1 - p), (1 - p)^2)
+  x2 &lt;- sum((c(n_11, n_12, n_22) - expected)^2 / expected)
+  pchisq(x2, df = 1, lower.tail = FALSE)
+}</pre><div class="cf-note">Create the file and click <b>Source</b> in RStudio to make the function, or copy it into the Console.</div></div>
+
+<div class="rout"><pre>&gt; hwe_p(fms$actn3_r577x)
+[1] 0.0002706381
+&gt; fms %&gt;% filter(Race == &quot;Caucasian&quot;) %&gt;% pull(actn3_r577x) %&gt;% hwe_p()
+[1] 0.07598464</pre></div>
+<p>In everyone, the SNP fails the test; in the Caucasian participants alone, it doesn’t (p = 0.08). FAMuSS mixes people of several ancestries, in whom the allele frequencies differ. Each group can be in equilibrium on its own, but pooling groups with different allele frequencies always gives too few heterozygotes (the <b>Wahlund effect</b>). So test HWE within groups of similar ancestry, and treat a failure as a warning to investigate rather than as a finding.</p>
+<div class="callout concept">
+  <div class="co-t">HWE in genome-wide studies</div>
+  <p>Before a genome-wide association study, SNPs that fail HWE badly (for example p &lt; 10<sup>−6</sup>, tested in the controls) are usually removed, because genotyping errors can create false associations. The threshold is strict because a study tests hundreds of thousands of SNPs, so some will fail by chance (week 5). Testing in controls avoids removing a real association: in cases, a SNP that causes the disease may well be out of equilibrium.</p>
+</div>
+<div class="activity">
+  <div class="act-t">Tables, odds and genotypes</div>
+  <ol class="steps">
+    <li data-task="ct-tab" data-rcheck="(function(v) { inherits(v, &quot;table&quot;) &amp;&amp; all(dim(v) == c(2, 2)) })(.Last.value)">Make the table of remission in the BCR/ABL and NEG groups, as above.</li>
+    <li data-task="ct-fisher" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Fisher&quot;, v$method) &amp;&amp; abs(v$p.value - 0.00802) &lt; 0.0001 })(.Last.value)">Test it with Fisher’s exact test.</li>
+    <li data-task="ct-obese" data-rcheck="any(vapply(ls(globalenv()), function(nm) { o &lt;- get(nm, envir = globalenv()); isTRUE(tryCatch({ is.data.frame(o) &amp;&amp; nrow(o) == 1397 &amp;&amp; &quot;obese&quot; %in% names(o) &amp;&amp; is.logical(o$obese) }, error = function(e) FALSE)) }, logical(1)))">In <code>fms</code>, add a column <code>obese</code> that is TRUE when <code>pre.BMI</code> is more than 25 (overweight or obese).</li>
+    <li data-task="ct-chisq" data-rcheck="(function(v) { inherits(v, &quot;htest&quot;) &amp;&amp; grepl(&quot;Chi-squared&quot;, v$method) &amp;&amp; v$p.value &lt; 1e-4 })(.Last.value)">Make a table of obese against Gender, and test it with a chi-square test.</li>
+    <li data-task="ct-or" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(1.799537)) &lt; 0.002)) })(.Last.value)">Calculate the odds ratio for being obese in men compared with women, from the counts in your table.</li>
+    <li data-task="ct-hwe" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(0.0002706381)) &lt; 1e-07)) })(.Last.value)">Make the function <code>hwe_p()</code>, and test ACTN3 R577X for Hardy–Weinberg equilibrium in everyone.</li>
+    <li data-task="ct-cauc" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(0.07598464)) &lt; 1e-05)) })(.Last.value)">Then test it in the Caucasian participants alone.</li>
+    <li data-task="ct-akt1" data-rcheck="(function(v) { is.numeric(v) &amp;&amp; length(v) == 1 &amp;&amp; isTRUE(all(abs(as.numeric(v) - c(0.4780294)) &lt; 1e-05)) })(.Last.value)">Test <code>akt1_t8407g</code>, a SNP in <i>AKT1</i>, in everyone and then in the Caucasian participants alone.</li>
+  </ol>
+</div>
+<div class="q" data-q="ct-q-exp" data-accept="^5\.09[0-9]*$||^5\.08[5-9][0-9]*$||^5\.1$" data-placeholder="A number">
+  <div class="q-text">In the table of remission, what is the expected count of refractory (REF) NEG patients, to two decimal places?</div>
+  <div class="q-model">5.09: 39 NEG patients × 9 REF patients / 69 patients. The observed count was 1. The expected count for REF in the BCR/ABL group, 3.91, is below 5, which is why R warned about the chi-square test.</div>
+</div>
+<div class="q" data-q="ct-q-or" data-accept="^1\.80?[0-9]*$||^1\.79[5-9][0-9]*$" data-placeholder="A number">
+  <div class="q-text">What is the odds ratio for being obese in men compared with women, to two decimal places?</div>
+  <div class="q-model">1.80: (178 / 247) / (173 / 432). Men had 1.8 times the odds of a BMI over 25. Fisher’s test gives 1.80 too, with a 95% CI of 1.37 to 2.36.</div>
+</div>
+<div class="q" data-q="ct-q-hwe" data-accept="^0?\.076[0-9]*$||^0?\.075[5-9][0-9]*$||^0?\.08$" data-placeholder="A number">
+  <div class="q-text">What is the p-value of the HWE test of ACTN3 R577X in the Caucasian participants, to two decimal places?</div>
+  <div class="q-model">0.08 (0.076): no evidence against equilibrium, unlike the p = 0.0003 for everyone together. For akt1_t8407g the contrast is even sharper: p = 2 × 10<sup>−12</sup> in everyone, and 0.48 in the Caucasian participants. The Asian participants carry its G allele far more often.</div>
+</div>
+<div class="q" data-q="ct-q-fisher" data-type="mcq">
+  <div class="q-text">Why is Fisher’s exact test better than the chi-square test for the table of remission?</div>
+  <div class="mcq"><label data-why="With large expected counts the two agree, and the chi-square test also works for larger tables, where Fisher’s test can be very slow."><input type="radio"> Fisher’s test is always better</label><label data-why="It is the expected counts that matter. A table can have a small observed count and still have large expected ones."><input type="radio"> Because one of the observed counts is 1</label><label data-correct data-why="What matters is the expected counts, not the observed ones. Fisher’s test is exact for any counts."><input type="radio"> Two of the expected counts are below 5, so the chi-square approximation isn’t reliable</label></div>
+</div>
+<div class="q" data-q="ct-q-dir" data-type="mcq">
+  <div class="q-text">Fisher’s test gives an odds ratio of 0.075 for the table of remission (rows BCR/ABL then NEG; columns CR then REF). What does it mean?</div>
+  <div class="mcq"><label data-why="An odds ratio below 1 means lower odds in the first row."><input type="radio"> BCR/ABL patients were more likely to go into remission</label><label data-correct data-why="Equally, their odds of being refractory were more than ten times as high (1 / 0.075 = 13). The odds ratio compares the odds of the first column in the first row with those in the second row."><input type="radio"> BCR/ABL patients had less than a tenth of the odds of complete remission of NEG patients</label><label data-why="An odds ratio is a ratio of two odds, not a proportion. 22 of 30 (73%) BCR/ABL patients went into remission."><input type="radio"> 7.5% of BCR/ABL patients went into remission</label></div>
+</div>
+<div class="q" data-q="ct-q-wahlund" data-type="mcq">
+  <div class="q-text">ACTN3 R577X fails the HWE test in all the FAMuSS participants, but not in the Caucasian participants alone. What is the most likely explanation?</div>
+  <div class="mcq"><label data-correct data-why="This is the Wahlund effect. It is why HWE is tested within groups of similar ancestry."><input type="radio"> The participants come from groups with different allele frequencies, and pooling them gives too few heterozygotes</label><label data-why="Selection can’t act within a group of volunteers in one generation."><input type="radio"> The R577X variant is under strong natural selection in FAMuSS</label><label data-why="A genotyping problem is always worth checking, but here the excess of homozygotes is what a mixture of populations produces."><input type="radio"> The genotyping of ACTN3 failed in the non-Caucasian participants</label></div>
+</div>
+<div class="q" data-q="ct-q-nr3c1" data-type="mcq">
+  <div class="q-text">nr3c1_rs6195 has 561 AA, 29 AG and 7 GG genotypes in the Caucasian participants, where about 0.8 GG would be expected (p = 2 × 10<sup>−13</sup>). What would you do?</div>
+  <div class="mcq"><label data-why="Nothing suggests that, and HWE is about how the genotypes are distributed, not about the training."><input type="radio"> Report that GG is enriched in people who do strength training</label><label data-why="Genotyping errors can create false associations, which is why HWE is part of quality control."><input type="radio"> Ignore it: HWE tests are not important</label><label data-correct data-why="Far too many rare homozygotes, within one ancestry group, is a classic sign of genotyping error. In a GWAS this SNP would fail quality control."><input type="radio"> Suspect a genotyping problem: check the genotype calls, and leave the SNP out of association tests if it can’t be fixed</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="choose" data-num="5" data-title="Choosing a test" data-bench="rstudio" hidden>
+  <h1>Choosing the right test</h1>
+  <div class="meta-row"><span class="pill time">≈ 20 min</span></div>
+  <p class="lede">Which test you use depends on the kind of data, the design of the study and the assumptions you can make. Practise choosing.</p>
+
+<p>Choosing a test comes down to three questions. What <b>kind of outcome</b> is it: continuous, or counts in categories? How many <b>groups</b> are you comparing, and are they <b>independent</b> or matched (paired)? And are the <b>assumptions</b> of the usual test reasonable, or do the data call for a test that makes fewer?</p>
+<div class="table"><table class="plain"><thead><tr><th>Your data</th><th>The usual test</th><th>If its assumptions fail</th></tr></thead><tbody><tr><td>a continuous outcome, two independent groups</td><td>a two-sample t-test (Welch’s): <code>t.test(y ~ group)</code></td><td>Wilcoxon rank-sum test: <code>wilcox.test(y ~ group)</code></td></tr><tr><td>a continuous outcome, measured twice on the same people</td><td>a paired t-test: <code>t.test(after, before, paired = TRUE)</code></td><td>Wilcoxon signed-rank test: <code>wilcox.test(after, before, paired = TRUE)</code></td></tr><tr><td>a continuous outcome, three or more groups</td><td>one-way ANOVA: <code>aov(y ~ group)</code>, then <code>TukeyHSD()</code></td><td>Kruskal–Wallis test: <code>kruskal.test(y ~ group)</code></td></tr><tr><td>two categorical variables (a table of counts)</td><td>chi-square test: <code>chisq.test(table)</code></td><td>Fisher’s exact test, when expected counts are small: <code>fisher.test(table)</code></td></tr><tr><td>genotype counts against Hardy–Weinberg proportions</td><td>chi-square test with 1 degree of freedom (<code>hwe_p()</code>)</td><td>an exact test (for example in the HardyWeinberg package), for rare alleles</td></tr><tr><td>two continuous variables</td><td>Pearson’s correlation: <code>cor.test(x, y)</code> (next week: regression)</td><td>Spearman’s correlation: <code>cor.test(x, y, method = "spearman")</code></td></tr></tbody></table></div>
+<p>Two pieces of advice that matter more than the choice of test. First, decide on your main test <b>before</b> you look at the results: trying several tests and reporting the one with the smallest p-value makes p-values meaningless (more about this in week 6). Second, report the <b>size</b> of the effect, with its confidence interval, as well as the p-value.</p>
+<p>For each of these situations, choose the test you would use.</p>
+<div class="q" data-q="ch-q-1" data-type="mcq">
+  <div class="q-text">You measure the expression of a gene in tumour and in normal tissue from the same 12 patients. The differences look roughly normal. Which test?</div>
+  <div class="mcq"><label data-why="The two sets of samples aren’t independent: they come from the same patients."><input type="radio"> A two-sample t-test</label><label data-why="The outcome is continuous, not a count."><input type="radio"> A chi-square test</label><label data-correct data-why="Each tumour sample is matched with normal tissue from the same patient, so analyse the differences."><input type="radio"> A paired t-test</label></div>
+</div>
+<div class="q" data-q="ch-q-2" data-type="mcq">
+  <div class="q-text">You compare the number of copies of a gene, a count with a few very large values, between 8 patients and 9 controls. Which test?</div>
+  <div class="mcq"><label data-why="There are only two groups."><input type="radio"> ANOVA</label><label data-why="With such small, skewed groups, the t-test’s assumption of normal means is doubtful."><input type="radio"> A t-test</label><label data-correct data-why="Two independent, small, skewed groups: a test based on ranks isn’t thrown by the large values."><input type="radio"> A Wilcoxon rank-sum test</label></div>
+</div>
+<div class="q" data-q="ch-q-3" data-type="mcq">
+  <div class="q-text">You compare the carriers and non-carriers of a variant among 15 cases and 15 controls: 6 cases and 1 control are carriers. Which test?</div>
+  <div class="mcq"><label data-correct data-why="A 2 × 2 table with small expected counts (the carriers’ expected counts are 3.5)."><input type="radio"> Fisher’s exact test</label><label data-why="Two of the expected counts are below 5."><input type="radio"> A chi-square test</label><label data-why="Carrier or not is categorical, not continuous."><input type="radio"> A t-test</label></div>
+</div>
+<div class="q" data-q="ch-q-4" data-type="mcq">
+  <div class="q-text">You compare BMI, which is roughly normal, between four ancestry groups. Which test?</div>
+  <div class="mcq"><label data-correct data-why="One continuous outcome, more than two independent groups, roughly normal data."><input type="radio"> A one-way ANOVA, followed by Tukey’s test if it is significant</label><label data-why="The groups contain different people."><input type="radio"> A paired t-test</label><label data-why="Six tests at α = 0.05 give a much higher chance of a false positive."><input type="radio"> Six t-tests, one for each pair of groups</label></div>
+</div>
+<div class="q" data-q="ch-q-5" data-type="mcq">
+  <div class="q-text">You genotype 2,000 controls for a new SNP panel and want to check the quality of each SNP. Which test?</div>
+  <div class="mcq"><label data-why="That compares a continuous outcome between groups."><input type="radio"> A Kruskal–Wallis test</label><label data-correct data-why="It is a standard quality control: SNPs that fail badly are checked or removed."><input type="radio"> A test of Hardy–Weinberg equilibrium for each SNP, within each ancestry group</label><label data-why="The question is whether each SNP’s genotypes are in the proportions expected, not a comparison between SNPs."><input type="radio"> A t-test of each SNP against the others</label></div>
+</div>
+<div class="q" data-q="ch-q-6" data-type="mcq">
+  <div class="q-text">You compare the change in a biomarker between 200 patients given a drug and 200 given a placebo, randomly allocated. The changes are roughly normal. Which test?</div>
+  <div class="mcq"><label data-correct data-why="Two independent groups of reasonable size and a continuous outcome. The change within each patient is the outcome."><input type="radio"> A two-sample (Welch’s) t-test of the change</label><label data-why="The outcome is continuous. (You would lose information by turning it into “improved or not”.)"><input type="radio"> Fisher’s exact test</label><label data-why="The patients on the drug aren’t matched with those on the placebo: they are different people."><input type="radio"> A paired t-test of drug against placebo</label></div>
+</div>
+
+</section>
+
+<section class="chapter" id="report" data-num="6" data-title="Your report" data-bench="rstudio" hidden>
+  <h1>Reporting tests in Quarto</h1>
+  <div class="meta-row"><span class="pill time">≈ 25 min</span></div>
+  <p class="lede">Put this week’s main tests into a report that renders from the data, and practise reporting a test so that a clinician can understand it.</p>
+
+<p>This week’s report shows your tests. As last week, <b>Create this file</b> saves it in your home folder, as <code>week3.qmd</code>, and opens it in RStudio. Each chunk shows the code and the result of a test, and the text says what it means.</p>
+<div class="codefile" data-path="week3.qmd"><div class="cf-head"><span class="cf-name">week3.qmd</span><span class="grow"></span><button class="do" type="button" data-file-create="week3.qmd">Create this file</button><button class="btn small" type="button" data-copy-code="1">Copy</button></div><pre class="codeblock">---
+title: &quot;Week 3: comparing groups&quot;
+author: &quot;Your name&quot;
+format: html
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+leuk &lt;- read_csv(&quot;data/leukaemia.csv&quot;, show_col_types = FALSE)
+fms &lt;- read_csv(&quot;data/famuss.csv&quot;, show_col_types = FALSE)
+two &lt;- leuk %&gt;% filter(mol.biol %in% c(&quot;BCR/ABL&quot;, &quot;NEG&quot;))
+```
+
+## ABL1 in BCR/ABL and NEG leukaemias
+
+```{r}
+#| label: abl1
+t.test(ABL1 ~ mol.biol, data = two)
+```
+
+ABL1 expression was higher in the BCR/ABL group, by
+`r round(mean(two$ABL1[two$mol.biol == &quot;BCR/ABL&quot;]) - mean(two$ABL1[two$mol.biol == &quot;NEG&quot;]), 2)`
+(log2 units).
+
+## HOXA9 in three subtypes
+
+```{r}
+#| label: hoxa9
+summary(aov(HOXA9 ~ mol.biol, data = leuk))
+```
+
+## Remission
+
+Add a Fisher&#x27;s exact test of remission (CR or REF) in the BCR/ABL and NEG groups here.</pre></div>
+<p>A good report of a test gives the <b>estimate</b> (a difference in means, or an odds ratio), its <b>confidence interval</b>, the <b>test</b> you used and its <b>p-value</b>, in words someone else can follow. For example: “ABL1 expression was higher in BCR/ABL than in NEG leukaemias, by 1.10 log2 units (95% CI 0.86 to 1.34; Welch’s t-test, p = 1.8 × 10<sup>−13</sup>).”</p>
+<div class="activity">
+  <div class="act-t">Write and render your report</div>
+  <ol class="steps">
+    <li data-task="rp-create" data-auto="file:create path~week3.qmd">Create <code>week3.qmd</code> with the button above, and put your name in it.</li>
+    <li data-task="rp-render" data-auto="knit:done path~week3.qmd ok=true">Render it.</li>
+    <li data-task="rp-fisher" data-check="has:week3.qmd|fisher\.test\(">Under <b>Remission</b>, add a chunk that makes the table of remission by subtype and tests it with Fisher’s exact test, and a sentence that reports the result.</li>
+    <li data-task="rp-hwe" data-check="has:week3.qmd|hwe_p\(">Add a section on Hardy–Weinberg equilibrium, with the function <code>hwe_p()</code> and the tests of ACTN3 R577X in everyone and in the Caucasian participants.</li>
+    <li data-task="rp-render2" data-check="has:week3.html|Fisher&#x27;s Exact Test|Fisher&amp;#39;s Exact Test">Render the report again, and check that it shows Fisher’s test.</li>
+  </ol>
+</div>
+<div class="q" data-q="rp-q-sentence">
+  <div class="q-text">Write a sentence that reports the Fisher’s exact test of remission for a clinician, with the numbers.</div>
+  <div class="q-model">For example: “Fewer patients with BCR/ABL leukaemia went into complete remission after their first treatment than patients with NEG leukaemia (22 of 30, 73%, against 38 of 39, 97%; odds ratio 0.075, 95% CI 0.002 to 0.62; Fisher’s exact test, p = 0.008).” The interval is very wide because only 9 patients were refractory.</div>
+</div>
+
+</section>
+
+<section class="chapter finish-chapter" id="wrapup" data-num="★" data-title="Summary and homework" data-bench="rstudio" hidden>
+  <h1>Summary and homework</h1>
+  <p class="lede">What you have learnt this week, the homework, and how much of the practical you have done.</p>
+
+<h2 id="w3-ideas">This week’s main ideas</h2>
+<ul>
+<li>A test starts from a <b>null hypothesis</b>. The <b>p-value</b> is the probability, if H<sub>0</sub> were true, of data at least as extreme as yours. It isn’t the probability that H<sub>0</sub> is true, and it doesn’t measure the size of an effect.</li>
+<li>A <b>permutation test</b> builds the null distribution by shuffling labels. The <b>t-test</b> uses the t distribution instead. Both ask how many standard errors apart two means are.</li>
+<li>Check the <b>assumptions</b> (independence, roughly normal groups); use <b>Wilcoxon</b> or <b>Kruskal–Wallis</b> when they fail, and a <b>paired</b> test for matched measurements.</li>
+<li>For three or more groups, use <b>ANOVA</b>, then <b>Tukey’s test</b> to see which groups differ.</li>
+<li>For counts, use a <b>chi-square</b> test, or <b>Fisher’s exact test</b> when expected counts are small, and measure the association with an <b>odds ratio</b>.</li>
+<li><b>Hardy–Weinberg equilibrium</b> is a quality check of genotypes. Test it within groups of similar ancestry: mixing populations gives too few heterozygotes.</li>
+<li>Always report the <b>estimate and its confidence interval</b>, not just the p-value.</li>
+</ul>
+<div class="optional homework">
+  <div class="opt-t"><span class="opt-tag hw">Homework</span> Choose and run the right tests</div>
+  <p class="opt-note">Do this after the session, before next week. It doesn’t count towards finishing the practical, but it builds your report.</p>
+
+<p>Add a section to <code>week3.qmd</code> for each of these questions. For each one, say which test you chose and why, run it, and report the estimate, its confidence interval (where there is one) and the p-value in a sentence. Then render the report.</p>
+<div class="activity">
+  <div class="act-t">Homework 3</div>
+  <ol class="steps">
+    <li data-task="hw3-meis" data-check="has:week3.qmd|MEIS1">Is MEIS1 expressed differently in the BCR/ABL and NEG groups? (Look at the data first.)</li>
+    <li data-task="hw3-age" data-check="has:week3.qmd|\bage\b[\s\S]*mol\.biol|mol\.biol[\s\S]*\bage\b">Do the patients of the three subtypes differ in age?</li>
+    <li data-task="hw3-sex" data-check="has:week3.qmd|table\([^)]*sex|count\([^)]*sex">Is the subtype of leukaemia associated with the patient’s sex?</li>
+    <li data-task="hw3-esr1" data-check="has:week3.qmd|esr1_rs1042717">Is esr1_rs1042717 in Hardy–Weinberg equilibrium in the Caucasian participants?</li>
+    <li data-task="hw3-drm" data-check="has:week3.qmd|DRM_Max">Did the strength of the untrained (dominant) arm change during the study?</li>
+    <li data-task="hw3-render" data-check="has:week3.html|MEIS1">Render the report.</li>
+  </ol>
+</div>
+<div class="q" data-q="hw3-q-choice">
+  <div class="q-text">Which test did you choose for the age of the patients in the three subtypes, and why?</div>
+  <div class="q-model">A one-way ANOVA (then Tukey’s test), or a Kruskal–Wallis test if the ages look skewed or the small ALL1/AF4 group worries you: age is continuous and there are three independent groups. The NEG patients are younger on average (about 26, against about 40 in the BCR/ABL group and 42 in the ALL1/AF4 group): BCR/ABL leukaemia becomes commoner with age.</div>
+</div>
+
+</div>
+
+<h2 id="wrapup-progress">Your progress</h2>
+<p>This panel shows how much of this week’s practical you have done, and lists anything that is left. When everything is done (apart from the parts marked <b>If you have time</b> and the homework), the practical is complete.</p>
+<div class="cert-panel" data-cert-panel></div>
+</section>
+<!--/CHAPTERS-->
+    </aside>
+
+    <div class="splitter" role="separator" aria-orientation="vertical" title="Drag to resize, or double-click to reset"></div>
+
+    <section class="bench" aria-label="Workbench">
+      <div class="wb-tabs" role="tablist">
+        <button class="wb-tab rail-btn" type="button" id="tutRail" title="Show the instructions (Ctrl+\)" hidden><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M13 10l2 2-2 2"/></svg><span>Instructions</span></button>
+        <button class="wb-tab on" type="button" role="tab" data-wb="rstudio" title="RStudio, an integrated development environment for R"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg><span class="lbl">RStudio</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="editor" title="Your files and a text editor"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1H7l-4 9z"/><path d="M3 19l3.5-8H22l-3.5 8z"/></svg><span class="lbl">Files</span><span class="dot"></span></button>
+        <button class="wb-tab" type="button" role="tab" data-wb="assistant" title="AI assistant"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l2 5.5L19.5 10 14 12l-2 5.5L10 12l-5.5-2L10 8.5z"/><path d="M19 17l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span class="lbl">AI</span><span class="dot"></span></button>
+        <button class="bench-close" type="button" aria-label="Back to the instructions">✕ Instructions</button>
+      </div>
+      <div class="wb-body">
+        <div class="wb-pane" data-wb="rstudio"><div id="rsRoot"></div></div>
+        <div class="wb-pane" data-wb="editor" hidden><div id="edRoot"></div></div>
+        <div class="wb-pane" data-wb="assistant" hidden><div id="aiRoot"></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<button class="bench-fab" type="button" aria-label="Open the workbench"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h18"/></svg>Workbench</button>
+<noscript><p style="padding:20px">This page needs JavaScript.</p></noscript>
+
+<script>window.RWB_STARTERS = [{"p":"all_expression.csv","s":5128376},{"p":"famuss.csv","s":1136486},{"p":"hgdp_akt1.csv","s":75405},{"p":"leukaemia.csv","s":5286},{"p":"virco.csv","s":675050}];
+window.RWB_STARTERS_VERSION = 1;</script>
+<script>window.RT_COURSES = [{"id":"week2","page":"week2.html","dataPage":"week2","title":"Week 2: Describing data","short":"Describing data","week":2,"time":"About 4 hours","tasks":["st-install","st-library","st-wd","st-read","st-view","d-bmi-mean","d-bmi-med","d-bmi-iqr","d-race","d-sex","d-geno","sh-hist","sh-box","sh-dens","pd-tails","pd-het","pd-miss","pd-depth","pd-sim","pd-simhist","pd-low","u-means","u-hist","u-120","u-se","u-ci","u-af","u-afci","u-boot","r-create","r-render","r-ci","r-inline","r-render2"],"questions":["st-q-cols","st-q-text","d-q-median","d-q-missing","d-q-bmi","d-q-skew","d-q-geno","d-q-percent","sh-q-box","sh-q-shape","sh-q-bins","pd-q-975","pd-q-het","pd-q-miss","pd-q-which","pd-q-rnaseq","u-q-se","u-q-af","u-q-n","u-q-sdse","u-q-ci","r-q-new","r-q-path","r-q-why"]},{"id":"week3","page":"week3.html","dataPage":"week3","title":"Week 3: Testing hypotheses","short":"Testing hypotheses","week":3,"time":"About 4½ hours","tasks":["st3-install","st3-library","st3-wd","st3-leuk","st3-fms","st3-count","lg-two","lg-means","lg-fun","lg-null","lg-hist","lg-p","lg-rag","tw-qq","tw-t","tw-w","tw-cd52","tw-sex","tw-paired","sv-box","sv-aov","sv-tukey","sv-meis","sv-actn3","sv-kw","ct-tab","ct-fisher","ct-obese","ct-chisq","ct-or","ct-hwe","ct-cauc","ct-akt1","rp-create","rp-render","rp-fisher","rp-hwe","rp-render2"],"questions":["st3-q-bcr","st3-q-abl","lg-q-p","lg-q-rag","lg-q-meaning","lg-q-rag2","lg-q-type1","tw-q-diff","tw-q-gain","tw-q-cd52","tw-q-welch","tw-q-paired","tw-q-big","sv-q-fwer","sv-q-actn3","sv-q-anova","sv-q-tukey","ct-q-exp","ct-q-or","ct-q-hwe","ct-q-fisher","ct-q-dir","ct-q-wahlund","ct-q-nr3c1","ch-q-1","ch-q-2","ch-q-3","ch-q-4","ch-q-5","ch-q-6","rp-q-sentence"]},{"id":"week4","page":"week4.html","dataPage":"week4","title":"Week 4: Regression","short":"Regression","week":4,"time":"About 4½ hours","tasks":["st4-install","st4-library","st4-wd","st4-read","st4-recode","st4-check","co-scatter","co-r","co-bmiage","co-spear","lr-fit","lr-sum","lr-ci","lr-pred","lr-smooth","lr-bmi","gp-add","gp-factor","gp-anova","gp-dom","cf-bmi","cf-adj","cf-actn3","cf-int","cf-plot","cf-women","ck-resid","ck-qq","lo-m1","lo-or","lo-m2","lo-ci","lo-actn3","un-t","un-lm","un-anova","rp4-create","rp4-render","rp4-int","rp4-glm","rp4-render2"],"questions":["st4-q-esr1","co-q-r","co-q-r2","co-q-curve","lr-q-slope","lr-q-r2","lr-q-pred","lr-q-bmi","lr-q-int","gp-q-slope","gp-q-tt","gp-q-why","cf-q-adj","cf-q-women","cf-q-conf","cf-q-int","cf-q-adjust","ck-q-funnel","ck-q-indep","lo-q-or","lo-q-esr1","lo-q-age","lo-q-dich","un-q-coef","un-q-welch"]},{"id":"week5","page":"week5.html","dataPage":"week5","title":"Week 5: Genome-scale inference","short":"Genome-scale inference","week":5,"time":"About 4½ hours","tasks":["st5-install","st5-library","st5-wd","st5-snps","st5-virco","mt-sim","mt-count","mt-hist","mt-mut","mt-virco","mt-vhist","co-bonf","co-bh","co-table","co-pvb","co-pvbh","co-hand","gw-read","gw-mat","gw-tests","gw-results","gw-count","gw-hist","gw-volcano","ps-read","ps-freq","ps-plot","ps-sim","ps-pca","ps-pcplot","ps-naive","ps-adj","ps-qq","ld-hgdp","ld-table","ld-r2","ld-heat","g5-qc","g5-pass","g5-assoc","g5-scan","g5-qq","g5-man","rp5-create","rp5-render","rp5-qq","rp5-man","rp5-render2"],"questions":["st5-q-50k","mt-q-fwer","mt-q-exp","mt-q-uniform","mt-q-shape","co-q-thr","co-q-bonf10","co-q-bh10","co-q-fdr","co-q-more","co-q-two","gw-q-exp","gw-q-bh","gw-q-false","gw-q-abl1","gw-q-5e8","gw-q-winner","ps-q-freq","ps-q-naive","ps-q-ten","ps-q-pc1","ps-q-scale","ld-q-r2","ld-q-tag","ld-q-bonf","g5-q-pass","g5-q-n05","g5-q-top","g5-q-actn3","g5-q-qq","g5-q-manh"]}];</script>
+<script>window.RT_PAGE = {"course":"week 3 of Biostatistics for Genomic Medicine, a course for healthcare professionals: hypothesis tests and comparing groups, in R in RStudio","aiData":"The course’s data are in ~/data: famuss.csv (the FAMuSS study: 1,397 young adults who did 12 weeks of strength training of their non-dominant arm; one row per person, with the columns id, Gender, Age, Race, Pre.height (inches), Pre.weight (pounds), pre.BMI, Pre_NDRM_Max and Post_NDRM_Max (the heaviest weight lifted with the non-dominant arm before and after the training, in pounds), NDRM.CH (its percentage change), the same for the dominant arm (Pre_DRM_Max, Post_DRM_Max, DRM.CH), and 222 columns of genotypes named gene_variant, such as actn3_r577x and esr1_rs1042717, holding genotypes such as \"CC\", \"CT\" and \"TT\"; many values are missing (NA), because not everyone was measured or genotyped), leukaemia.csv (89 adults with B-cell acute lymphoblastic leukaemia from the ALL study: the columns sample, sex, age, BT (the B-cell stage), mol.biol (the molecular subtype: NEG, BCR/ABL or ALL1/AF4), remission (CR, complete remission, or REF, refractory) and the expression (log2) of five genes: ABL1, HOXA9, MEIS1, CD52 and RAG1), all_expression.csv (the expression, log2, of all 12,625 probes of the microarray in the 79 NEG and BCR/ABL patients of leukaemia.csv: one row per probe, with the columns probe, symbol and one column per patient, named as in leukaemia.csv’s sample column), hgdp_akt1.csv (1,064 people from 51 populations of the Human Genome Diversity Project, with the columns ID, Gender, Population, Geographic.origin, Geographic.area and their genotypes at four SNPs in AKT1: AKT1.C0756A, AKT1.C6024T, AKT1.G2347T and AKT1.G2375A) and virco.csv (1,066 samples of HIV-1 from the Virco data: SeqID and other details, the fold resistance to eight protease inhibitors (APV.Fold, ATV.Fold, IDV.Fold for indinavir, LPV.Fold, NFV.Fold for nelfinavir, RTV.Fold, SQV.Fold, TPV.Fold; how many times as much drug it takes to inhibit the virus as a reference virus), and the amino acid at each of the 99 positions of the protease, in the columns P1 to P99: \"-\" is the reference amino acid, \".\" a position that could not be read, and letters the amino acids found). This week uses famuss.csv and leukaemia.csv.","aiStyle":"Show small, complete examples that run here, in the style of this course: the tidyverse (library(tidyverse)) for reading and wrangling data (read_csv, filter, select, mutate, group_by, summarise, count, pivot_longer) and for plots (ggplot2), and base R’s statistics functions (mean, sd, quantile, t.test, wilcox.test, aov, TukeyHSD, chisq.test, fisher.test, cor.test, lm, glm, p.adjust, prcomp). Explain the statistics in plain words for healthcare professionals who are learning biostatistics: what a result means, and what it does not mean. Use na.rm = TRUE or drop the missing values, because the FAMuSS data have many. Never put personal or patient data into an answer.","aiChat":["What exactly does a p-value tell me, and what does it not?","When should I use a Wilcoxon test instead of a t-test?","Why use Fisher’s exact test rather than a chi-square test?","Why can a mixture of populations make a SNP fail a Hardy–Weinberg test?"],"ex":{"obj":"leuk","Obj":"Leuk","dataName":"the leukaemia data","file":"~/data/leukaemia.csv","read":"leuk <- read_csv(\"~/data/leukaemia.csv\")","mean":"mean(leuk$ABL1)","cols":["sample","sex","age","BT","mol.biol","remission","ABL1","HOXA9","MEIS1","CD52","RAG1","Gender","Age","pre.BMI","NDRM.CH","actn3_r577x","esr1_rs1042717"],"factors":["sex","BT","mol.biol","remission","Gender","actn3_r577x"]}};</script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/vfs.js"></script>
+<script src="assets/js/project.js"></script>
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/shell-lang.js"></script>
+<script src="assets/js/tools-wasm.js"></script>
+<script src="assets/js/shell-extra.js"></script>
+<script src="assets/js/shell-r.js"></script>
+<script src="assets/js/terminal.js"></script>
+<script src="assets/vendor/codemirror/codemirror.js"></script>
+<script src="assets/vendor/codemirror/r.js"></script>
+<script src="assets/vendor/codemirror/markdown.js"></script>
+<script src="assets/vendor/codemirror/yaml.js"></script>
+<script src="assets/vendor/codemirror/shell.js"></script>
+<script src="assets/vendor/codemirror/javascript.js"></script>
+<script src="assets/vendor/codemirror/python.js"></script>
+<script src="assets/vendor/codemirror/overlay.js"></script>
+<script src="assets/vendor/codemirror/multiplex.js"></script>
+<script src="assets/vendor/codemirror/yaml-frontmatter.js"></script>
+<script src="assets/vendor/codemirror/rmarkdown.js"></script>
+<script src="assets/vendor/codemirror/matchbrackets.js"></script>
+<script src="assets/vendor/codemirror/closebrackets.js"></script>
+<script src="assets/vendor/codemirror/comment.js"></script>
+<script src="assets/vendor/codemirror/searchcursor.js"></script>
+<script src="assets/vendor/codemirror/active-line.js"></script>
+<script src="assets/vendor/codemirror/runmode.js"></script>
+<script src="assets/vendor/dompurify/purify.min.js"></script>
+<script src="assets/vendor/marked/marked.min.js"></script>
+<script src="assets/js/rsession.js"></script>
+<script src="assets/js/rui.js"></script>
+<script src="assets/js/dataview.js"></script>
+<script src="assets/js/rconsole.js"></script>
+<script src="assets/js/knit.js"></script>
+<script src="assets/js/rstudio.js"></script>
+<script src="assets/js/rsource.js"></script>
+<script src="assets/js/shiny.js"></script>
+<script src="assets/js/kernels.js"></script>
+<script src="assets/js/notebook.js"></script>
+<script src="assets/js/pdfview.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/assistant.js"></script>
+<script src="assets/js/page.js"></script>
+<script src="assets/js/tutorial.js"></script>
+<script src="assets/js/workbench.js"></script>
+</body>
+</html>

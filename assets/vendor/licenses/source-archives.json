@@ -1,0 +1,196 @@
+[
+ {
+  "name": "coreutils",
+  "version": "8.32",
+  "package": "coreutils-8.32",
+  "licence": "GPL-3.0-or-later",
+  "file": "sources/coreutils-8.32.tar.xz",
+  "bytes": 5547836,
+  "sha256": "4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa",
+  "upstream": "https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz",
+  "used_for": "../biowasm/coreutils/8.32/: cat comm cut date fold head join md5sum paste seq shuf sort tail tee tr uniq wc (Biowasm build)",
+  "origin": "the official release archive, retrieved 2026-09-30 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz.sig",
+    "result": "good signature",
+    "made": "2020-03-05",
+    "by": "Pádraig Brady",
+    "key": "6C37DC12121A5006BC1DB804DF6FD971306037D9",
+    "key_from": "https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+   },
+   "published_sha256": null,
+   "note": "The release announcement (https://lists.gnu.org/archive/html/info-gnu/2020-03/msg00003.html) gives no checksum, only the signature."
+  }
+ },
+ {
+  "name": "diffutils",
+  "version": "3.10",
+  "package": "diffutils-3.10",
+  "licence": "GPL-3.0-or-later",
+  "file": "sources/diffutils-3.10.tar.xz",
+  "bytes": 1624240,
+  "sha256": "90e5e93cc724e4ebe12ede80df1634063c7a855692685919bfe60b556c9bd09e",
+  "upstream": "https://ftp.gnu.org/gnu/diffutils/diffutils-3.10.tar.xz",
+  "used_for": "../biowasm/diffutils/3.10/: diff, cmp (compiled for the course: ./diffutils-build/)",
+  "origin": "the official release archive, retrieved 2026-10-03 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://ftp.gnu.org/gnu/diffutils/diffutils-3.10.tar.xz.sig",
+    "result": "good signature",
+    "made": "2023-05-21",
+    "by": "Jim Meyering",
+    "key": "155D3FC500C834486D1EEA677FD9FCCB000BEEEE",
+    "key_from": "https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+   },
+   "published_sha256": {
+    "value": "kOXpPMck5OvhLt6A3xY0Bjx6hVaSaFkZv+YLVWyb0J4=",
+    "encoding": "base64, as in the release announcement",
+    "source": "https://lists.gnu.org/archive/html/info-gnu/2023-05/msg00009.html",
+    "matches": true
+   }
+  }
+ },
+ {
+  "name": "gawk",
+  "version": "5.1.0",
+  "package": "gawk-5.1.0",
+  "licence": "GPL-3.0-or-later",
+  "file": "sources/gawk-5.1.0.tar.xz",
+  "bytes": 3154564,
+  "sha256": "cf5fea4ac5665fd5171af4716baab2effc76306a9572988d5ba1078f196382bd",
+  "upstream": "https://ftp.gnu.org/gnu/gawk/gawk-5.1.0.tar.xz",
+  "used_for": "../biowasm/gawk/5.1.0/: gawk, also run as awk (Biowasm build)",
+  "origin": "the official release archive, retrieved 2026-09-30 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://ftp.gnu.org/gnu/gawk/gawk-5.1.0.tar.xz.sig",
+    "result": "good signature",
+    "made": "2020-04-14",
+    "by": "Arnold Robbins",
+    "key": "D1967C63788713177D861ED7DF597815937EC0D2",
+    "key_from": "https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+   },
+   "published_sha256": null,
+   "note": "The release announcement (https://lists.gnu.org/archive/html/info-gnu/2020-04/msg00007.html) gives no checksum; the size it gives, 3154564 bytes, is that of this file."
+  }
+ },
+ {
+  "name": "grep",
+  "version": "3.7",
+  "package": "grep-3.7",
+  "licence": "GPL-3.0-or-later",
+  "file": "sources/grep-3.7.tar.xz",
+  "bytes": 1641196,
+  "sha256": "5c10da312460aec721984d5d83246d24520ec438dd48d7ab5a05dbc0d6d6823c",
+  "upstream": "https://ftp.gnu.org/gnu/grep/grep-3.7.tar.xz",
+  "used_for": "../biowasm/grep/3.7/: grep (Biowasm build)",
+  "origin": "the official release archive, retrieved 2026-09-30 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://ftp.gnu.org/gnu/grep/grep-3.7.tar.xz.sig",
+    "result": "good signature",
+    "made": "2021-08-14",
+    "by": "Jim Meyering",
+    "key": "155D3FC500C834486D1EEA677FD9FCCB000BEEEE",
+    "key_from": "https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+   },
+   "published_sha256": {
+    "value": "XBDaMSRgrschmE1dgyRtJFIOxDjdSNerWgXbwNbWgjw",
+    "encoding": "base64, as in the release announcement",
+    "source": "https://lists.gnu.org/archive/html/info-gnu/2021-08/msg00006.html",
+    "matches": true
+   }
+  }
+ },
+ {
+  "name": "grep",
+  "version": "3.11",
+  "package": "grep-3.11",
+  "licence": "GPL-3.0-or-later",
+  "file": "sources/grep-3.11.tar.xz",
+  "bytes": 1703776,
+  "sha256": "1db2aedde89d0dea42b16d9528f894c8d15dae4e190b59aecc78f5a951276eab",
+  "upstream": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz",
+  "used_for": "../biowasm/grep/3.11/: grep-perl, which carries out \"grep -P\" (compiled for the course with PCRE2 10.42: ./grep-perl-build/)",
+  "origin": "the official release archive, retrieved 2026-10-05 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.xz.sig",
+    "result": "good signature",
+    "made": "2023-05-13",
+    "by": "Jim Meyering",
+    "key": "155D3FC500C834486D1EEA677FD9FCCB000BEEEE",
+    "key_from": "https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+   },
+   "published_sha256": {
+    "value": "HbKu3eidDepCsW2VKPiUyNFdrk4ZC1muzHj1qVEnbqs=",
+    "encoding": "base64, as in the release announcement",
+    "source": "https://lists.gnu.org/archive/html/info-gnu/2023-05/msg00004.html",
+    "matches": true
+   }
+  }
+ },
+ {
+  "name": "pcre2",
+  "version": "10.42",
+  "package": "pcre2-10.42",
+  "licence": "BSD-3-Clause WITH PCRE2-exception",
+  "file": "sources/pcre2-10.42.tar.bz2",
+  "bytes": 1799866,
+  "sha256": "8d36cd8cb6ea2a4c2bb358ff6411b0c788633a2a45dabbf1aeb4b701d1b5e840",
+  "upstream": "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.bz2",
+  "used_for": "../biowasm/grep/3.11/: the PCRE2 library in grep-perl (./grep-perl-build/)",
+  "origin": "the official release archive, retrieved 2026-10-05 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.bz2.sig",
+    "result": "good signature",
+    "made": "2022-12-12",
+    "by": "Philip Hazel",
+    "key": "45F68D54BBE23FB3039B46E59766E084FB0F43D8",
+    "key_from": "keyserver.ubuntu.com; the PCRE2 project names this key for its releases up to 10.44 (SECURITY.md of https://github.com/PCRE2Project/pcre2)"
+   },
+   "published_sha256": null,
+   "note": "No published SHA-256 was compared (the release page could not be read in this check); the signature above was checked."
+  }
+ },
+ {
+  "name": "sed",
+  "version": "4.8",
+  "package": "sed-4.8",
+  "licence": "GPL-3.0-or-later",
+  "file": "sources/sed-4.8.tar.xz",
+  "bytes": 1348048,
+  "sha256": "f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633",
+  "upstream": "https://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz",
+  "used_for": "../biowasm/sed/4.8/: sed (Biowasm build)",
+  "origin": "the official release archive, retrieved 2026-09-30 (for the Bioinformatics workbench) and copied unchanged",
+  "checked": {
+   "date": "2026-10-15",
+   "identical_to_upstream_file": true,
+   "signature": {
+    "url": "https://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz.sig",
+    "result": "good signature",
+    "made": "2020-01-15",
+    "by": "Jim Meyering",
+    "key": "155D3FC500C834486D1EEA677FD9FCCB000BEEEE",
+    "key_from": "https://ftp.gnu.org/gnu/gnu-keyring.gpg"
+   },
+   "published_sha256": null,
+   "note": "The release announcement (https://lists.gnu.org/archive/html/info-gnu/2020-01/msg00002.html) gives no checksum, only the signature."
+  }
+ }
+]

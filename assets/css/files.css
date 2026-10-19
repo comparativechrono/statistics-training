@@ -1,0 +1,183 @@
+/* =====================================================================
+   The Files tab: the tree of your files, the editor, the viewers (tables,
+   pictures, PDF files, HTML reports) and the card of a file that is not
+   text. In a narrow workbench the tree sits above the file.
+   ===================================================================== */
+#edRoot { height: 100%; min-height: 0; }
+.ed { display: flex; height: 100%; min-height: 0; background: #fff; }
+.ed.dropping { outline: 2px dashed var(--accent); outline-offset: -3px; }
+
+/* ---------------- the tree ---------------- */
+.ed-side { width: 240px; flex: none; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: var(--panel-2); min-height: 0; }
+.ed-treebar { display: flex; align-items: center; gap: 3px; padding: 6px 6px 6px 10px; border-bottom: 1px solid var(--line); flex: none; }
+.ed-treebar b { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.ed-treebar .grow { flex: 1; }
+.ed-treebar .tbtn { padding: 3px 5px; }
+.ed-treebar .tbtn.on { background: var(--accent-soft); color: var(--accent-2); border-color: #9fcbdb; }
+.ed-tree { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 4px 0 16px; font-size: 0.82rem; }
+.ed-row { display: flex; align-items: center; gap: 5px; min-height: 24px; padding: 1px 4px 1px 8px; margin: 0 4px; border-radius: 5px; cursor: pointer; white-space: nowrap; color: var(--ink-2); }
+.ed-row:hover { background: #e8edf3; }
+.ed-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.ed-row.on { background: var(--accent-soft); color: var(--accent-2); font-weight: 600; }
+.ed-row.dir { color: #2d5f8a; }
+.ed-row.root { margin-top: 4px; font-weight: 650; color: var(--ink); }
+.ed-row.root .ed-name { font-family: var(--font); font-size: 0.82rem; white-space: pre; }
+.ed-row.fresh .ed-name { color: var(--good); }
+.ed-row.drop-on { background: var(--accent-soft); outline: 2px dashed var(--accent); outline-offset: -2px; }
+.ed-row.flash-attn { animation: ed-flash 1.4s ease-out; }
+@keyframes ed-flash { 0%, 35% { background: #fff0b3; } 100% { background: transparent; } }
+.ed-caret { width: 10px; flex: none; color: var(--muted); font-size: 0.75rem; }
+.ed-ic { display: inline-flex; flex: none; }
+.ed-ic .ic { width: 15px; height: 15px; opacity: 0.75; }
+.ed-ic.t-r { color: #2166ac; }
+.ed-ic.t-rmd { color: #1f7a8c; }
+.ed-ic.t-nb { color: #b8480b; }
+.ed-ic.t-data { color: #16794a; }
+.ed-ic.t-pic { color: #6b3fa0; }
+.ed-ic[class*='t-'] .ic { opacity: 0.9; }
+.ed-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-family: var(--mono); font-size: 12px; }
+.ed-size { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.ed-lock { display: inline-flex; }
+.ed-lock .ic { width: 12px; height: 12px; opacity: 0.55; }
+.ed-more { border: 0; background: none; color: var(--muted); padding: 1px 2px; cursor: pointer; opacity: 0; display: inline-flex; border-radius: 4px; flex: none; }
+.ed-row:hover .ed-more, .ed-row:focus-within .ed-more, .ed-row.on .ed-more { opacity: 1; }
+.ed-more:hover { background: #dfe6ee; color: var(--ink); }
+.ed-more .ic { width: 14px; height: 14px; }
+.ed-hint { font-size: 0.78rem; color: var(--muted); padding: 2px 14px 6px 30px; margin: 0; white-space: normal; }
+.ed-usage { flex: none; border-top: 1px solid var(--line); padding: 6px 10px; font-size: 0.72rem; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; line-height: 1.35; }
+.ed-usage .ic { width: 13px; height: 13px; flex: none; margin-top: 1px; }
+.ed-usage.bad { color: var(--bad); background: var(--bad-soft); }
+
+/* ---------------- the open file: tabs, its name and buttons ---------------- */
+.ed-main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; container: edmain / inline-size; }
+.ed-tabs { display: flex; gap: 2px; padding: 4px 6px 0; background: var(--panel-2); border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: thin; flex: none; min-height: 31px; }
+.ed-tab { display: inline-flex; align-items: center; flex: none; border: 1px solid var(--line); border-bottom: 0; border-radius: 7px 7px 0 0; background: #eef1f5; font-size: 0.8rem; }
+.ed-tab.on { background: #fff; position: relative; top: 1px; }
+.ed-tab.gone .ed-tab-l { text-decoration: line-through; color: var(--muted); }
+.ed-tab-l { border: 0; background: none; padding: 4px 4px 4px 10px; cursor: pointer; font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+.ed-tab.on .ed-tab-l { color: var(--ink); }
+.ed-tab-x { border: 0; background: none; padding: 2px 8px 2px 4px; cursor: pointer; color: var(--muted); }
+.ed-tab.dirty .ed-tab-x { color: var(--act); }
+.ed-tab-x:hover { color: var(--bad); }
+.ed-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; padding: 5px 10px; border-bottom: 1px solid var(--line); flex: none; min-height: 40px; box-sizing: border-box; }
+.ed-path { flex: 0 1 auto; min-width: 0; max-width: 100%; display: flex; align-items: center; gap: 6px; margin-right: 4px; font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+.ed-dir { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.ed-fname { flex: 0 1 auto; min-width: 4ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-weight: 650; }
+.ed-path .pill { flex: none; font-family: var(--font); }
+.ed-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.ed-acts:empty { display: none; }
+.ed-end { display: flex; gap: 6px; margin-left: auto; }
+/* (too narrow for one line: the buttons to the other tabs under the file's name) */
+.ed-bar.two .ed-acts { order: 3; flex: 1 0 100%; }
+.ed-act .s { display: none; }
+.ed-act.first { background: var(--accent-soft); border-color: #9fcbdb; color: var(--accent-2); font-weight: 600; }
+.ed-act.first:hover { border-color: var(--accent); }
+.ed-save.dirty { background: var(--accent); border-color: var(--accent); color: #fff; }
+@container edmain (max-width: 560px) {
+  .ed-act .l { display: none; }
+  .ed-act .s { display: inline; }
+}
+
+/* ---------------- the editor ---------------- */
+.ed-cm { flex: 1; min-height: 0; position: relative; }
+.ed-cm .CodeMirror { position: absolute; inset: 0; height: auto; font-family: var(--mono); font-size: 13px; line-height: 1.5; }
+.ed-cm .CodeMirror-activeline-background { background: rgba(11, 107, 138, 0.05); }
+.cm-flash { background: #fff3c4 !important; transition: background 1s; }
+/* R Markdown and Quarto: the chunks of code stand out from the text (as in RStudio) */
+.ed .cm-rmd-chunk { color: #2a62a6; font-weight: 600; }
+.ed .cm-rmd-inline { color: #2a62a6; }
+.ed .cm-rmd-code, .ed .cm-rmd-inline-code { background: #f3f5f8; }
+
+/* ---------------- viewers ---------------- */
+.ed-view { flex: 1; min-height: 0; overflow: auto; padding: 14px; background: #fafbfc; }
+.ed-empty { flex: 1; min-height: 0; overflow: auto; }
+.ed-note { margin: 10px 0 0; font-size: 0.84rem; }
+.ed-note .btn { vertical-align: middle; }
+/* pictures */
+.ed-view.k-image, .ed-view.k-svg { text-align: center; }
+.ed-img { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: inline-block; max-width: 100%; box-sizing: border-box; }
+.ed-img img { max-width: 100%; height: auto; display: block; }
+.ed-img.svg img { min-width: min(100%, 420px); }
+/* knitted reports and other web pages */
+.ed-view.k-html { display: flex; flex-direction: column; }
+.ed-frame { flex: 1; width: 100%; min-height: 300px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+/* tables: the data viewer (dataview.js; its look is in r.css) over the whole pane */
+.ed-view.k-table { padding: 0; overflow: hidden; display: flex; flex-direction: column; background: #fff; }
+.ed-grid { flex: 1; min-height: 0; }
+.ed-foot { flex: none; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; padding: 6px 10px; border-top: 1px solid var(--line); background: var(--panel-2); font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.ed-foot .btn { flex: none; }
+/* a file that is not text: what it is, how R reads it */
+.ed-card { max-width: 560px; margin: 24px auto; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px 18px; box-shadow: var(--shadow); color: var(--ink-2); font-size: 0.9rem; line-height: 1.5; text-align: left; }
+.ed-card-h { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.ed-card-ic { width: 42px; height: 42px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-2); display: grid; place-items: center; flex: none; }
+.ed-card-ic .ic { width: 22px; height: 22px; }
+.ed-card h3 { margin: 0; font-size: 1.02rem; color: var(--ink); }
+.ed-card-sub { margin: 2px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.ed-card p { margin: 10px 0 0; }
+.ed-code { margin: 10px 0 0; padding: 8px 10px; background: #f6f8fa; border: 1px solid var(--line); border-radius: 7px; font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.ed-sheets { font-size: 0.86rem; }
+.ed-card-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+/* PDF files (pdfview.js): the pages on a grey desk, a toolbar above them */
+.ed-view.k-pdf { padding: 0; overflow: hidden; display: flex; flex-direction: column; background: #e7ebf0; }
+.pdfv { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pdfv-bar { flex: none; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 5px 10px; background: var(--panel); border-bottom: 1px solid var(--line); font-size: 0.8rem; color: var(--ink-2); }
+.pdfv-pg { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.pdfv-num { width: 3.6em; padding: 2px 4px; border: 1px solid var(--line-2); border-radius: 5px; font: inherit; text-align: right; }
+.pdfv-sep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+.pdfv-zoom { min-width: 3.6em; text-align: center; font-variant-numeric: tabular-nums; }
+.pdfv-bar .tbtn.on { background: var(--accent-soft); color: var(--accent-2); border-color: var(--accent); }
+.pdfv-scroll { flex: 1; min-height: 0; overflow: auto; scrollbar-gutter: stable; position: relative; outline: none; }
+.pdfv-scroll:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+/* (a page wider than the pane – zoomed in, or turned sideways – starts at its left edge and the pane scrolls sideways;
+   narrower pages stay in the middle) */
+.pdfv-pages { padding: 12px 16px 28px; }
+.pdfv-page { position: relative; margin: 0 auto 12px; background: #fff; box-shadow: 0 0 0 1px rgba(16, 24, 40, 0.08), 0 2px 6px rgba(16, 24, 40, 0.14);
+  --user-unit: 1; --total-scale-factor: calc(var(--scale-factor) * var(--user-unit)); --scale-round-x: 1px; --scale-round-y: 1px; }
+.pdfv-page > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.pdfv-links { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.pdfv-link { position: absolute; pointer-events: auto; border-radius: 2px; }
+.pdfv-link:hover, .pdfv-link:focus-visible { background: rgba(11, 107, 138, 0.12); box-shadow: 0 0 0 1px rgba(11, 107, 138, 0.55); outline: none; }
+.pdfv-msg { max-width: 34rem; margin: 40px auto; padding: 16px 18px; background: #fff; border: 1px solid var(--line); border-radius: 8px; color: var(--ink-2); font-size: 0.86rem; line-height: 1.5; }
+.pdfv-msg p { margin: 6px 0 0; }
+.pdfv-pass div { display: flex; gap: 6px; margin-top: 8px; }
+.pdfv-pass input { flex: 1; padding: 4px 8px; border: 1px solid var(--line-2); border-radius: 6px; font: inherit; }
+.pdfv-frame { width: 100%; height: 100%; min-height: 400px; border: 0; display: block; background: #fff; }
+/* the text of a page, laid over its picture so that it can be selected and found (after PDF.js's own text_layer.css) */
+.pdfv .textLayer { position: absolute; inset: 0; overflow: hidden; overflow: clip; text-align: initial; opacity: 1; line-height: 1; letter-spacing: normal; word-spacing: normal;
+  -webkit-text-size-adjust: none; text-size-adjust: none; forced-color-adjust: none; transform-origin: 0 0; caret-color: CanvasText; z-index: 0;
+  --min-font-size: 1; --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size)); --min-font-size-inv: calc(1 / var(--min-font-size)); }
+.pdfv .textLayer span, .pdfv .textLayer br { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; -webkit-user-select: text; user-select: text; }
+.pdfv .textLayer > :not(.markedContent), .pdfv .textLayer .markedContent span:not(.markedContent) { z-index: 1; --font-height: 0; font-size: calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x: 1; --rotate: 0deg; transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv)); }
+.pdfv .textLayer .markedContent { display: contents; }
+.pdfv .textLayer span[role="img"] { -webkit-user-select: none; user-select: none; cursor: default; }
+.pdfv .textLayer ::selection { background: rgba(11, 107, 138, 0.28); color: transparent; }
+.pdfv .textLayer br::selection { background: transparent; }
+.pdfv .textLayer .endOfContent { display: block; position: absolute; inset: 100% 0 0; z-index: 0; cursor: default; -webkit-user-select: none; user-select: none; }
+.pdfv .textLayer.selecting .endOfContent { top: 0; }
+.pill.small { font-size: 0.7rem; padding: 0 6px; }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+
+/* ---------------- nothing open: what the tab is for ---------------- */
+.ed-welcome { max-width: 600px; margin: 0 auto; padding: 30px 22px 40px; color: var(--ink-2); font-size: 0.9rem; line-height: 1.55; }
+.ed-welcome-h { display: flex; align-items: center; gap: 10px; }
+.ed-welcome-h .ic { width: 30px; height: 30px; color: var(--accent); flex: none; }
+.ed-welcome h3 { margin: 0; font-size: 1.2rem; color: var(--ink); }
+.ed-lead { margin: 10px 0 0; }
+.ed-welcome ul { margin: 12px 0 0; padding-left: 1.2em; }
+.ed-welcome li { margin: 0 0 9px; }
+.ed-welcome li::marker { color: var(--accent); }
+.ed-welcome code { font-family: var(--mono); font-size: 0.86em; background: var(--panel-3); padding: 0 4px; border-radius: 4px; }
+.ed-welcome-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+/* ---------------- a narrow workbench: the tree above the file ---------------- */
+@container bench (max-width: 640px) {
+  .ed { flex-direction: column; }
+  .ed-side { width: auto; max-height: 34%; border-right: 0; border-bottom: 1px solid var(--line); }
+  .ed-tree { padding-bottom: 6px; }
+  .ed-usage { padding: 4px 10px; }
+  .ed-more { opacity: 1; }
+  .ed-view { padding: 10px; }
+  .ed-card { margin: 12px auto; padding: 14px; }
+  .ed-welcome { padding: 18px 16px 30px; }
+}

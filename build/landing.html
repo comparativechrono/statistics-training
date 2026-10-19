@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROGRAMME}}: statistics practicals, weeks 2 to 5</title>
+<meta name="description" content="The statistics practicals of Biostatistics for Genomic Medicine, weeks 2 to 5: describing data, hypothesis tests, regression and genome-scale inference. R runs in your web browser, in an RStudio-style workbench, so there is nothing to install.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2340'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%238ec5ff'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3Crect x='17' y='17' width='9' height='9' rx='2' fill='%23415187'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/course.css">
+<link rel="stylesheet" href="assets/css/landing.css">
+<link rel="stylesheet" href="assets/css/stats.css">
+</head>
+<body class="landing" data-page="home" data-title="{{PROGRAMME}}">
+<header class="hero">
+  <div class="hero-in">
+    <p class="hero-dept" data-awarded-by></p>
+    <h1>{{PROGRAMME}}</h1>
+    <p class="hero-sub">Statistics practicals, weeks 2 to 5</p>
+    <p class="hero-lede">Four practicals that take you from describing a data set to a small genome-wide association study. Each one explains the statistics, shows you how to do it in R, and then asks you to do it yourself, on real data: a study of how people’s genes affect the gains they make from strength training, a study of gene expression in leukaemia, the drug resistance of HIV, and human genetic diversity around the world. Everything runs in your web browser, in a workbench modelled on RStudio, so there is nothing to install.</p>
+    <ol class="route route-weeks" aria-label="What the four weeks cover, in order">
+      <li class="route-week"><span class="route-part">Week 2</span><span class="route-step">describe</span><span class="route-step">distributions</span><span class="route-step">uncertainty</span></li>
+      <li class="route-week"><span class="route-part">Week 3</span><span class="route-step">test</span><span class="route-step">compare groups</span></li>
+      <li class="route-week"><span class="route-part">Week 4</span><span class="route-step">model</span><span class="route-step">adjust</span></li>
+      <li class="route-week"><span class="route-part">Week 5</span><span class="route-step">scale up</span><span class="route-step">mini-GWAS</span></li>
+    </ol>
+    <div class="hero-name" aria-live="polite">
+      <span class="hn-label">The answers you download will show the name</span>
+      <b class="hn-name" data-student-name-text></b>
+      <button class="btn small hn-btn" type="button" data-name-btn>Add your name</button>
+    </div>
+  </div>
+</header>
+
+<main class="land">
+  <section class="courses" aria-label="The practicals">
+{{COURSE_CARDS}}
+  </section>
+
+  <section class="land-info">
+    <div class="info-box">
+      <h2>Before you start</h2>
+      <ul>
+        <li>These practicals follow on from <a href="https://comparativechrono.github.io/r-training/">Week 1, Introduction to R</a> (R basics and the tidyverse). Do those first if you are new to R.</li>
+        <li>Use a laptop or desktop computer with an up-to-date <b>Chrome, Edge, Firefox or Safari</b>. A wide screen helps, because the instructions sit beside the workbench.</li>
+        <li>R is downloaded into your browser the first time you open a practical (about 30 MB), and each practical asks you to install the tidyverse once (about a minute the first time, and quicker after that).</li>
+        <li>Your ticks, answers and files are saved <b>in this browser, on this computer</b>, and the four practicals share your files, so the reports you write carry over from week to week. Use another computer, or a private window, and you start again. Each practical has <b>My answers</b> and <b>My files</b> buttons for downloading your work.</li>
+        <li>Each practical has an AI assistant you can ask about R and statistics, if you have a key for an AI service. Never type personal or patient data into it, or into any other AI tool.</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <h2>How the practicals work</h2>
+      <ul>
+        <li>Each practical is a day’s work, in short chapters. Each chapter explains an idea, shows you some R, and then gives you an activity to do in the workbench. Your tutor will lead some parts in the room.</li>
+        <li>The steps of an activity <b>tick themselves</b> when R sees that you have done them, and questions with a <b>Check</b> button are marked straight away. Once you have had a go at a question, <b>Show answer</b> shows ours.</li>
+        <li>Parts marked <b>If you have time</b> are extras for those who finish early, and each week ends with <b>homework</b>: neither counts towards finishing the practical.</li>
+        <li>Each week you write a short report in a <b>Quarto</b> document, which you render to a web page. These reports are practice for the analysis you will hand in for your assessment.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="land-foot">
+    <p>The data come from the FAMuSS study (Thompson and others, <i>Medicine &amp; Science in Sports &amp; Exercise</i>, 2004); the ALL study of acute lymphoblastic leukaemia (Chiaretti and others, <i>Blood</i>, 2004), as published in the Bioconductor package ALL; the Human Genome Diversity Project; and HIV-1 drug resistance measured by Virco. The FAMuSS, HGDP and Virco data are the versions published with Foulkes, <i>Applied Statistical Genetics with R</i> (Springer, 2009). See the <a href="https://github.com/comparativechrono/statistics-training">repository</a> for details. R runs in your browser thanks to <a href="https://docs.r-wasm.org/webr/">webR</a>. The RStudio tab is an imitation made for teaching, and it isn’t made or endorsed by Posit.</p>
+  </footer>
+</main>
+
+{{COURSES}}
+<script src="assets/js/config.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/landing.js"></script>
+</body>
+</html>
