@@ -213,6 +213,8 @@ Everything in `data/` (except `PROVENANCE.md`) is copied into each student's `~/
 
 FAMuSS, the HGDP data and the Virco data are the versions published with Andrea Foulkes's *Applied Statistical Genetics with R* (Springer, 2009), which the module's original practicals used; the leukaemia data come from Bioconductor's ALL package. [data/PROVENANCE.md](data/PROVENANCE.md) gives the sources, the studies to cite, and exactly what was done to each file, and `build/data-prep/make_data.R` makes all five files from their sources (it reproduces them byte for byte). **Please read the note on licences at the end of PROVENANCE.md before publishing the site**: the book's data page doesn't state a licence for the three files that come from it.
 
+`downloads/Data.zip` is not part of the practicals: no page links to it, and it isn't copied into students' `~/data`. It holds the four R files of the course's Dropbox folder of data, which R code written for the module downloads: `fms.RData` (`fms`, the FAMuSS file as published), `ALL.RData` (`all_exprs` and `all_pheno`: the expression data and the details of all 128 patients of the ALL study), `hgdp.RData` (`hgdp`) and `virco.RData` (`virco`). It is here because R in the browser can't download from Dropbox: Dropbox doesn't send the CORS header (`Access-Control-Allow-Origin`) without which a browser won't let a page download from another site, whereas GitHub Pages does. R code can download it from `https://comparativechrono.github.io/statistics-training/downloads/Data.zip`, in the browser or on a computer. The files were copied unchanged from the folder as it was on 29 October 2026; the folder's saved workspace, `.RData`, was left out, because the tables in it besides `fms` aren't part of the course's data. If the folder changes, replace the zip with its new files. The note on licences applies to these files too.
+
 ## What students keep, and privacy
 
 Students' files, ticks, answers, name and settings are stored in the browser's storage for the site, on their own computer, and they are still there when the student comes back in the same browser. Nothing is stored on a server. A different browser, a different computer or a private window won't have them, and clearing the browser's data for the site deletes them. **My answers** downloads a student's answers as a web page (with their name, if they gave one), and **My files** downloads their files as a `.zip` file.
@@ -261,6 +263,7 @@ python3 test/t07_reload.py
 | `assets/css/` | The styles; `stats.css` was written for these practicals |
 | `assets/vendor/` | Third-party libraries, with their licences (see `THIRD_PARTY.md`) |
 | `data/` | The practicals' data, copied into each student's `~/data` (see `data/PROVENANCE.md`) |
+| `downloads/` | `Data.zip`, for R code that downloads the course's data itself; not used by the practicals (see [The data](#the-data)) |
 | `build/`, `test/` | The generator of the pages, and the tests |
 | `isolation-sw.js`, `serve.py` | The service worker for cross-origin isolation, and a local web server for trying the site |
 

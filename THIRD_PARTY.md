@@ -87,6 +87,8 @@ The files in `data/` are copied into each student's `~/data` folder the first ti
 - `famuss.csv`, `hgdp_akt1.csv` and `virco.csv` come from the data page of Andrea Foulkes's book *Applied Statistical Genetics with R* (Springer, 2009). The page doesn't state a licence for them (see the note in PROVENANCE.md).
 - `leukaemia.csv` and `all_expression.csv` are made from Bioconductor's data package ALL and annotation package hgu95av2.db, both under the Artistic License 2.0.
 
+`downloads/Data.zip` isn't copied into `~/data` or used by the practicals: it is there for R code that downloads it (see the README). It holds the same data as R files: `fms.RData`, `hgdp.RData` and `virco.RData` hold the three files from the book's data page (so the same note applies to them), and `ALL.RData` the expression data and the patients' details from the ALL package (Artistic License 2.0).
+
 ## pako's licence notice
 
 JSZip ([assets/vendor/jszip/jszip.min.js](assets/vendor/jszip/jszip.min.js)) includes pako 1.0, but the file doesn't contain pako's licence notice. The notice is therefore kept next to it, in [LICENSE-pako.txt](assets/vendor/jszip/LICENSE-pako.txt), and is also reproduced here:
