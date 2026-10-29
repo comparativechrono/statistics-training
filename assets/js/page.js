@@ -26,28 +26,43 @@
     fs.mkdirp('/tmp');
     await MG.project.restore(fs, [HOME]);
     fs.cwd = HOME;
-    // the first visit: the data and examples of the practicals (a file that is there already is left alone)
+    // (every change is kept in the browser from here on, including the files copied in below: they were once copied
+    // before the watching began, so they were never kept, and the data folder was gone the next time the page opened)
+    MG.project.watch(fs);
+    // the first visit: the data and examples of the practicals (a file that is there already is left alone). The
+    // copying only counts as done once the copies are kept in the browser: if the page closes first (on the very
+    // first visit it reloads itself straight away), a file could not be downloaded, or the browser keeps no files
+    // (some private windows), the missing files are copied again the next time the page opens
     const seeded = store.get('seeded', 0);
     const version = Number(window.RWB_STARTERS_VERSION || 1);
     if (seeded < version) {
+      const copied = [];
+      let failed = 0;
       for (const s of STARTERS) {
         const path = HOME + '/data/' + s.p;
         if (fs.exists(path)) continue;
         try {
           const r = await fetch(abs('data/' + s.p));
-          if (!r.ok) continue;
+          if (!r.ok) {
+            failed++;
+            continue;
+          }
           const bytes = new Uint8Array(await r.arrayBuffer());
           const text = MG.looksText(s.p, bytes);
           fs.mkdirp(MG.path.dirname(path));
           if (text != null) fs.put(path, { kind: 'text', text, mtime: Date.parse('2026-10-14T09:00:00Z') });
           else fs.put(path, { kind: 'blob', blob: new Blob([bytes]), mtime: Date.parse('2026-10-14T09:00:00Z') });
+          copied.push(path);
         } catch (e) {
-          /* offline: no starter */
+          failed++; // offline: copied next time
         }
       }
-      store.set('seeded', version);
+      const kept = () => copied.every((p) => MG.project.saved.get(p) === fs.entries.get(p));
+      if (!failed) {
+        if (!copied.length) store.set('seeded', version);
+        else MG.project.flush().then(() => kept() && store.set('seeded', version)).catch(() => {});
+      }
     }
-    MG.project.watch(fs);
     return fs;
   }
 

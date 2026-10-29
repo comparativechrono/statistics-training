@@ -236,6 +236,7 @@ The site was tested in Chromium (with Playwright) on 19 October 2026, with R and
 | `t01_examples.py` | That every piece of Console shown in the instructions is what R really prints: it runs all of them (for all four weeks) in RStudio's Console in the browser and compares the output |
 | `t02_week2.py` … `t05_week5.py` | A student working through each practical from start to finish: installing the tidyverse, every step and every question (with code a student would write), steps that must *not* tick for the wrong thing, the files created from the instructions, the report created, rendered, extended and rendered again, the message when the practical is finished, the progress panel, the landing page afterwards, and the homework's checks |
 | `t06_assistant.py` | The AI tab, against a stand-in for the AI service with a fake key: the suggested questions, the offline help, that the key stays in memory, what is sent (and that the student's name isn't), and code in an answer going to RStudio |
+| `t07_reload.py` | That the data in `~/data` are kept in the browser like the student's own files: still there after the page is opened again (until 29 October 2026 they were copied before the page began to keep its files, so they had gone after a reload), and copied again for a student who had lost them, without overwriting a data file the student changed or a file of their own |
 
 To run the tests you need Python 3 and Playwright with Chromium:
 
@@ -248,6 +249,7 @@ python3 test/t03_week3.py
 python3 test/t04_week4.py
 python3 test/t05_week5.py
 python3 test/t06_assistant.py
+python3 test/t07_reload.py
 ```
 
 ## Files

@@ -21,7 +21,7 @@ from courses import COURSES, PROGRAMME, TABS  # noqa: E402
 import lib  # noqa: E402
 
 # the starter files: data/ of the site → ~/data/ of the user (data/small_file.txt → ~/data/small_file.txt)
-STARTERS_VERSION = 1
+STARTERS_VERSION = 2  # 2: copy the data again, for those who lost it (October 2026)
 starters = []
 for root, dirs, files in os.walk(os.path.join(SITE, 'data')):
     dirs.sort()
